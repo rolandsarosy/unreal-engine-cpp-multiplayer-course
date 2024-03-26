@@ -23,26 +23,35 @@ public:
 protected:
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TObjectPtr<UInputMappingContext> DefaultInputMapping;
-	
+
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TObjectPtr<UInputAction> Input_Move;
 
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TObjectPtr<UInputAction> Input_Look;
 
+	UPROPERTY(EditDefaultsOnly, Category="Input")
+	TObjectPtr<UInputAction> Input_ToggleDebug;
+
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UCameraComponent> CameraComponent;
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USpringArmComponent> SpringArmComponent;
-	
+
+	bool IsDebugEnabled;
+
 	virtual void BeginPlay() override;
-	
+
 	void Move(const FInputActionInstance& InputActionInstance);
 
 	void Look(const FInputActionValue& InputActionValue);
 
-public:	
+	void ToggleIsDebugEnabled();
+
+	void VisualizeRotations() const;
+
+public:
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;

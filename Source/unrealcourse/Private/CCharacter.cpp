@@ -32,6 +32,7 @@ void ACCharacter::BeginPlay()
 void ACCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	IsDebugEnabled ? VisualizeRotations() : void();
 }
 
 void ACCharacter::Move(const FInputActionInstance& InputActionInstance)
@@ -54,6 +55,24 @@ void ACCharacter::Look(const FInputActionValue& InputActionValue)
 	AddControllerPitchInput(Value.Y);
 }
 
+void ACCharacter::ToggleIsDebugEnabled()
+{
+	IsDebugEnabled = !IsDebugEnabled;
+}
+
+void ACCharacter::VisualizeRotations() const
+{
+	constexpr float DrawScale = 50.0f;
+	constexpr float Thickness = 2.0f;
+	const FVector LineStart = GetActorLocation() += GetActorRightVector() * 100.0f; // Right-offset vector start from the actor
+
+	const FVector ActorDirectionLineEnd = LineStart + (GetActorForwardVector() * 100.0f); // Vector's end from the actor
+	DrawDebugDirectionalArrow(GetWorld(), LineStart, ActorDirectionLineEnd, DrawScale, FColor::Yellow, false, 0.0f, 0, Thickness);
+
+	const FVector ControllerDirection_LineEnd = LineStart + (GetControlRotation().Vector() * 100.0f); // Vector's end from the controller
+	DrawDebugDirectionalArrow(GetWorld(), LineStart, ControllerDirection_LineEnd, DrawScale, FColor::Green, false, 0.0f, 0, Thickness);
+}
+
 // Called to bind functionality to input
 void ACCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -69,4 +88,5 @@ void ACCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 	EnhancedInputComponent->BindAction(Input_Move, ETriggerEvent::Triggered, this, &ACCharacter::Move);
 	EnhancedInputComponent->BindAction(Input_Look, ETriggerEvent::Triggered, this, &ACCharacter::Look);
+	EnhancedInputComponent->BindAction(Input_ToggleDebug, ETriggerEvent::Triggered, this, &ACCharacter::ToggleIsDebugEnabled);
 }
