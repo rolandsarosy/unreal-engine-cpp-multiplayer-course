@@ -41,6 +41,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TObjectPtr<UInputAction> Input_PrimaryAttack;
 
+	UPROPERTY(EditDefaultsOnly, Category="Input")
+	TObjectPtr<UInputAction> Input_Jump;
+
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UCameraComponent> CameraComponent;
 
@@ -55,6 +58,8 @@ protected:
 	virtual void BeginPlay() override;
 
 	void Move(const FInputActionInstance& InputActionInstance);
+
+	virtual void Jump() override;
 
 	void Look(const FInputActionValue& InputActionValue);
 
