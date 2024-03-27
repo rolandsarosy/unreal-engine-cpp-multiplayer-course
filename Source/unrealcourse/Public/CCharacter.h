@@ -55,8 +55,6 @@ protected:
 
 	bool IsDebugEnabled;
 
-	virtual void BeginPlay() override;
-
 	void Move(const FInputActionInstance& InputActionInstance);
 
 	virtual void Jump() override;

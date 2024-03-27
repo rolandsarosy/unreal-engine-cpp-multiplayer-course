@@ -24,11 +24,6 @@ ACCharacter::ACCharacter()
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 }
 
-void ACCharacter::BeginPlay()
-{
-	Super::BeginPlay();
-}
-
 void ACCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
