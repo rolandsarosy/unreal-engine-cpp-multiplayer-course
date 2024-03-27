@@ -73,6 +73,17 @@ void ACCharacter::VisualizeRotations() const
 	DrawDebugDirectionalArrow(GetWorld(), LineStart, ControllerDirection_LineEnd, DrawScale, FColor::Green, false, 0.0f, 0, Thickness);
 }
 
+void ACCharacter::PrimaryAttack()
+{
+	// TODO: Make sure the socket name is not a burned-in value. We should probably expose this to the editor with either a socket or a string.
+	const FTransform SpawnTransform = FTransform(GetControlRotation(), GetMesh()->GetSocketLocation("Muzzle_01"));
+
+	FActorSpawnParameters SpawnParameters = FActorSpawnParameters();
+	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	
+	GetWorld()->SpawnActor<AActor>(PrimaryProjectile, SpawnTransform, SpawnParameters);
+}
+
 // Called to bind functionality to input
 void ACCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -89,4 +100,5 @@ void ACCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	EnhancedInputComponent->BindAction(Input_Move, ETriggerEvent::Triggered, this, &ACCharacter::Move);
 	EnhancedInputComponent->BindAction(Input_Look, ETriggerEvent::Triggered, this, &ACCharacter::Look);
 	EnhancedInputComponent->BindAction(Input_ToggleDebug, ETriggerEvent::Triggered, this, &ACCharacter::ToggleIsDebugEnabled);
+	EnhancedInputComponent->BindAction(Input_PrimaryAttack, ETriggerEvent::Triggered, this, &ACCharacter::PrimaryAttack);
 }

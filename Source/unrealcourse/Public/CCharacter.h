@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CoreUObject.h"
 #include "InputAction.h"
 #include "GameFramework/Character.h"
 #include "CCharacter.generated.h"
@@ -20,6 +21,10 @@ class UNREALCOURSE_API ACCharacter : public ACharacter
 public:
 	ACCharacter();
 
+	virtual void Tick(float DeltaTime) override;
+
+	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
+
 protected:
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TObjectPtr<UInputMappingContext> DefaultInputMapping;
@@ -33,11 +38,17 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TObjectPtr<UInputAction> Input_ToggleDebug;
 
+	UPROPERTY(EditDefaultsOnly, Category="Input")
+	TObjectPtr<UInputAction> Input_PrimaryAttack;
+
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UCameraComponent> CameraComponent;
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USpringArmComponent> SpringArmComponent;
+
+	UPROPERTY(EditAnywhere, Category="Abilities")
+	TSubclassOf<AActor> PrimaryProjectile;
 
 	bool IsDebugEnabled;
 
@@ -51,8 +62,5 @@ protected:
 
 	void VisualizeRotations() const;
 
-public:
-	virtual void Tick(float DeltaTime) override;
-
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	void PrimaryAttack();
 };
