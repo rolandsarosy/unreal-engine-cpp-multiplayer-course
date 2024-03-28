@@ -44,11 +44,6 @@ void ACCharacter::Move(const FInputActionInstance& InputActionInstance)
 	AddMovementInput(FRotationMatrix(ControlRotation).GetScaledAxis(EAxis::Y), InputAxisValue.X); // Left & Right
 }
 
-void ACCharacter::Jump()
-{
-	Super::Jump();
-}
-
 void ACCharacter::Look(const FInputActionValue& InputActionValue)
 {
 	const FVector2D Value = InputActionValue.Get<FVector2D>();

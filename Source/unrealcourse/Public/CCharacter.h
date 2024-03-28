@@ -64,8 +64,6 @@ protected:
 
 	void Move(const FInputActionInstance& InputActionInstance);
 
-	virtual void Jump() override;
-
 	void Look(const FInputActionValue& InputActionValue);
 
 	void ToggleIsDebugEnabled();
