@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "CCharacter.generated.h"
 
+class UCInteractionComponent;
 struct FInputActionInstance;
 struct FInputActionValue;
 class UInputMappingContext;
@@ -42,6 +43,9 @@ protected:
 	TObjectPtr<UInputAction> Input_PrimaryAttack;
 
 	UPROPERTY(EditDefaultsOnly, Category="Input")
+	TObjectPtr<UInputAction> Input_PrimaryInteract;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TObjectPtr<UInputAction> Input_Jump;
 
 	UPROPERTY(VisibleAnywhere)
@@ -49,6 +53,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USpringArmComponent> SpringArmComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UCInteractionComponent> InteractionComponent;
 
 	UPROPERTY(EditAnywhere, Category="Abilities")
 	TSubclassOf<AActor> PrimaryProjectile;
