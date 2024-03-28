@@ -15,8 +15,6 @@ class UNREALCOURSE_API ACMagicProjectile : public AActor
 
 public:
 	ACMagicProjectile();
-
-	virtual void Tick(float DeltaTime) override;
 	
 protected:
 	UPROPERTY(VisibleAnywhere)
@@ -27,6 +25,4 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UParticleSystemComponent> ParticleSystemComponent;
-
-	virtual void BeginPlay() override;
 };

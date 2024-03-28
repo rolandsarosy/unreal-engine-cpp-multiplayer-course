@@ -24,11 +24,6 @@ ACCharacter::ACCharacter()
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 }
 
-void ACCharacter::BeginPlay()
-{
-	Super::BeginPlay();
-}
-
 void ACCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -45,6 +40,11 @@ void ACCharacter::Move(const FInputActionInstance& InputActionInstance)
 
 	AddMovementInput(ControlRotation.Vector(), InputAxisValue.Y); // Forwards & Backwards
 	AddMovementInput(FRotationMatrix(ControlRotation).GetScaledAxis(EAxis::Y), InputAxisValue.X); // Left & Right
+}
+
+void ACCharacter::Jump()
+{
+	Super::Jump();
 }
 
 void ACCharacter::Look(const FInputActionValue& InputActionValue)
@@ -101,4 +101,5 @@ void ACCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	EnhancedInputComponent->BindAction(Input_Look, ETriggerEvent::Triggered, this, &ACCharacter::Look);
 	EnhancedInputComponent->BindAction(Input_ToggleDebug, ETriggerEvent::Triggered, this, &ACCharacter::ToggleIsDebugEnabled);
 	EnhancedInputComponent->BindAction(Input_PrimaryAttack, ETriggerEvent::Triggered, this, &ACCharacter::PrimaryAttack);
+	EnhancedInputComponent->BindAction(Input_Jump, ETriggerEvent::Triggered, this, &ACCharacter::Jump);
 }
