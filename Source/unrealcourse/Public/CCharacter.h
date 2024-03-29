@@ -1,18 +1,18 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "CoreUObject.h"
 #include "InputAction.h"
 #include "GameFramework/Character.h"
 #include "CCharacter.generated.h"
 
-class UCInteractionComponent;
 struct FInputActionInstance;
 struct FInputActionValue;
+class UCInteractionComponent;
 class UInputMappingContext;
 class UInputAction;
 class UCameraComponent;
 class USpringArmComponent;
+class UAnimMontage;
 
 UCLASS()
 class UNREALCOURSE_API ACCharacter : public ACharacter
@@ -44,7 +44,7 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TObjectPtr<UInputAction> Input_PrimaryInteract;
-	
+
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TObjectPtr<UInputAction> Input_Jump;
 
@@ -58,7 +58,15 @@ protected:
 	TObjectPtr<UCInteractionComponent> InteractionComponent;
 
 	UPROPERTY(EditAnywhere, Category="Abilities")
-	TSubclassOf<AActor> PrimaryProjectile;
+	TSubclassOf<AActor> PrimaryAttackProjectile;
+
+	UPROPERTY(EditAnywhere, Category="Abilities")
+	TObjectPtr<UAnimMontage> PrimaryAttackAnimation;
+
+	UPROPERTY(EditDefaultsOnly, Category="Abilities")
+	FName PrimaryAttackSocketName;
+	
+	FTimerHandle TimerHandle_PrimaryAttack;
 
 	bool IsDebugEnabled;
 
@@ -66,9 +74,11 @@ protected:
 
 	void Look(const FInputActionValue& InputActionValue);
 
-	void ToggleIsDebugEnabled();
+	void ToggleDebugMode();
 
 	void VisualizeRotations() const;
 
-	void PrimaryAttack();
+	void PrimaryAttack_Start();
+
+	void PrimaryAttack_TimeElapsed() const;
 };

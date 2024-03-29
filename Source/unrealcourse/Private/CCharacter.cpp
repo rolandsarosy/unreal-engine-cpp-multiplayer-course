@@ -52,11 +52,18 @@ void ACCharacter::Look(const FInputActionValue& InputActionValue)
 	AddControllerPitchInput(Value.Y);
 }
 
-void ACCharacter::ToggleIsDebugEnabled()
+void ACCharacter::ToggleDebugMode()
 {
 	IsDebugEnabled = !IsDebugEnabled;
 }
 
+/**
+ * Visualizes the rotations of the character and controller using debug arrows.
+ * Draws a yellow arrow representing the actor's forward vector starting from the actor's right-offset position.
+ * Draws a green arrow representing the controller's forward vector starting from the actor's right-offset position.
+ *
+ * @note This method is called in the Tick function of the ACCharacter class.
+ */
 void ACCharacter::VisualizeRotations() const
 {
 	constexpr float DrawScale = 50.0f;
@@ -70,15 +77,23 @@ void ACCharacter::VisualizeRotations() const
 	DrawDebugDirectionalArrow(GetWorld(), LineStart, ControllerDirection_LineEnd, DrawScale, FColor::Green, false, 0.0f, 0, Thickness);
 }
 
-void ACCharacter::PrimaryAttack()
+
+void ACCharacter::PrimaryAttack_Start()
 {
-	// TODO: Make sure the socket name is not a burned-in value. We should probably expose this to the editor with either a socket or a string.
-	const FTransform SpawnTransform = FTransform(GetControlRotation(), GetMesh()->GetSocketLocation("Muzzle_01"));
+	PlayAnimMontage(PrimaryAttackAnimation);
+
+	// TODO: This is merely temporary, and animation notifies will be used here in the future.
+	GetWorldTimerManager().SetTimer(TimerHandle_PrimaryAttack, this, &ACCharacter::PrimaryAttack_TimeElapsed, 0.2F);
+}
+
+void ACCharacter::PrimaryAttack_TimeElapsed() const
+{
+	const FTransform SpawnTransform = FTransform(GetControlRotation(), GetMesh()->GetSocketLocation(PrimaryAttackSocketName));
 
 	FActorSpawnParameters SpawnParameters = FActorSpawnParameters();
 	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-	GetWorld()->SpawnActor<AActor>(PrimaryProjectile, SpawnTransform, SpawnParameters);
+	GetWorld()->SpawnActor<AActor>(PrimaryAttackProjectile, SpawnTransform, SpawnParameters);
 }
 
 // Called to bind functionality to input
@@ -96,8 +111,8 @@ void ACCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 	EnhancedInputComponent->BindAction(Input_Move, ETriggerEvent::Triggered, this, &ACCharacter::Move);
 	EnhancedInputComponent->BindAction(Input_Look, ETriggerEvent::Triggered, this, &ACCharacter::Look);
-	EnhancedInputComponent->BindAction(Input_ToggleDebug, ETriggerEvent::Triggered, this, &ACCharacter::ToggleIsDebugEnabled);
-	EnhancedInputComponent->BindAction(Input_PrimaryAttack, ETriggerEvent::Triggered, this, &ACCharacter::PrimaryAttack);
+	EnhancedInputComponent->BindAction(Input_ToggleDebug, ETriggerEvent::Triggered, this, &ACCharacter::ToggleDebugMode);
+	EnhancedInputComponent->BindAction(Input_PrimaryAttack, ETriggerEvent::Triggered, this, &ACCharacter::PrimaryAttack_Start);
 	EnhancedInputComponent->BindAction(Input_PrimaryInteract, ETriggerEvent::Triggered, InteractionComponent.Get(), &UCInteractionComponent::PrimaryInteract);
 	EnhancedInputComponent->BindAction(Input_Jump, ETriggerEvent::Triggered, this, &ACCharacter::Jump);
 }
