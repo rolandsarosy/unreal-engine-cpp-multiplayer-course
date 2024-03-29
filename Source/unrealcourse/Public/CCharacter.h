@@ -80,5 +80,5 @@ protected:
 
 	void PrimaryAttack_Start();
 
-	void PrimaryAttack_TimeElapsed() const;
+	void PrimaryAttack_TimeElapsed();
 };

@@ -11,5 +11,5 @@ ACItemChest::ACItemChest()
 
 void ACItemChest::Interact_Implementation(APawn* InstigatorPawn)
 {
-	LidMesh->SetRelativeRotation(FRotator(ItemChestOpenTargetPitch, 0, 0));
+	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Red, TEXT("ItemChest base class interaction interface triggered."));
 }

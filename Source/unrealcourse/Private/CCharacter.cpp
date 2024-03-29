@@ -77,7 +77,6 @@ void ACCharacter::VisualizeRotations() const
 	DrawDebugDirectionalArrow(GetWorld(), LineStart, ControllerDirection_LineEnd, DrawScale, FColor::Green, false, 0.0f, 0, Thickness);
 }
 
-
 void ACCharacter::PrimaryAttack_Start()
 {
 	PlayAnimMontage(PrimaryAttackAnimation);
@@ -86,12 +85,13 @@ void ACCharacter::PrimaryAttack_Start()
 	GetWorldTimerManager().SetTimer(TimerHandle_PrimaryAttack, this, &ACCharacter::PrimaryAttack_TimeElapsed, 0.2F);
 }
 
-void ACCharacter::PrimaryAttack_TimeElapsed() const
+void ACCharacter::PrimaryAttack_TimeElapsed()
 {
 	const FTransform SpawnTransform = FTransform(GetControlRotation(), GetMesh()->GetSocketLocation(PrimaryAttackSocketName));
 
 	FActorSpawnParameters SpawnParameters = FActorSpawnParameters();
 	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	SpawnParameters.Instigator = this;
 
 	GetWorld()->SpawnActor<AActor>(PrimaryAttackProjectile, SpawnTransform, SpawnParameters);
 }

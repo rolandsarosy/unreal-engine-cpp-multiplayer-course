@@ -10,7 +10,7 @@ class UNREALCOURSE_API ACItemChest : public AActor, public ICGameplayInterface
 {
 	GENERATED_BODY()
 
-	void Interact_Implementation(APawn* InstigatorPawn) override;
+	virtual void Interact_Implementation(APawn* InstigatorPawn) override;
 
 public:
 	ACItemChest();
@@ -19,12 +19,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category="ItemChest")
 	TObjectPtr<UStaticMeshComponent> BaseMesh;
 
-	UPROPERTY(VisibleAnywhere, Category="ItemChest")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="ItemChest")
 	TObjectPtr<UStaticMeshComponent> LidMesh;
-
-	UPROPERTY(EditAnywhere, Category="ItemChest")
-	float ItemChestOpenTargetPitch;
-	
-	UPROPERTY(EditAnywhere, Category="ItemChest")
-	float ItemChestClosedTargetPitch;
 };
