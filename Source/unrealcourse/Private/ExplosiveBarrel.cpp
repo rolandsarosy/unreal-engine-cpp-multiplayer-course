@@ -1,6 +1,7 @@
 #include "ExplosiveBarrel.h"
 
 #include "PhysicsEngine/RadialForceComponent.h"
+#include "DrawDebugHelpers.h"
 
 AExplosiveBarrel::AExplosiveBarrel()
 {
@@ -25,7 +26,8 @@ void AExplosiveBarrel::PostInitializeComponents()
 
 void AExplosiveBarrel::OnComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 1.0F, FColor::Red, TEXT("Barrel explosion triggered!"));
-
+	UE_LOG(LogTemp, Log, TEXT("OtherActor %s at game time: %f"), *GetNameSafe(OtherActor), GetWorld()->TimeSeconds);
+	DrawDebugString(GetWorld(), Hit.ImpactPoint, FString::Printf(TEXT("Hit at location: %s"), *Hit.ImpactPoint.ToString()), nullptr, FColor::Green, true, true);
+	
 	RadialForceComponent->FireImpulse();
 }
