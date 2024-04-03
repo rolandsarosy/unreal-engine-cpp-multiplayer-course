@@ -7,6 +7,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 ACCharacter::ACCharacter()
 {
@@ -85,10 +86,23 @@ void ACCharacter::PrimaryAttack_Start()
 	GetWorldTimerManager().SetTimer(TimerHandle_PrimaryAttack, this, &ACCharacter::PrimaryAttack_TimeElapsed, 0.2F);
 }
 
+// TODO: Ideally this would be separated into other components and functions but I'm sticking with the course's pace for now.
 void ACCharacter::PrimaryAttack_TimeElapsed()
 {
-	const FTransform SpawnTransform = FTransform(GetControlRotation(), GetMesh()->GetSocketLocation(PrimaryAttackSocketName));
+	// Trace projectile's desired location
+	FHitResult TraceHitResult;
+	FVector TraceStart = CameraComponent->GetComponentLocation();
+	FVector TraceEnd = CameraComponent->GetComponentLocation() + CameraComponent->GetForwardVector() * 10000;
+	FCollisionObjectQueryParams QueryParams = FCollisionObjectQueryParams();
+	QueryParams.AddObjectTypesToQuery(ECC_WorldDynamic); // Assignment specified these 2 object types but more should be added, such as ECC_PhysicsBody.
+	QueryParams.AddObjectTypesToQuery(ECC_WorldStatic); // Assignment specified these 2 object types but more should be added, such as ECC_PhysicsBody.
 
+	bool bIsTraceBlockingHit = GetWorld()->LineTraceSingleByObjectType(TraceHitResult, TraceStart, TraceEnd, QueryParams);
+	FVector SpawnRotatorTarget = bIsTraceBlockingHit ? TraceHitResult.ImpactPoint : TraceEnd; // Handle cases where the tracing did not result in a blocking hit.
+	FRotator SpawnRotator = UKismetMathLibrary::FindLookAtRotation(GetMesh()->GetSocketLocation(PrimaryAttackSocketName), SpawnRotatorTarget);
+
+	// Create and spawn projectile
+	const FTransform SpawnTransform = FTransform(SpawnRotator, GetMesh()->GetSocketLocation(PrimaryAttackSocketName));
 	FActorSpawnParameters SpawnParameters = FActorSpawnParameters();
 	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	SpawnParameters.Instigator = this;
