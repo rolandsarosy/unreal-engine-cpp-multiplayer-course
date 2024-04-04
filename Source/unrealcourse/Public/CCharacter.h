@@ -22,8 +22,6 @@ class UNREALCOURSE_API ACCharacter : public ACharacter
 public:
 	ACCharacter();
 
-	virtual void Tick(float DeltaTime) override;
-
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
 protected:
@@ -37,17 +35,17 @@ protected:
 	TObjectPtr<UInputAction> Input_Look;
 
 	UPROPERTY(EditDefaultsOnly, Category="Input")
-	TObjectPtr<UInputAction> Input_ToggleDebug;
-
-	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TObjectPtr<UInputAction> Input_PrimaryAttack;
 
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TObjectPtr<UInputAction> Input_PrimaryInteract;
 
 	UPROPERTY(EditDefaultsOnly, Category="Input")
+	TObjectPtr<UInputAction> Input_SpecialAttack;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TObjectPtr<UInputAction> Input_Jump;
-
+	
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UCameraComponent> CameraComponent;
 
@@ -61,24 +59,28 @@ protected:
 	TSubclassOf<AActor> PrimaryAttackProjectile;
 
 	UPROPERTY(EditAnywhere, Category="Abilities")
+	TSubclassOf<AActor> SpecialAttackProjectile;
+
+	UPROPERTY(EditAnywhere, Category="Abilities")
 	TObjectPtr<UAnimMontage> PrimaryAttackAnimation;
 
 	UPROPERTY(EditDefaultsOnly, Category="Abilities")
-	FName PrimaryAttackSocketName;
+	FName AttackSocketName;
 	
-	FTimerHandle TimerHandle_PrimaryAttack;
-
-	bool IsDebugEnabled;
+	FTimerHandle TimerHandle_Attack;
 
 	void Move(const FInputActionInstance& InputActionInstance);
 
 	void Look(const FInputActionValue& InputActionValue);
 
-	void ToggleDebugMode();
-
-	void VisualizeRotations() const;
-
 	void PrimaryAttack_Start();
 
 	void PrimaryAttack_TimeElapsed();
+
+	void SpecialAttack_Start();
+
+	void SpecialAttack_TimeElapsed();
+
+private:
+	FRotator TraceForProjectileSpawnRotator() const;
 };
