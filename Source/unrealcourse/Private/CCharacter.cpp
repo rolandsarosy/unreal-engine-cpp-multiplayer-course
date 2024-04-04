@@ -7,12 +7,10 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 ACCharacter::ACCharacter()
 {
-	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>("SpringArmComponent");
 	SpringArmComponent->SetupAttachment(RootComponent);
 	SpringArmComponent->bUsePawnControlRotation = true;
@@ -24,12 +22,6 @@ ACCharacter::ACCharacter()
 
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
-}
-
-void ACCharacter::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-	IsDebugEnabled ? VisualizeRotations() : void();
 }
 
 void ACCharacter::Move(const FInputActionInstance& InputActionInstance)
@@ -52,48 +44,81 @@ void ACCharacter::Look(const FInputActionValue& InputActionValue)
 	AddControllerPitchInput(Value.Y);
 }
 
-void ACCharacter::ToggleDebugMode()
-{
-	IsDebugEnabled = !IsDebugEnabled;
-}
-
-/**
- * Visualizes the rotations of the character and controller using debug arrows.
- * Draws a yellow arrow representing the actor's forward vector starting from the actor's right-offset position.
- * Draws a green arrow representing the controller's forward vector starting from the actor's right-offset position.
- *
- * @note This method is called in the Tick function of the ACCharacter class.
- */
-void ACCharacter::VisualizeRotations() const
-{
-	constexpr float DrawScale = 50.0f;
-	constexpr float Thickness = 2.0f;
-	const FVector LineStart = GetActorLocation() += GetActorRightVector() * 100.0f; // Right-offset vector start from the actor
-
-	const FVector ActorDirectionLineEnd = LineStart + (GetActorForwardVector() * 100.0f); // Vector's end from the actor
-	DrawDebugDirectionalArrow(GetWorld(), LineStart, ActorDirectionLineEnd, DrawScale, FColor::Yellow, false, 0.0f, 0, Thickness);
-
-	const FVector ControllerDirection_LineEnd = LineStart + (GetControlRotation().Vector() * 100.0f); // Vector's end from the controller
-	DrawDebugDirectionalArrow(GetWorld(), LineStart, ControllerDirection_LineEnd, DrawScale, FColor::Green, false, 0.0f, 0, Thickness);
-}
-
 void ACCharacter::PrimaryAttack_Start()
 {
-	PlayAnimMontage(PrimaryAttackAnimation);
+	PlayAnimMontage(AttackAnimation);
 
 	// TODO: This is merely temporary, and animation notifies will be used here in the future.
-	GetWorldTimerManager().SetTimer(TimerHandle_PrimaryAttack, this, &ACCharacter::PrimaryAttack_TimeElapsed, 0.2F);
+	GetWorldTimerManager().SetTimer(TimerHandle_Attack, this, &ACCharacter::PrimaryAttack_TimeElapsed, 0.2F);
 }
 
 void ACCharacter::PrimaryAttack_TimeElapsed()
 {
-	const FTransform SpawnTransform = FTransform(GetControlRotation(), GetMesh()->GetSocketLocation(PrimaryAttackSocketName));
-
+	const FTransform SpawnTransform = FTransform(TraceForProjectileSpawnRotator(), GetMesh()->GetSocketLocation(AttackSocketName));
 	FActorSpawnParameters SpawnParameters = FActorSpawnParameters();
 	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	SpawnParameters.Instigator = this;
 
 	GetWorld()->SpawnActor<AActor>(PrimaryAttackProjectile, SpawnTransform, SpawnParameters);
+}
+
+void ACCharacter::SpecialAttack_Start()
+{
+	PlayAnimMontage(AttackAnimation);
+
+	// TODO: This is merely temporary, and animation notifies will be used here in the future.
+	GetWorldTimerManager().SetTimer(TimerHandle_Attack, this, &ACCharacter::SpecialAttack_TimeElapsed, 0.2F);
+}
+
+void ACCharacter::SpecialAttack_TimeElapsed()
+{
+	const FTransform SpawnTransform = FTransform(TraceForProjectileSpawnRotator(), GetMesh()->GetSocketLocation(AttackSocketName));
+	FActorSpawnParameters SpawnParameters = FActorSpawnParameters();
+	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	SpawnParameters.Instigator = this;
+
+	GetWorld()->SpawnActor<AActor>(SpecialAttackProjectile, SpawnTransform, SpawnParameters);
+}
+
+void ACCharacter::TeleportAttack_Start()
+{
+	PlayAnimMontage(AttackAnimation);
+
+	// TODO: This is merely temporary, and animation notifies will be used here in the future.
+	GetWorldTimerManager().SetTimer(TimerHandle_Attack, this, &ACCharacter::TeleportAttack_TimeElapsed, 0.2F);
+}
+
+void ACCharacter::TeleportAttack_TimeElapsed()
+{
+	const FTransform SpawnTransform = FTransform(TraceForProjectileSpawnRotator(), GetMesh()->GetSocketLocation(AttackSocketName));
+	FActorSpawnParameters SpawnParameters = FActorSpawnParameters();
+	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	SpawnParameters.Instigator = this;
+
+	GetWorld()->SpawnActor<AActor>(TeleportAttackProjectile, SpawnTransform, SpawnParameters);
+}
+
+/**
+ * @brief Traces for the rotation to be used when spawning a projectile.
+ *
+ * @details This method performs a line trace from the camera component to find the target location for spawning a projectile.
+ * It checks for collisions with specified object types and returns the rotation required to face the target location.
+ * If the line trace does not result in a blocking hit, the rotation will be calculated based on the end location of the trace.
+ *
+ * @return The rotation to be used when spawning a projectile.
+ */
+FRotator ACCharacter::TraceForProjectileSpawnRotator() const
+{
+	FHitResult TraceHitResult;
+	FVector TraceStart = CameraComponent->GetComponentLocation();
+	FVector TraceEnd = CameraComponent->GetComponentLocation() + CameraComponent->GetForwardVector() * 10000;
+	FCollisionObjectQueryParams QueryParams = FCollisionObjectQueryParams();
+	QueryParams.AddObjectTypesToQuery(ECC_WorldDynamic); // Assignment specified these 2 object types but more should be added, such as ECC_PhysicsBody.
+	QueryParams.AddObjectTypesToQuery(ECC_WorldStatic); // Assignment specified these 2 object types but more should be added, such as ECC_PhysicsBody.
+
+	bool bIsTraceBlockingHit = GetWorld()->LineTraceSingleByObjectType(TraceHitResult, TraceStart, TraceEnd, QueryParams);
+	FVector SpawnRotatorTarget = bIsTraceBlockingHit ? TraceHitResult.ImpactPoint : TraceEnd; // Handle cases where the tracing did not result in a blocking hit.
+	return UKismetMathLibrary::FindLookAtRotation(GetMesh()->GetSocketLocation(AttackSocketName), SpawnRotatorTarget);
 }
 
 // Called to bind functionality to input
@@ -111,8 +136,9 @@ void ACCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 	EnhancedInputComponent->BindAction(Input_Move, ETriggerEvent::Triggered, this, &ACCharacter::Move);
 	EnhancedInputComponent->BindAction(Input_Look, ETriggerEvent::Triggered, this, &ACCharacter::Look);
-	EnhancedInputComponent->BindAction(Input_ToggleDebug, ETriggerEvent::Triggered, this, &ACCharacter::ToggleDebugMode);
-	EnhancedInputComponent->BindAction(Input_PrimaryAttack, ETriggerEvent::Triggered, this, &ACCharacter::PrimaryAttack_Start);
 	EnhancedInputComponent->BindAction(Input_PrimaryInteract, ETriggerEvent::Triggered, InteractionComponent.Get(), &UCInteractionComponent::PrimaryInteract);
+	EnhancedInputComponent->BindAction(Input_PrimaryAttack, ETriggerEvent::Triggered, this, &ACCharacter::PrimaryAttack_Start);
+	EnhancedInputComponent->BindAction(Input_SpecialAttack, ETriggerEvent::Triggered, this, &ACCharacter::SpecialAttack_Start);
+	EnhancedInputComponent->BindAction(Input_TeleportAttack, ETriggerEvent::Triggered, this, &ACCharacter::TeleportAttack_Start);
 	EnhancedInputComponent->BindAction(Input_Jump, ETriggerEvent::Triggered, this, &ACCharacter::Jump);
 }

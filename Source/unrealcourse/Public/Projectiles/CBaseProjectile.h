@@ -2,20 +2,20 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "CMagicProjectile.generated.h"
+#include "CBaseProjectile.generated.h"
 
 class USphereComponent;
 class UProjectileMovementComponent;
 class UParticleSystemComponent;
 
 UCLASS()
-class UNREALCOURSE_API ACMagicProjectile : public AActor
+class UNREALCOURSE_API ACBaseProjectile : public AActor
 {
 	GENERATED_BODY()
 
 public:
-	ACMagicProjectile();
-	
+	ACBaseProjectile();
+
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<USphereComponent> SphereComponent;
@@ -25,4 +25,6 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UParticleSystemComponent> ParticleSystemComponent;
+
+	virtual void PostInitializeComponents() override;
 };
