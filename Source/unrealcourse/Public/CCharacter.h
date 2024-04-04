@@ -42,10 +42,13 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TObjectPtr<UInputAction> Input_SpecialAttack;
-	
+
+	UPROPERTY(EditDefaultsOnly, Category="Input")
+	TObjectPtr<UInputAction> Input_TeleportAttack;
+
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TObjectPtr<UInputAction> Input_Jump;
-	
+
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UCameraComponent> CameraComponent;
 
@@ -60,13 +63,16 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category="Abilities")
 	TSubclassOf<AActor> SpecialAttackProjectile;
-
+	
 	UPROPERTY(EditAnywhere, Category="Abilities")
-	TObjectPtr<UAnimMontage> PrimaryAttackAnimation;
+	TSubclassOf<AActor> TeleportAttackProjectile;
+	
+	UPROPERTY(EditAnywhere, Category="Abilities")
+	TObjectPtr<UAnimMontage> AttackAnimation;
 
 	UPROPERTY(EditDefaultsOnly, Category="Abilities")
 	FName AttackSocketName;
-	
+
 	FTimerHandle TimerHandle_Attack;
 
 	void Move(const FInputActionInstance& InputActionInstance);
@@ -80,6 +86,10 @@ protected:
 	void SpecialAttack_Start();
 
 	void SpecialAttack_TimeElapsed();
+
+	void TeleportAttack_Start();
+
+	void TeleportAttack_TimeElapsed();
 
 private:
 	FRotator TraceForProjectileSpawnRotator() const;

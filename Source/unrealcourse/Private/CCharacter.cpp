@@ -46,7 +46,7 @@ void ACCharacter::Look(const FInputActionValue& InputActionValue)
 
 void ACCharacter::PrimaryAttack_Start()
 {
-	PlayAnimMontage(PrimaryAttackAnimation);
+	PlayAnimMontage(AttackAnimation);
 
 	// TODO: This is merely temporary, and animation notifies will be used here in the future.
 	GetWorldTimerManager().SetTimer(TimerHandle_Attack, this, &ACCharacter::PrimaryAttack_TimeElapsed, 0.2F);
@@ -64,7 +64,7 @@ void ACCharacter::PrimaryAttack_TimeElapsed()
 
 void ACCharacter::SpecialAttack_Start()
 {
-	PlayAnimMontage(PrimaryAttackAnimation);
+	PlayAnimMontage(AttackAnimation);
 
 	// TODO: This is merely temporary, and animation notifies will be used here in the future.
 	GetWorldTimerManager().SetTimer(TimerHandle_Attack, this, &ACCharacter::SpecialAttack_TimeElapsed, 0.2F);
@@ -78,6 +78,24 @@ void ACCharacter::SpecialAttack_TimeElapsed()
 	SpawnParameters.Instigator = this;
 
 	GetWorld()->SpawnActor<AActor>(SpecialAttackProjectile, SpawnTransform, SpawnParameters);
+}
+
+void ACCharacter::TeleportAttack_Start()
+{
+	PlayAnimMontage(AttackAnimation);
+
+	// TODO: This is merely temporary, and animation notifies will be used here in the future.
+	GetWorldTimerManager().SetTimer(TimerHandle_Attack, this, &ACCharacter::TeleportAttack_TimeElapsed, 0.2F);
+}
+
+void ACCharacter::TeleportAttack_TimeElapsed()
+{
+	const FTransform SpawnTransform = FTransform(TraceForProjectileSpawnRotator(), GetMesh()->GetSocketLocation(AttackSocketName));
+	FActorSpawnParameters SpawnParameters = FActorSpawnParameters();
+	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	SpawnParameters.Instigator = this;
+
+	GetWorld()->SpawnActor<AActor>(TeleportAttackProjectile, SpawnTransform, SpawnParameters);
 }
 
 /**
@@ -118,8 +136,9 @@ void ACCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 	EnhancedInputComponent->BindAction(Input_Move, ETriggerEvent::Triggered, this, &ACCharacter::Move);
 	EnhancedInputComponent->BindAction(Input_Look, ETriggerEvent::Triggered, this, &ACCharacter::Look);
-	EnhancedInputComponent->BindAction(Input_PrimaryAttack, ETriggerEvent::Triggered, this, &ACCharacter::PrimaryAttack_Start);
 	EnhancedInputComponent->BindAction(Input_PrimaryInteract, ETriggerEvent::Triggered, InteractionComponent.Get(), &UCInteractionComponent::PrimaryInteract);
+	EnhancedInputComponent->BindAction(Input_PrimaryAttack, ETriggerEvent::Triggered, this, &ACCharacter::PrimaryAttack_Start);
 	EnhancedInputComponent->BindAction(Input_SpecialAttack, ETriggerEvent::Triggered, this, &ACCharacter::SpecialAttack_Start);
+	EnhancedInputComponent->BindAction(Input_TeleportAttack, ETriggerEvent::Triggered, this, &ACCharacter::TeleportAttack_Start);
 	EnhancedInputComponent->BindAction(Input_Jump, ETriggerEvent::Triggered, this, &ACCharacter::Jump);
 }

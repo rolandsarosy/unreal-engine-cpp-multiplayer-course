@@ -26,6 +26,5 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UParticleSystemComponent> ParticleSystemComponent;
 
-private:
 	virtual void PostInitializeComponents() override;
 };
