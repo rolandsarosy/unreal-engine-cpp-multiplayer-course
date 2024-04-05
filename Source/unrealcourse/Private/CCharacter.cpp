@@ -1,5 +1,6 @@
 #include "CCharacter.h"
 
+#include "CAttributeComponent.h"
 #include "CInteractionComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/InputComponent.h"
@@ -19,6 +20,7 @@ ACCharacter::ACCharacter()
 	CameraComponent->SetupAttachment(SpringArmComponent);
 
 	InteractionComponent = CreateDefaultSubobject<UCInteractionComponent>("InteractionComponent");
+	AttributeComponent = CreateDefaultSubobject<UCAttributeComponent>("AttributeComponent");
 
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;

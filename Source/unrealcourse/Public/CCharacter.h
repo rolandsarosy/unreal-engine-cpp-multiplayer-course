@@ -7,6 +7,7 @@
 
 struct FInputActionInstance;
 struct FInputActionValue;
+class UCAttributeComponent;
 class UCInteractionComponent;
 class UInputMappingContext;
 class UInputAction;
@@ -55,8 +56,11 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USpringArmComponent> SpringArmComponent;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, Category="Components")
 	TObjectPtr<UCInteractionComponent> InteractionComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
+	TObjectPtr<UCAttributeComponent> AttributeComponent;
 
 	UPROPERTY(EditAnywhere, Category="Abilities")
 	TSubclassOf<AActor> PrimaryAttackProjectile;
