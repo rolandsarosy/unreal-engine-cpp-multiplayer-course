@@ -113,10 +113,12 @@ FRotator ACCharacter::TraceForProjectileSpawnRotator() const
 {
 	FHitResult TraceHitResult;
 	FVector TraceStart = CameraComponent->GetComponentLocation();
-	FVector TraceEnd = CameraComponent->GetComponentLocation() + CameraComponent->GetForwardVector() * 10000;
+	FVector TraceEnd = CameraComponent->GetComponentLocation() + CameraComponent->GetForwardVector() * 5000;
 	FCollisionObjectQueryParams QueryParams = FCollisionObjectQueryParams();
-	QueryParams.AddObjectTypesToQuery(ECC_WorldDynamic); // Assignment specified these 2 object types but more should be added, such as ECC_PhysicsBody.
-	QueryParams.AddObjectTypesToQuery(ECC_WorldStatic); // Assignment specified these 2 object types but more should be added, such as ECC_PhysicsBody.
+	QueryParams.AddObjectTypesToQuery(ECC_WorldDynamic);
+	QueryParams.AddObjectTypesToQuery(ECC_WorldStatic);
+	QueryParams.AddObjectTypesToQuery(ECC_Pawn);
+	QueryParams.AddObjectTypesToQuery(ECC_PhysicsBody);
 
 	bool bIsTraceBlockingHit = GetWorld()->LineTraceSingleByObjectType(TraceHitResult, TraceStart, TraceEnd, QueryParams);
 	FVector SpawnRotatorTarget = bIsTraceBlockingHit ? TraceHitResult.ImpactPoint : TraceEnd; // Handle cases where the tracing did not result in a blocking hit.

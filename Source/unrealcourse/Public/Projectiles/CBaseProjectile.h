@@ -8,7 +8,7 @@ class USphereComponent;
 class UProjectileMovementComponent;
 class UParticleSystemComponent;
 
-UCLASS()
+UCLASS(Abstract)
 class UNREALCOURSE_API ACBaseProjectile : public AActor
 {
 	GENERATED_BODY()

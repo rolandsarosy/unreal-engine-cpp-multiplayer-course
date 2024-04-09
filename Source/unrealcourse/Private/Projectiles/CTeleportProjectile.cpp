@@ -31,6 +31,7 @@ void ACTeleportProjectile::OnStartTeleportEffect()
 {
 	TeleportExplosionEffectComponent->ActivateSystem();
 	ProjectileMovementComponent->StopMovementImmediately();
+	SetActorEnableCollision(false);
 	GetWorldTimerManager().SetTimer(TimerHandle_TeleportAction, this, &ACTeleportProjectile::OnTeleport, 0.2F);
 }
 

@@ -67,10 +67,10 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category="Abilities")
 	TSubclassOf<AActor> SpecialAttackProjectile;
-	
+
 	UPROPERTY(EditAnywhere, Category="Abilities")
 	TSubclassOf<AActor> TeleportAttackProjectile;
-	
+
 	UPROPERTY(EditAnywhere, Category="Abilities")
 	TObjectPtr<UAnimMontage> AttackAnimation;
 
