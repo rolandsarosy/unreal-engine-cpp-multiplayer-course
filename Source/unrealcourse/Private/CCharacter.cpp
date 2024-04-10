@@ -115,12 +115,14 @@ FRotator ACCharacter::TraceForProjectileSpawnRotator() const
 	FVector TraceStart = CameraComponent->GetComponentLocation();
 	FVector TraceEnd = CameraComponent->GetComponentLocation() + CameraComponent->GetForwardVector() * 5000;
 	FCollisionObjectQueryParams QueryParams = FCollisionObjectQueryParams();
+	FCollisionQueryParams TraceParams(FName("Actor Self-Ignore trace parameter"), true, this);
+	
 	QueryParams.AddObjectTypesToQuery(ECC_WorldDynamic);
 	QueryParams.AddObjectTypesToQuery(ECC_WorldStatic);
 	QueryParams.AddObjectTypesToQuery(ECC_Pawn);
 	QueryParams.AddObjectTypesToQuery(ECC_PhysicsBody);
 
-	bool bIsTraceBlockingHit = GetWorld()->LineTraceSingleByObjectType(TraceHitResult, TraceStart, TraceEnd, QueryParams);
+	bool bIsTraceBlockingHit = GetWorld()->LineTraceSingleByObjectType(TraceHitResult, TraceStart, TraceEnd, QueryParams, TraceParams);
 	FVector SpawnRotatorTarget = bIsTraceBlockingHit ? TraceHitResult.ImpactPoint : TraceEnd; // Handle cases where the tracing did not result in a blocking hit.
 	return UKismetMathLibrary::FindLookAtRotation(GetMesh()->GetSocketLocation(AttackSocketName), SpawnRotatorTarget);
 }
