@@ -18,8 +18,22 @@ ACBaseProjectile::ACBaseProjectile()
 	ProjectileMovementComponent->bInitialVelocityInLocalSpace = true;
 }
 
+
+void ACBaseProjectile::BeginPlay()
+{
+	Super::BeginPlay();
+
+	FTimerHandle TimerHandle = FTimerHandle();
+	GetWorldTimerManager().SetTimer(TimerHandle, this, &ACBaseProjectile::AutoDestroyProjectile, 10.0f, false);
+}
+
 void ACBaseProjectile::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 	SphereComponent->IgnoreActorWhenMoving(GetInstigator(), true);
+}
+
+void ACBaseProjectile::AutoDestroyProjectile()
+{
+	Destroy();
 }

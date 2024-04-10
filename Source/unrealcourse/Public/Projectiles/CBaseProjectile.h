@@ -26,5 +26,10 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UParticleSystemComponent> ParticleSystemComponent;
 
+	virtual void BeginPlay() override;
+	
 	virtual void PostInitializeComponents() override;
+
+private:
+	void AutoDestroyProjectile();
 };
