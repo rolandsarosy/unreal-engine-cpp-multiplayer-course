@@ -16,7 +16,7 @@ public:
 
 
 protected:
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UCAttributeComponent> AttributeComponent;
 
 	UPROPERTY(VisibleAnywhere)
