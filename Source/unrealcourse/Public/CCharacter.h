@@ -95,6 +95,11 @@ protected:
 
 	void TeleportAttack_TimeElapsed();
 
+	virtual void PostInitializeComponents() override;
+	
+	UFUNCTION()
+	void OnHealthChanged(AActor* Actor, UCAttributeComponent* UAttributeComponent, float NewHealth, float Delta);
+
 private:
 	FRotator TraceForProjectileSpawnRotator() const;
 };

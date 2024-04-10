@@ -26,6 +26,20 @@ ACCharacter::ACCharacter()
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 }
 
+void ACCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	AttributeComponent->OnHealthChanged.AddDynamic(this, &ACCharacter::OnHealthChanged);
+}
+
+void ACCharacter::OnHealthChanged(AActor* Actor, UCAttributeComponent* UAttributeComponent, float NewHealth, float Delta)
+{
+	if (NewHealth <= 0.0f && Delta < 0.0f)
+	{
+		DisableInput(Cast<APlayerController>(GetController()));
+	}
+}
+
 void ACCharacter::Move(const FInputActionInstance& InputActionInstance)
 {
 	FRotator ControlRotation = GetControlRotation();
