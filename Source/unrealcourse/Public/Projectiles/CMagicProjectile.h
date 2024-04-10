@@ -11,13 +11,16 @@ class UNREALCOURSE_API ACMagicProjectile : public ACBaseProjectile
 
 public:
 	ACMagicProjectile();
-
+	
 	virtual void PostInitializeComponents() override;
 
 protected:
 	UFUNCTION()
-	void OnActorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	void OnComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
+	UPROPERTY(EditDefaultsOnly, Category="Effects")
+	TObjectPtr<UParticleSystem> ImpactParticleSystem; 
+	
 	UPROPERTY(EditDefaultsOnly, Category="Damage")
 	float DamageAmount;
 };
