@@ -8,6 +8,8 @@ ACMagicProjectile::ACMagicProjectile()
 {
 	ProjectileMovementComponent->InitialSpeed = 2000;
 	ProjectileMovementComponent->ProjectileGravityScale = 0.0f;
+
+	DamageAmount = 20.0f;
 }
 
 void ACMagicProjectile::PostInitializeComponents()
@@ -25,7 +27,7 @@ void ACMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent,
 
 		if (AttributeComponent)
 		{
-			AttributeComponent -> ApplyHealthChange(-20.0f);
+			AttributeComponent -> ApplyHealthChange(-DamageAmount);
 			Destroy();
 		}
 	}
