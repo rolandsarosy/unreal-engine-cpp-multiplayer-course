@@ -30,7 +30,10 @@ public:
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Attributes")
-	float Health;
+	float HealthCurrent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Attributes")
+	float HealthMax;
 
 public:
 	UPROPERTY(BlueprintAssignable, Category="Attributes")
