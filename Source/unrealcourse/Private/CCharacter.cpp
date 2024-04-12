@@ -8,6 +8,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 
 ACCharacter::ACCharacter()
@@ -82,6 +83,7 @@ void ACCharacter::PrimaryAttack_TimeElapsed()
 	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	SpawnParameters.Instigator = this;
 
+	UGameplayStatics::SpawnEmitterAttached(MuzzleFlashParticleSystem, GetMesh(), GetMesh()->GetSocketBoneName(AttackSocketName));
 	GetWorld()->SpawnActor<AActor>(PrimaryAttackProjectile, SpawnTransform, SpawnParameters);
 }
 
@@ -100,6 +102,7 @@ void ACCharacter::SpecialAttack_TimeElapsed()
 	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	SpawnParameters.Instigator = this;
 
+	UGameplayStatics::SpawnEmitterAttached(MuzzleFlashParticleSystem, GetMesh(), GetMesh()->GetSocketBoneName(AttackSocketName));
 	GetWorld()->SpawnActor<AActor>(SpecialAttackProjectile, SpawnTransform, SpawnParameters);
 }
 
@@ -118,6 +121,7 @@ void ACCharacter::TeleportAttack_TimeElapsed()
 	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	SpawnParameters.Instigator = this;
 
+	UGameplayStatics::SpawnEmitterAttached(MuzzleFlashParticleSystem, GetMesh(), GetMesh()->GetSocketBoneName(AttackSocketName));
 	GetWorld()->SpawnActor<AActor>(TeleportAttackProjectile, SpawnTransform, SpawnParameters);
 }
 
