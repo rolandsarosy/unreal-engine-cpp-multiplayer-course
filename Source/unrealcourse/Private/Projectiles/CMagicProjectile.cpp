@@ -1,6 +1,6 @@
 #include "Projectiles/CMagicProjectile.h"
 
-#include "CAttributeComponent.h"
+#include "Components/CAttributeComponent.h"
 #include "Components/AudioComponent.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"

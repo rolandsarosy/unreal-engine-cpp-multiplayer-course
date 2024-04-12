@@ -1,5 +1,5 @@
 #include "CTargetDummy.h"
-#include "CAttributeComponent.h"
+#include "Components/CAttributeComponent.h"
 
 ACTargetDummy::ACTargetDummy()
 {

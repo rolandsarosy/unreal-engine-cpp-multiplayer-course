@@ -1,7 +1,7 @@
 #include "CCharacter.h"
 
-#include "CAttributeComponent.h"
-#include "CInteractionComponent.h"
+#include "Components/CAttributeComponent.h"
+#include "Components/CInteractionComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/SpringArmComponent.h"
