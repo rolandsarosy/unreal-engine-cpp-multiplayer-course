@@ -33,7 +33,7 @@ void ACMagicProjectile::OnComponentHit(UPrimitiveComponent* HitComponent, AActor
 {
 	if (OtherActor && OtherActor != GetInstigator())
 	{
-		// If the target has an AttributeComponent attached, damage it.
+		// If the target has an AttributeComponent attached, apply damage.
 		if (UCAttributeComponent* AttributeComponent = Cast<UCAttributeComponent>(OtherActor->GetComponentByClass(UCAttributeComponent::StaticClass())))
 		{
 			AttributeComponent->ApplyHealthChange(-DamageAmount);
@@ -41,6 +41,7 @@ void ACMagicProjectile::OnComponentHit(UPrimitiveComponent* HitComponent, AActor
 
 		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactParticleSystem, GetActorLocation(), GetActorRotation());
 		UGameplayStatics::PlaySoundAtLocation(GetWorld(), Cast<USoundBase>(ImpactSoundCue), GetActorLocation(), GetActorRotation());
+		UGameplayStatics::PlayWorldCameraShake(GetWorld(), ImpactCameraShake, GetActorLocation(), 15, 1200, 0.7f, true);
 		Destroy();
 	}
 }

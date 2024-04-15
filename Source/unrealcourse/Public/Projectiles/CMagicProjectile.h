@@ -31,7 +31,10 @@ protected:
 	TObjectPtr<USoundCue> ImpactSoundCue;
 	
 	UPROPERTY(EditDefaultsOnly, Category="Effects")
-	TObjectPtr<UParticleSystem> ImpactParticleSystem; 
+	TObjectPtr<UParticleSystem> ImpactParticleSystem;
+
+	UPROPERTY(EditDefaultsOnly, Category="Effects")
+	TSubclassOf<UCameraShakeBase> ImpactCameraShake;
 	
 	UPROPERTY(EditDefaultsOnly, Category="Damage")
 	float DamageAmount;
