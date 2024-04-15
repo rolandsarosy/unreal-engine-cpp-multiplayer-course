@@ -3,11 +3,6 @@
 #include "CGameplayInterface.h"
 #include "DrawDebugHelpers.h"
 
-UCInteractionComponent::UCInteractionComponent()
-{
-	// Do stuff...
-}
-
 void UCInteractionComponent::PrimaryInteract()
 {
 	TArray<FHitResult> HitResults;
@@ -26,8 +21,7 @@ void UCInteractionComponent::PrimaryInteract()
 	{
 		if (AActor* HitActor = SingleHit.GetActor(); HitActor && HitActor->Implements<UCGameplayInterface>())
 		{
-			APawn* Pawn = Cast<APawn>(GetOwner());
-			ICGameplayInterface::Execute_Interact(HitActor, Pawn);
+			ICGameplayInterface::Execute_Interact(HitActor, Cast<APawn>(GetOwner()));
 
 			DrawDebugSphere(GetWorld(), SingleHit.Location, 30.0F, 32, bBlockingHit ? FColor::Green : FColor::Red, false, 1.0F);
 			break;

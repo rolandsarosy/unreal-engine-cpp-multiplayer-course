@@ -16,11 +16,8 @@ void ACTargetDummy::PostInitializeComponents()
 	AttributeComponent->OnHealthChanged.AddDynamic(this, &ACTargetDummy::OnHealthChanged);
 }
 
-void ACTargetDummy::OnHealthChanged(AActor* Actor, UCAttributeComponent* UAttributeComponent, float NewHealth, float Delta)
+void ACTargetDummy::OnHealthChanged(AActor* Actor, UCAttributeComponent* UAttributeComponent, float NewHealth, const float Delta)
 {
-	if (Delta < 0.0f)
-	{
-		StaticMeshComponent->SetScalarParameterValueOnMaterials("TimeToHit", GetWorld()->TimeSeconds);
-	}
+	if (Delta < 0.0f) StaticMeshComponent->SetScalarParameterValueOnMaterials("TimeToHit", GetWorld()->TimeSeconds);
 }
 

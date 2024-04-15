@@ -10,7 +10,5 @@ class UNREALCOURSE_API UCInteractionComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:
-	UCInteractionComponent();
-
 	void PrimaryInteract();
 };
