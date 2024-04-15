@@ -75,6 +75,9 @@ protected:
 	TObjectPtr<UAnimMontage> AttackAnimation;
 
 	UPROPERTY(EditDefaultsOnly, Category="Abilities")
+	TObjectPtr<UParticleSystem> MuzzleFlashParticleSystem;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Abilities")
 	FName AttackSocketName;
 
 	FTimerHandle TimerHandle_Attack;

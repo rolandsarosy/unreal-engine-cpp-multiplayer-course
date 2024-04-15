@@ -1,13 +1,14 @@
 #include "CCharacter.h"
 
-#include "CAttributeComponent.h"
-#include "CInteractionComponent.h"
+#include "Components/CAttributeComponent.h"
+#include "Components/CInteractionComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 
 ACCharacter::ACCharacter()
@@ -34,6 +35,13 @@ void ACCharacter::PostInitializeComponents()
 
 void ACCharacter::OnHealthChanged(AActor* Actor, UCAttributeComponent* UAttributeComponent, float NewHealth, float Delta)
 {
+
+	if (Delta < 0.0f)
+	{
+		GetMesh()->SetScalarParameterValueOnMaterials("TimeToHit", GetWorld()->TimeSeconds);
+	}
+	
+	// Check for death condition
 	if (NewHealth <= 0.0f && Delta < 0.0f)
 	{
 		DisableInput(Cast<APlayerController>(GetController()));
@@ -75,6 +83,7 @@ void ACCharacter::PrimaryAttack_TimeElapsed()
 	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	SpawnParameters.Instigator = this;
 
+	UGameplayStatics::SpawnEmitterAttached(MuzzleFlashParticleSystem, GetMesh(), GetMesh()->GetSocketBoneName(AttackSocketName));
 	GetWorld()->SpawnActor<AActor>(PrimaryAttackProjectile, SpawnTransform, SpawnParameters);
 }
 
@@ -93,6 +102,7 @@ void ACCharacter::SpecialAttack_TimeElapsed()
 	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	SpawnParameters.Instigator = this;
 
+	UGameplayStatics::SpawnEmitterAttached(MuzzleFlashParticleSystem, GetMesh(), GetMesh()->GetSocketBoneName(AttackSocketName));
 	GetWorld()->SpawnActor<AActor>(SpecialAttackProjectile, SpawnTransform, SpawnParameters);
 }
 
@@ -111,6 +121,7 @@ void ACCharacter::TeleportAttack_TimeElapsed()
 	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	SpawnParameters.Instigator = this;
 
+	UGameplayStatics::SpawnEmitterAttached(MuzzleFlashParticleSystem, GetMesh(), GetMesh()->GetSocketBoneName(AttackSocketName));
 	GetWorld()->SpawnActor<AActor>(TeleportAttackProjectile, SpawnTransform, SpawnParameters);
 }
 

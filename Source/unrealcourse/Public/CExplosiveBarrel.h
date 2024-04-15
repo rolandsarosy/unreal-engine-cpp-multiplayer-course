@@ -2,7 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "ExplosiveBarrel.generated.h"
+#include "CExplosiveBarrel.generated.h"
 
 class URadialForceComponent;
 

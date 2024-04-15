@@ -1,4 +1,4 @@
-#include "ExplosiveBarrel.h"
+#include "CExplosiveBarrel.h"
 
 #include "PhysicsEngine/RadialForceComponent.h"
 #include "DrawDebugHelpers.h"

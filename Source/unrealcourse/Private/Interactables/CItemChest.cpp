@@ -1,4 +1,4 @@
-#include "CItemChest.h"
+#include "Interactables/CItemChest.h"
 
 ACItemChest::ACItemChest()
 {

@@ -14,7 +14,6 @@ class UNREALCOURSE_API ACTargetDummy : public AActor
 public:
 	ACTargetDummy();
 
-
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UCAttributeComponent> AttributeComponent;

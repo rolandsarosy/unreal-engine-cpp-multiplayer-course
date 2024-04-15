@@ -6,8 +6,11 @@
 
 ACBaseProjectile::ACBaseProjectile()
 {
+	AActor::SetLifeSpan(10);
+
 	SphereComponent = CreateDefaultSubobject<USphereComponent>("SphereComponent");
 	SphereComponent->SetCollisionProfileName("Projectile");
+	SphereComponent->IgnoreActorWhenMoving(GetInstigator(), true);
 	RootComponent = SphereComponent;
 
 	ParticleSystemComponent = CreateDefaultSubobject<UParticleSystemComponent>("ParticleSystemComponent");
@@ -21,5 +24,6 @@ ACBaseProjectile::ACBaseProjectile()
 void ACBaseProjectile::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
+
 	SphereComponent->IgnoreActorWhenMoving(GetInstigator(), true);
 }

@@ -1,13 +1,19 @@
 #include "Projectiles/CMagicProjectile.h"
 
-#include "CAttributeComponent.h"
+#include "Components/CAttributeComponent.h"
+#include "Components/AudioComponent.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
 
 ACMagicProjectile::ACMagicProjectile()
 {
 	ProjectileMovementComponent->InitialSpeed = 2000;
 	ProjectileMovementComponent->ProjectileGravityScale = 0.0f;
+
+	LoopingAudioComponent = CreateDefaultSubobject<UAudioComponent>("LoopingAudioComponent");
+	LoopingAudioComponent->SetupAttachment(RootComponent);
 
 	DamageAmount = 20.0f;
 }
@@ -15,20 +21,27 @@ ACMagicProjectile::ACMagicProjectile()
 void ACMagicProjectile::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
-	SphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ACMagicProjectile::OnActorOverlap);
+	SphereComponent->OnComponentHit.AddDynamic(this, &ACMagicProjectile::OnComponentHit);
 }
 
-void ACMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
-                                       const FHitResult& SweepResult)
+void ACMagicProjectile::BeginPlay()
+{
+	Super::BeginPlay();
+}
+
+void ACMagicProjectile::OnComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	if (OtherActor && OtherActor != GetInstigator())
 	{
-		UCAttributeComponent* AttributeComponent = Cast<UCAttributeComponent>(OtherActor->GetComponentByClass(UCAttributeComponent::StaticClass()));
-
-		if (AttributeComponent)
+		// If the target has an AttributeComponent attached, apply damage.
+		if (UCAttributeComponent* AttributeComponent = Cast<UCAttributeComponent>(OtherActor->GetComponentByClass(UCAttributeComponent::StaticClass())))
 		{
-			AttributeComponent -> ApplyHealthChange(-DamageAmount);
-			Destroy();
+			AttributeComponent->ApplyHealthChange(-DamageAmount);
 		}
+
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactParticleSystem, GetActorLocation(), GetActorRotation());
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), Cast<USoundBase>(ImpactSoundCue), GetActorLocation(), GetActorRotation());
+		UGameplayStatics::PlayWorldCameraShake(GetWorld(), ImpactCameraShake, GetActorLocation(), 15, 1200, 0.7f, true);
+		Destroy();
 	}
 }
