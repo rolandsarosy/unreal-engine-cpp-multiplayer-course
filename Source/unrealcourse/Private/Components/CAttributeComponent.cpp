@@ -6,7 +6,12 @@ UCAttributeComponent::UCAttributeComponent()
 	HealthCurrent = HealthMax;
 }
 
-// The original assignment was to clamp between 0-MaxHealth with FMath::Clamp. I believe this solution is better, so I've implemented this instead.
+/**
+ * Applies a change to the health value of the actor. Value is clamped between 0 (death) and MaxHealth.
+ *
+ * @param Delta The amount to change the health value by.
+ * @return True if the health change was successfully applied, false otherwise.
+ */
 bool UCAttributeComponent::ApplyHealthChange(const float Delta)
 {
 	if (!IsAlive()) return false;
