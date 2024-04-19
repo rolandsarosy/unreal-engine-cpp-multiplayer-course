@@ -15,7 +15,7 @@ AExplosiveBarrel::AExplosiveBarrel()
 	RadialForceComponent->SetupAttachment(StaticMeshComponent);
 	RadialForceComponent->AddRelativeLocation(FVector(0, 0, RadialForceComponent->GetComponentLocation().Z + 80));
 	RadialForceComponent->Radius = 400.0f;
-	RadialForceComponent->ImpulseStrength = 150000.0f;
+	RadialForceComponent->ImpulseStrength = 100000.0f;
 }
 
 void AExplosiveBarrel::PostInitializeComponents()
