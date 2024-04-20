@@ -5,7 +5,7 @@
 
 EBTNodeResult::Type UCBTTask_HealSelfToPercentage::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
-	APawn* AIPawn = GetAIPawn(OwnerComp);
+	const APawn* AIPawn = GetAIPawn(OwnerComp);
 	if (!ensureMsgf(AIPawn, TEXT("BehaviorTreeTask was unable to find its AI Pawn."))) return EBTNodeResult::Failed;
 
 	UCAttributeComponent* AttributeComponent = Cast<UCAttributeComponent>(AIPawn->GetComponentByClass(UCAttributeComponent::StaticClass()));
@@ -21,7 +21,7 @@ EBTNodeResult::Type UCBTTask_HealSelfToPercentage::ExecuteTask(UBehaviorTreeComp
 
 APawn* UCBTTask_HealSelfToPercentage::GetAIPawn(const UBehaviorTreeComponent& OwnerComp)
 {
-	AAIController* AIController = OwnerComp.GetAIOwner();
+	const AAIController* AIController = OwnerComp.GetAIOwner();
 	if (!ensure(AIController)) return nullptr;
 
 	APawn* AIPawn = AIController->GetPawn();

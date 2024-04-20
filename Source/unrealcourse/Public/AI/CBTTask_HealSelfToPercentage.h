@@ -12,7 +12,7 @@ class UNREALCOURSE_API UCBTTask_HealSelfToPercentage : public UBTTaskNode
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 
 protected:
-	UPROPERTY(EditAnywhere, Category="AI")
+	UPROPERTY(EditAnywhere, Category="AI", meta=(ClampMin="1", ClampMax="100", Tooltip = "The AI entity will be healed to this percentage of its total health upon calling this class."))
 	uint8 HealToPercentage;
 
 private:
