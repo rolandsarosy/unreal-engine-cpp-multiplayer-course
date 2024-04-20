@@ -11,21 +11,21 @@ class UNREALCOURSE_API UCBTService_CheckAttackRange : public UBTService
 
 public:
 	UCBTService_CheckAttackRange();
-	
+
 protected:
-	UPROPERTY(EditAnywhere, Category="Blackboard Keys")
+	UPROPERTY(EditAnywhere, Category="Blackboard Keys", meta=(Tooltip = "The Blackboard key for the target actor to check the attack range and line of sight against."))
 	FBlackboardKeySelector TargetActorKey;
 
-	UPROPERTY(EditAnywhere, Category="Blackboard Keys")
+	UPROPERTY(EditAnywhere, Category="Blackboard Keys", meta =(Tooltip = "The Blackboard key to put in the result boolean of this service."))
 	FBlackboardKeySelector IsWithinAttackRangeKey;
 
-	UPROPERTY(EditAnywhere, Category="AI")
+	UPROPERTY(EditAnywhere, Category="AI", meta=(Tooltip = "The possible attack range of this entity to check the distance against the target with."))
 	float AttackRange;
-	
+
 	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 
 private:
-	static bool GetAIPawn(const UBehaviorTreeComponent& OwnerBehaviorTreeComponent, APawn*& OutPawn);
+	static APawn* GetAIPawn(const UBehaviorTreeComponent& OwnerComp);
 
-	bool GetTargetActor(const UBlackboardComponent* BlackboardComponent, AActor*& OutActor) const;
+	AActor* GetTargetActor(const UBehaviorTreeComponent& OwnerComp) const;
 };
