@@ -40,3 +40,13 @@ bool UCAttributeComponent::IsAlive() const
 {
 	return HealthCurrent > 0.0f;
 }
+
+float UCAttributeComponent::GetHealthCurrent() const
+{
+	return HealthCurrent;
+}
+
+float UCAttributeComponent::GetHealthMax() const
+{
+	return HealthMax;
+}

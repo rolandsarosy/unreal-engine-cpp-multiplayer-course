@@ -2,12 +2,14 @@
 
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Components/CAttributeComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Perception/PawnSensingComponent.h"
 
 ACAICharacter::ACAICharacter()
 {
 	PawnSensingComponent = CreateDefaultSubobject<UPawnSensingComponent>("PawnSensingComponent");
+	AttributeComponent = CreateDefaultSubobject<UCAttributeComponent>("AttributeComponent");
 
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->bUseControllerDesiredRotation = true;
@@ -26,7 +28,5 @@ void ACAICharacter::OnPawnSeen(APawn* Pawn)
 	{
 		UBlackboardComponent* BlackboardComponent = AIController->GetBlackboardComponent();
 		BlackboardComponent->SetValueAsObject("TargetActor", Pawn);
-
-		DrawDebugString(GetWorld(), GetActorLocation(), "PLAYER SPOTTED", nullptr, FColor::White, 4.0f, true);
 	}
 }
