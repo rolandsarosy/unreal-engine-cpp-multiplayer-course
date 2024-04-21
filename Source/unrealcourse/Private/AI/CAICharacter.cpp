@@ -23,10 +23,9 @@ void ACAICharacter::PostInitializeComponents()
 
 void ACAICharacter::OnPawnSeen(APawn* Pawn)
 {
-	AAIController* AIController = Cast<AAIController>(GetController());
-	if (AIController)
+	if (AAIController* AIController = Cast<AAIController>(GetController()))
 	{
-		UBlackboardComponent* BlackboardComponent = AIController->GetBlackboardComponent();
-		BlackboardComponent->SetValueAsObject("TargetActor", Pawn);
+		// I'm unsure how to get the Blackboard's values here in the Editor, since there is no clear BlackBoard in the context of the Character. 
+		AIController->GetBlackboardComponent()->SetValueAsObject("TargetActor", Pawn);
 	}
 }
