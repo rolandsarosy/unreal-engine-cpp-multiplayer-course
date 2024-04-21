@@ -24,6 +24,10 @@ protected:
 
 	virtual void PostInitializeComponents() override;
 
+private:
 	UFUNCTION()
 	void OnPawnSeen(APawn* Pawn);
+
+	UFUNCTION()
+	void OnHealthChanged(AActor* Actor, UCAttributeComponent* UAttributeComponent, float NewHealth, float Delta);
 };

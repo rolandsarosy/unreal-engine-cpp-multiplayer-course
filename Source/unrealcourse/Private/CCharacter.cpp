@@ -33,19 +33,12 @@ void ACCharacter::PostInitializeComponents()
 	AttributeComponent->OnHealthChanged.AddDynamic(this, &ACCharacter::OnHealthChanged);
 }
 
-void ACCharacter::OnHealthChanged(AActor* Actor, UCAttributeComponent* UAttributeComponent, float NewHealth, float Delta)
+void ACCharacter::OnHealthChanged(AActor* Actor, UCAttributeComponent* UAttributeComponent, const float NewHealth, const float Delta)
 {
+	if (Delta < 0.0f) GetMesh()->SetScalarParameterValueOnMaterials("TimeToHit", GetWorld()->TimeSeconds);
 
-	if (Delta < 0.0f)
-	{
-		GetMesh()->SetScalarParameterValueOnMaterials("TimeToHit", GetWorld()->TimeSeconds);
-	}
-	
-	// Check for death condition
-	if (NewHealth <= 0.0f && Delta < 0.0f)
-	{
-		DisableInput(Cast<APlayerController>(GetController()));
-	}
+	// Check for death condition. TODO: Work this out properly in the future, this is a hack for the time being.
+	if (NewHealth <= 0.0f && Delta < 0.0f) DisableInput(Cast<APlayerController>(GetController()));
 }
 
 void ACCharacter::Move(const FInputActionInstance& InputActionInstance)
@@ -141,7 +134,7 @@ FRotator ACCharacter::TraceForProjectileSpawnRotator() const
 	FVector TraceEnd = CameraComponent->GetComponentLocation() + CameraComponent->GetForwardVector() * 5000;
 	FCollisionObjectQueryParams QueryParams = FCollisionObjectQueryParams();
 	FCollisionQueryParams TraceParams(FName("Actor Self-Ignore trace parameter"), true, this);
-	
+
 	QueryParams.AddObjectTypesToQuery(ECC_WorldDynamic);
 	QueryParams.AddObjectTypesToQuery(ECC_WorldStatic);
 	QueryParams.AddObjectTypesToQuery(ECC_Pawn);
