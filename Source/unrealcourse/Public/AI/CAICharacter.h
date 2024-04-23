@@ -4,6 +4,7 @@
 #include "GameFramework/Character.h"
 #include "CAICharacter.generated.h"
 
+class UCAttributeComponent;
 class UPawnSensingComponent;
 
 UCLASS()
@@ -18,8 +19,15 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category="Components")
 	TObjectPtr<UPawnSensingComponent> PawnSensingComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
+	TObjectPtr<UCAttributeComponent> AttributeComponent;
+
 	virtual void PostInitializeComponents() override;
 
+private:
 	UFUNCTION()
 	void OnPawnSeen(APawn* Pawn);
+
+	UFUNCTION()
+	void OnHealthChanged(AActor* Actor, UCAttributeComponent* UAttributeComponent, float NewHealth, float Delta);
 };

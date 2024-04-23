@@ -21,6 +21,7 @@ protected:
 	TObjectPtr<UParticleSystemComponent> TeleportExplosionEffectComponent;
 
 private:
+	// TODO: Fix this when it is confirmed that the class will not make significant changes to this anymore.
 	// This is a bad approach in my opinion, but this is what the assignment specified. I'd have rather used a delegate listening to the end of one of the particle system's emitters.
 	FTimerHandle TimerHandle_TeleportEffect;
 	FTimerHandle TimerHandle_TeleportAction;

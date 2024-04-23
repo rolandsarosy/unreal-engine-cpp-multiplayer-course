@@ -44,4 +44,8 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category="Attributes")
 	bool IsAlive() const;
+
+	float GetHealthCurrent() const;
+
+	float GetHealthMax() const;
 };

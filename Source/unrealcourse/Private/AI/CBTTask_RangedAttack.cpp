@@ -8,18 +8,18 @@
 EBTNodeResult::Type UCBTTask_RangedAttack::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	ACharacter* AICharacter = GetAICharacter(OwnerComp);
-	AActor* TargetActor = GetTargetActor(OwnerComp);
+	const AActor* TargetActor = GetTargetActor(OwnerComp);
 
 	if (!AICharacter || !TargetActor) return EBTNodeResult::Failed;
 
-	FVector MuzzleLocation = AICharacter->GetMesh()->GetSocketLocation(AttackSocketName);
-	FRotator MuzzleRotation = UKismetMathLibrary::FindLookAtRotation(MuzzleLocation, TargetActor->GetActorLocation());
+	const FVector MuzzleLocation = AICharacter->GetMesh()->GetSocketLocation(AttackSocketName);
+	const FRotator MuzzleRotation = UKismetMathLibrary::FindLookAtRotation(MuzzleLocation, TargetActor->GetActorLocation());
 
 	FActorSpawnParameters SpawnParameters;
 	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	SpawnParameters.Instigator = AICharacter;
 
-	AActor* SpawnedProjectile = GetWorld()->SpawnActor<AActor>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParameters);
+	const AActor* SpawnedProjectile = GetWorld()->SpawnActor<AActor>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParameters);
 
 	return SpawnedProjectile ? EBTNodeResult::Succeeded : EBTNodeResult::Failed;
 }
@@ -27,15 +27,16 @@ EBTNodeResult::Type UCBTTask_RangedAttack::ExecuteTask(UBehaviorTreeComponent& O
 AActor* UCBTTask_RangedAttack::GetTargetActor(const UBehaviorTreeComponent& OwnerComp) const
 {
 	const UBlackboardComponent* BlackboardComponent = OwnerComp.GetBlackboardComponent();
-	if (!BlackboardComponent) return nullptr;
+	if (!ensure(BlackboardComponent)) return nullptr;
 
-	return Cast<AActor>(BlackboardComponent->GetValueAsObject(TargetActorKey.SelectedKeyName));;
+	return Cast<AActor>(BlackboardComponent->GetValueAsObject(TargetActorKey.SelectedKeyName));
 }
 
+// Casting to ACharacter instead of APawn is necessary to be able to get the Mesh later on.
 ACharacter* UCBTTask_RangedAttack::GetAICharacter(const UBehaviorTreeComponent& OwnerComp)
 {
 	const AAIController* AIController = OwnerComp.GetAIOwner();
-	if (!AIController) return nullptr;
+	if (!ensure(AIController)) return nullptr;
 
 	return Cast<ACharacter>(AIController->GetPawn());
 }
