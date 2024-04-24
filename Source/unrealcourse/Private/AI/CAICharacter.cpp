@@ -11,6 +11,8 @@ ACAICharacter::ACAICharacter()
 	PawnSensingComponent = CreateDefaultSubobject<UPawnSensingComponent>("PawnSensingComponent");
 	AttributeComponent = CreateDefaultSubobject<UCAttributeComponent>("AttributeComponent");
 
+	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->bUseControllerDesiredRotation = true;
 }
@@ -22,6 +24,7 @@ void ACAICharacter::PostInitializeComponents()
 	AttributeComponent->OnHealthChanged.AddDynamic(this, &ACAICharacter::OnHealthChanged);
 }
 
+// ReSharper disable once CppMemberFunctionMayBeConst ~ Incorrect suggestion
 void ACAICharacter::OnPawnSeen(APawn* Pawn)
 {
 	if (AAIController* AIController = Cast<AAIController>(GetController()))
@@ -31,6 +34,7 @@ void ACAICharacter::OnPawnSeen(APawn* Pawn)
 	}
 }
 
+// ReSharper disable once CppMemberFunctionMayBeConst ~ Incorrect suggestion
 void ACAICharacter::OnHealthChanged(AActor* Actor, UCAttributeComponent* UAttributeComponent, float NewHealth, const float Delta)
 {
 	if (Delta < 0.0f) GetMesh()->SetScalarParameterValueOnMaterials("TimeToHit", GetWorld()->TimeSeconds);
