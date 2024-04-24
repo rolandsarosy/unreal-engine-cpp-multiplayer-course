@@ -12,7 +12,7 @@ bool ACHealthPotion::OnEffectTrigger(APawn* InstigatorPawn)
 {
 	if (UCAttributeComponent* AttributeComponent = Cast<UCAttributeComponent>(InstigatorPawn->GetComponentByClass(UCAttributeComponent::StaticClass())))
 	{
-		return AttributeComponent->ApplyHealthChange(HealthRestoreAmount);
+		return AttributeComponent->ApplyHealthChange(this, HealthRestoreAmount);
 	}
 
 	return false;

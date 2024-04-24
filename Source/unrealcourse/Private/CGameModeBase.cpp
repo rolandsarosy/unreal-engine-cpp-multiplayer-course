@@ -21,10 +21,13 @@ void ACGameModeBase::StartPlay()
 
 void ACGameModeBase::OnSpawnEnemyTimerElapsed()
 {
-	UEnvQueryInstanceBlueprintWrapper* QueryInstance = UEnvQueryManager::RunEQSQuery(GetWorld(), SpawnEnemyQuery, this, EEnvQueryRunMode::RandomBest5Pct, nullptr);
+	if (CanGameModeSpawnMoreEnemies(GetNumberOfEnemiesAlive()))
+	{
+		UEnvQueryInstanceBlueprintWrapper* QueryInstance = UEnvQueryManager::RunEQSQuery(GetWorld(), SpawnEnemyQuery, this, EEnvQueryRunMode::RandomBest5Pct, nullptr);
 
-	if (!ensure(QueryInstance)) return;
-	QueryInstance->GetOnQueryFinishedEvent().AddDynamic(this, &ACGameModeBase::OnQueryCompleted);
+		if (!ensure(QueryInstance)) return;
+		QueryInstance->GetOnQueryFinishedEvent().AddDynamic(this, &ACGameModeBase::OnQueryCompleted);
+	}
 }
 
 // ReSharper disable once CppMemberFunctionMayBeConst ~ Incorrect suggestion
@@ -34,22 +37,26 @@ void ACGameModeBase::OnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryIn
 	switch (QueryStatus)
 	{
 	case EEnvQueryStatus::Success:
-		if (CanGameModeSpawnMoreEnemies(GetNumberOfEnemiesAlive()) && QueryInstance->GetResultsAsLocations().IsValidIndex(0))
-		{
-			SpawnEnemyAtLocation(QueryInstance->GetResultsAsLocations()[0]);
-		}
+		if (QueryInstance->GetResultsAsLocations().IsValidIndex(0)) SpawnEnemyAtLocation(QueryInstance->GetResultsAsLocations()[0]);
 	case EEnvQueryStatus::Processing:
 		break;
 	default:
-		UE_LOG(LogTemp, Warning, TEXT("Enemy spawn EQS did not succeed."));
+		UE_LOG(LogTemp, Warning, TEXT("Enemy spawn EQ did not succeed."));
 	}
 }
 
 void ACGameModeBase::SpawnEnemyAtLocation(const FVector& SpawnLocation) const
 {
 	const AActor* SpawnedActor = GetWorld()->SpawnActor<AActor>(EnemyClass, SpawnLocation, FRotator::ZeroRotator);
-	UE_LOG(LogTemp, Log, TEXT("%s attempted to spawn enemy class of %s at %s. Return value was: %p"),
-	       *ACGameModeBase::StaticClass()->GetName(), *EnemyClass->StaticClass()->GetName(), *SpawnLocation.ToString(), SpawnedActor);
+	UE_LOG(LogTemp, Log, TEXT("%s attempted to spawn enemy class of %s at %s. Return value was: %p"), *this->GetName(), *EnemyClass->GetName(), *SpawnLocation.ToString(), SpawnedActor);
+
+#if WITH_EDITOR
+	if (SpawnedActor)
+	{
+		DrawDebugSphere(GetWorld(), SpawnLocation, 15.0f, 16, FColor::Yellow, false, 5.0f, 0, 1);
+		DrawDebugString(GetWorld(), SpawnLocation, TEXT("Enemy Spawned Here"), nullptr, FColor::Yellow, 5.0f, true);
+	}
+#endif
 }
 
 bool ACGameModeBase::CanGameModeSpawnMoreEnemies(const uint16 NumberOfEnemiesAlive) const
@@ -60,6 +67,7 @@ bool ACGameModeBase::CanGameModeSpawnMoreEnemies(const uint16 NumberOfEnemiesAli
 	return NumberOfEnemiesAlive < MaxNumberOfEnemiesAlive;
 }
 
+// TODO - This is a computationally expensive call. It was written during class, but I'd like to write a more efficient solution later on.
 // ReSharper disable once CppTooWideScopeInitStatement ~ Results in worse readability
 uint16 ACGameModeBase::GetNumberOfEnemiesAlive() const
 {

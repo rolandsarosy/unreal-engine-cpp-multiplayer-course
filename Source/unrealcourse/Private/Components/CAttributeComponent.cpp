@@ -9,10 +9,11 @@ UCAttributeComponent::UCAttributeComponent()
 /**
  * Applies a change to the health value of the actor. Value is clamped between 0 (death) and MaxHealth.
  *
+ * @param InstigatorActor Is the actor that causes the health change. Usually the attacker, but in cases of healing, it can be itself or the healing item/actor.
  * @param Delta The amount to change the health value by.
  * @return True if the health change was successfully applied, false otherwise.
  */
-bool UCAttributeComponent::ApplyHealthChange(const float Delta)
+bool UCAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, const float Delta)
 {
 	if (!IsAlive()) return false;
 	if (HealthCurrent == HealthMax && Delta >= 0) return false;

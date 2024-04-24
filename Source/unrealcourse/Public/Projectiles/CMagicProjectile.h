@@ -15,7 +15,7 @@ class UNREALCOURSE_API ACMagicProjectile : public ACBaseProjectile
 
 public:
 	ACMagicProjectile();
-	
+
 	virtual void PostInitializeComponents() override;
 
 	virtual void BeginPlay() override;
@@ -26,16 +26,16 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category="Audio")
 	TObjectPtr<UAudioComponent> LoopingAudioComponent;
-	
+
 	UPROPERTY(EditDefaultsOnly, Category="Audio")
 	TObjectPtr<USoundCue> ImpactSoundCue;
-	
+
 	UPROPERTY(EditDefaultsOnly, Category="Effects")
 	TObjectPtr<UParticleSystem> ImpactParticleSystem;
 
 	UPROPERTY(EditDefaultsOnly, Category="Effects")
 	TSubclassOf<UCameraShakeBase> ImpactCameraShake;
-	
+
 	UPROPERTY(EditDefaultsOnly, Category="Damage")
 	float DamageAmount;
 };

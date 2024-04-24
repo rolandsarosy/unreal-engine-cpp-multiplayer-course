@@ -5,7 +5,7 @@
 
 EBTNodeResult::Type UCBTTask_HealSelfToPercentage::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
-	const APawn* AIPawn = GetAIPawn(OwnerComp);
+	APawn* AIPawn = GetAIPawn(OwnerComp);
 	if (!ensureMsgf(AIPawn, TEXT("BehaviorTreeTask was unable to find its AI Pawn."))) return EBTNodeResult::Failed;
 
 	UCAttributeComponent* AttributeComponent = Cast<UCAttributeComponent>(AIPawn->GetComponentByClass(UCAttributeComponent::StaticClass()));
@@ -15,7 +15,7 @@ EBTNodeResult::Type UCBTTask_HealSelfToPercentage::ExecuteTask(UBehaviorTreeComp
 
 	if (CurrentHealthPercentage >= HealToPercentage) return EBTNodeResult::Failed; // According to the documentation, this could very well be ABORTED as well. I'm not sure which is the better yet.	
 
-	AttributeComponent->ApplyHealthChange(AttributeComponent->GetHealthMax() * (static_cast<float>(HealToPercentage - CurrentHealthPercentage) / 100));
+	AttributeComponent->ApplyHealthChange(AIPawn, AttributeComponent->GetHealthMax() * (static_cast<float>(HealToPercentage - CurrentHealthPercentage) / 100));
 	return EBTNodeResult::Succeeded;
 }
 

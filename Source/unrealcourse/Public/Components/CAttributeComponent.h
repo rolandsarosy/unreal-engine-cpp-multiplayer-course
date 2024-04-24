@@ -10,7 +10,7 @@
  * The FOnHealthChanged Multicast Delegate is designed to respond to health changes
  * in an entity. It broadcasts to all subscribed listeners when the health value changes.
  * 
- * @param InstigatorActor: The Actor that initiated the health change, typically the "attacker".
+ * @param InstigatorActor: The Actor that initiated the health change, typically the "attacker". In cases of healing, it can be itself or the healing item or Actor who heals.
  * @param OwnerComponent: The Attribute Component instance that owns the health attribute.
  * @param NewHealth: The new health value after the change occurred.
  * @param Delta: The change in health, calculated as NewHealth minus the old health value.
@@ -40,7 +40,7 @@ public:
 	FOnHealthChanged OnHealthChanged;
 	
 	UFUNCTION(BlueprintCallable, Category="Attributes")
-	bool ApplyHealthChange(float Delta);
+	bool ApplyHealthChange(AActor* InstigatorActor, float Delta);
 	
 	UFUNCTION(BlueprintCallable, Category="Attributes")
 	bool IsAlive() const;

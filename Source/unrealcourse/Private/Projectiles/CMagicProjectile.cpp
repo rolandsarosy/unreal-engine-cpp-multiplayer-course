@@ -29,6 +29,7 @@ void ACMagicProjectile::BeginPlay()
 	Super::BeginPlay();
 }
 
+// ReSharper disable once CppParameterMayBeConstPtrOrRef ~ Incorrect suggestion
 void ACMagicProjectile::OnComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	if (OtherActor && OtherActor != GetInstigator())
@@ -36,7 +37,7 @@ void ACMagicProjectile::OnComponentHit(UPrimitiveComponent* HitComponent, AActor
 		// If the target has an AttributeComponent attached, apply damage.
 		if (UCAttributeComponent* AttributeComponent = Cast<UCAttributeComponent>(OtherActor->GetComponentByClass(UCAttributeComponent::StaticClass())))
 		{
-			AttributeComponent->ApplyHealthChange(-DamageAmount);
+			AttributeComponent->ApplyHealthChange(GetInstigator(), -DamageAmount);
 		}
 
 		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactParticleSystem, GetActorLocation(), GetActorRotation());
