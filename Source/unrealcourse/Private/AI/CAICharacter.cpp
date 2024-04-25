@@ -3,6 +3,7 @@
 #include "AIController.h"
 #include "BrainComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "Components/CAttributeComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Perception/PawnSensingComponent.h"
@@ -28,7 +29,7 @@ void ACAICharacter::PostInitializeComponents()
 // ReSharper disable once CppMemberFunctionMayBeConst ~ Incorrect suggestion
 void ACAICharacter::OnPawnSeen(APawn* Pawn)
 {
-	// Consider not overriding the Target if it already has a target. Current behavior prevents the potentially fun behavior of them going to town on each other if they hit a friendly. 
+	// TODO: Consider not overriding the Target if it already has a target. Current behavior prevents the potentially fun behavior of them going to town on each other if they hit a friendly. 
 	SetTargetActor(Pawn);
 }
 
@@ -46,6 +47,7 @@ void ACAICharacter::OnHealthChanged(AActor* InstigatorActor, UCAttributeComponen
 		{
 			SetLifeSpan(5.0f);
 			if (const AAIController* AIController = Cast<AAIController>(GetController())) AIController->BrainComponent->StopLogic("Got killed");
+			GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 			GetMesh()->SetCollisionProfileName("Ragdoll");
 			GetMesh()->SetAllBodiesSimulatePhysics(true); // Enables ragdolling. 
 		}

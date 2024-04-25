@@ -2,18 +2,28 @@
 
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Components/CAttributeComponent.h"
 #include "GameFramework/Character.h"
 #include "Kismet/KismetMathLibrary.h"
+
+UCBTTask_RangedAttack::UCBTTask_RangedAttack()
+{
+	MaxProjectileSpread = 2.0;
+}
 
 EBTNodeResult::Type UCBTTask_RangedAttack::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	ACharacter* AICharacter = GetAICharacter(OwnerComp);
-	const AActor* TargetActor = GetTargetActor(OwnerComp);
+	AActor* TargetActor = GetTargetActor(OwnerComp);
 
 	if (!AICharacter || !TargetActor) return EBTNodeResult::Failed;
 
+	if (!UCAttributeComponent::GetComponentFrom(TargetActor)->IsAlive()) return EBTNodeResult::Failed;
+
 	const FVector MuzzleLocation = AICharacter->GetMesh()->GetSocketLocation(AttackSocketName);
-	const FRotator MuzzleRotation = UKismetMathLibrary::FindLookAtRotation(MuzzleLocation, TargetActor->GetActorLocation());
+	FRotator MuzzleRotation = UKismetMathLibrary::FindLookAtRotation(MuzzleLocation, TargetActor->GetActorLocation());
+	MuzzleRotation.Pitch += FMath::RandRange(0.0f, MaxProjectileSpread);
+	MuzzleRotation.Yaw += FMath::RandRange(-MaxProjectileSpread, MaxProjectileSpread);
 
 	FActorSpawnParameters SpawnParameters;
 	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
