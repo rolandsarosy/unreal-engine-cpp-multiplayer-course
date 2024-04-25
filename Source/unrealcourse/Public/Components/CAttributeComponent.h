@@ -28,14 +28,9 @@ class UNREALCOURSE_API UCAttributeComponent : public UActorComponent
 public:
 	UCAttributeComponent();
 
-protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Attributes")
-	float HealthCurrent;
+	UFUNCTION(BlueprintCallable, Category="Attributes")
+	static UCAttributeComponent* GetComponentFrom(AActor* FromActor);
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Attributes")
-	float HealthMax;
-
-public:
 	UPROPERTY(BlueprintAssignable, Category="Attributes")
 	FOnHealthChanged OnHealthChanged;
 	
@@ -48,4 +43,11 @@ public:
 	float GetHealthCurrent() const;
 
 	float GetHealthMax() const;
+	
+protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Attributes")
+	float HealthCurrent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Attributes")
+	float HealthMax;
 };

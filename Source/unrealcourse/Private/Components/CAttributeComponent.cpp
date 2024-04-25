@@ -42,6 +42,13 @@ bool UCAttributeComponent::IsAlive() const
 	return HealthCurrent > 0.0f;
 }
 
+UCAttributeComponent* UCAttributeComponent::GetComponentFrom(AActor* FromActor)
+{
+	if (FromActor) return FromActor->FindComponentByClass<UCAttributeComponent>();
+	
+	return nullptr;
+}
+
 float UCAttributeComponent::GetHealthCurrent() const
 {
 	return HealthCurrent;

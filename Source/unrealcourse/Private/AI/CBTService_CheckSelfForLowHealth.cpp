@@ -15,10 +15,10 @@ void UCBTService_CheckSelfForLowHealth::TickNode(UBehaviorTreeComponent& OwnerCo
 {
 	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
 
-	const APawn* AIPawn = GetAIPawn(OwnerComp);
+	APawn* AIPawn = GetAIPawn(OwnerComp);
 	if (!ensureMsgf(AIPawn, TEXT("BehaviorTreeService was unable to find its AI Pawn."))) return;
 
-	const UCAttributeComponent* AttributeComponent = Cast<UCAttributeComponent>(AIPawn->GetComponentByClass(UCAttributeComponent::StaticClass()));
+	const UCAttributeComponent* AttributeComponent = UCAttributeComponent::GetComponentFrom(AIPawn);
 	if (!ensureMsgf(AttributeComponent, TEXT("BehaviorTreeService for low health checking tried to run on a AI Pawn with no relevant component."))) return;
 
 	const uint8 CurrentHealthPercentage = (AttributeComponent->GetHealthCurrent() / AttributeComponent->GetHealthMax()) * 100;

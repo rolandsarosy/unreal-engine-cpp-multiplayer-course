@@ -74,9 +74,9 @@ uint16 ACGameModeBase::GetNumberOfEnemiesAlive() const
 	uint16 NumberOfEnemiesAlive = 0;
 	for (TActorIterator<ACAICharacter> Iterator(GetWorld()); Iterator; ++Iterator)
 	{
-		const ACAICharacter* Enemy = *Iterator;
+		ACAICharacter* Enemy = *Iterator;
 
-		const UCAttributeComponent* AttributeComponent = Cast<UCAttributeComponent>(Enemy->GetComponentByClass(UCAttributeComponent::StaticClass()));
+		const UCAttributeComponent* AttributeComponent = UCAttributeComponent::GetComponentFrom(Enemy);
 		if (AttributeComponent && AttributeComponent->IsAlive()) NumberOfEnemiesAlive++;
 	}
 

@@ -8,7 +8,7 @@ EBTNodeResult::Type UCBTTask_HealSelfToPercentage::ExecuteTask(UBehaviorTreeComp
 	APawn* AIPawn = GetAIPawn(OwnerComp);
 	if (!ensureMsgf(AIPawn, TEXT("BehaviorTreeTask was unable to find its AI Pawn."))) return EBTNodeResult::Failed;
 
-	UCAttributeComponent* AttributeComponent = Cast<UCAttributeComponent>(AIPawn->GetComponentByClass(UCAttributeComponent::StaticClass()));
+	UCAttributeComponent* AttributeComponent = UCAttributeComponent::GetComponentFrom(AIPawn);
 	if (!ensureMsgf(AttributeComponent, TEXT("BehaviorTreeTask for healing tried to run on a AI Pawn with no relevant component."))) return EBTNodeResult::Failed;
 
 	const uint8 CurrentHealthPercentage = (AttributeComponent->GetHealthCurrent() / AttributeComponent->GetHealthMax()) * 100;

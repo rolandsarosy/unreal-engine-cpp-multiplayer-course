@@ -35,7 +35,7 @@ void ACMagicProjectile::OnComponentHit(UPrimitiveComponent* HitComponent, AActor
 	if (OtherActor && OtherActor != GetInstigator())
 	{
 		// If the target has an AttributeComponent attached, apply damage.
-		if (UCAttributeComponent* AttributeComponent = Cast<UCAttributeComponent>(OtherActor->GetComponentByClass(UCAttributeComponent::StaticClass())))
+		if (UCAttributeComponent* AttributeComponent = UCAttributeComponent::GetComponentFrom(OtherActor))
 		{
 			AttributeComponent->ApplyHealthChange(GetInstigator(), -DamageAmount);
 		}
