@@ -1,5 +1,7 @@
 #include "Components/CAttributeComponent.h"
 
+#include "CGameModeBase.h"
+
 UCAttributeComponent::UCAttributeComponent()
 {
 	HealthMax = 100;
@@ -35,6 +37,13 @@ bool UCAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, const floa
 		OnHealthChanged.Broadcast(nullptr, this, HealthCurrent, Delta);
 	}
 
+	// TODO - Refactor this during assignment 5, to have proper (such as death) callbacks that are included with the AttributeComponent itself.
+	if (HealthCurrent == 0.0f)
+	{
+		ACGameModeBase* GameMode = GetWorld()->GetAuthGameMode<ACGameModeBase>();
+		GameMode->OnActorKilled(GetOwner(), InstigatorActor);
+	}
+
 	return true;
 }
 
@@ -48,13 +57,6 @@ bool UCAttributeComponent::Kill(AActor* InstigatorActor)
 	return ApplyHealthChange(InstigatorActor, -GetHealthMax());
 }
 
-UCAttributeComponent* UCAttributeComponent::GetComponentFrom(AActor* FromActor)
-{
-	if (FromActor) return FromActor->FindComponentByClass<UCAttributeComponent>();
-	
-	return nullptr;
-}
-
 float UCAttributeComponent::GetHealthCurrent() const
 {
 	return HealthCurrent;
@@ -63,4 +65,11 @@ float UCAttributeComponent::GetHealthCurrent() const
 float UCAttributeComponent::GetHealthMax() const
 {
 	return HealthMax;
+}
+
+UCAttributeComponent* UCAttributeComponent::GetComponentFrom(AActor* FromActor)
+{
+	if (FromActor) return FromActor->FindComponentByClass<UCAttributeComponent>();
+	
+	return nullptr;
 }

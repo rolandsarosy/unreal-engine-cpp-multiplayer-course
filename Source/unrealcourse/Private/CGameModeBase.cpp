@@ -1,5 +1,6 @@
 #include "CGameModeBase.h"
 
+#include "CCharacter.h"
 #include "EngineUtils.h"
 #include "AI/CAICharacter.h"
 #include "Components/CAttributeComponent.h"
@@ -94,4 +95,25 @@ void ACGameModeBase::KillAllEnemies()
 		UCAttributeComponent* AttributeComponent = UCAttributeComponent::GetComponentFrom(Enemy);
 		if (AttributeComponent && AttributeComponent->IsAlive()) AttributeComponent->Kill(this); // TODO: Consider passing the player instead for kill credit.
 	}
+}
+
+void ACGameModeBase::OnActorKilled(AActor* Victim, AActor* Killer)
+{
+	if (ACCharacter* PlayerCharacter = Cast<ACCharacter>(Victim))
+	{
+		FTimerHandle TimerHandle_RespawnDelay;
+
+		GetWorldTimerManager().SetTimer(TimerHandle_RespawnDelay, [this, PlayerCharacter] { RespawnPlayer(PlayerCharacter->GetController()); }, 2.0f, false);
+	}
+
+	// TODO: During Assignment 5, unify UE_LOG calls to use the GetNameSafe way of calling the names, instead of other solutions.
+	UE_LOG(LogTemp, Log, TEXT("OnActorKilled: Victim: %s, Killer: %s"), *GetNameSafe(Victim), *GetNameSafe(Killer));
+}
+
+void ACGameModeBase::RespawnPlayer(AController* PlayerController)
+{
+	if (!ensureMsgf(PlayerController, TEXT("Was unable to respawn player as the Controller was invalid."))) return;
+
+	PlayerController->UnPossess();
+	RestartPlayer(PlayerController);
 }

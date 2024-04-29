@@ -48,6 +48,7 @@ public:
 
 	float GetHealthMax() const;
 
+	// TODO: Unify whether there are accessor methods or fields with this class. Accessor methods are preferred as they don't allow for direct changes to the fields.
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Attributes")
 	float HealthCurrent;

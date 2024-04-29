@@ -18,6 +18,8 @@ public:
 
 	virtual void StartPlay() override;
 
+	virtual void OnActorKilled(AActor* Victim, AActor* Killer);
+
 	UFUNCTION(Exec) // This is a cheat that'll work only in non-shipped builds. Conditional compiling is unnecessary as the console is disabled in shipped builds.
 	void KillAllEnemies();
 	
@@ -33,6 +35,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category="AI")
 	TObjectPtr<UCurveFloat> DifficultyCurve;
+
+	UFUNCTION()
+	void RespawnPlayer(AController* PlayerController);
 
 private:
 	UFUNCTION()
