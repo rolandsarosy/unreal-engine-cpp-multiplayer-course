@@ -2,6 +2,9 @@
 
 #include "CGameModeBase.h"
 
+static TAutoConsoleVariable CVarDamageMultiplier(TEXT("course.DamageMultiplier"), 1.0f, TEXT("Global damage multiplier for the AttributeComponent."), ECVF_Cheat);
+static TAutoConsoleVariable CVarHealingMultiplier(TEXT("course.HealingMultiplier"), 1.0f, TEXT("Global healing multiplier for the AttributeComponent."), ECVF_Cheat);
+
 UCAttributeComponent::UCAttributeComponent()
 {
 	HealthMax = 100;
@@ -15,11 +18,14 @@ UCAttributeComponent::UCAttributeComponent()
  * @param Delta The amount to change the health value by.
  * @return True if the health change was successfully applied, false otherwise.
  */
-bool UCAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, const float Delta)
+bool UCAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delta)
 {
 	if (!IsAlive()) return false;
 	if (HealthCurrent == HealthMax && Delta >= 0) return false;
 	if (!GetOwner()->CanBeDamaged()) return false;
+
+	if (Delta > 0) Delta *= CVarHealingMultiplier.GetValueOnGameThread();
+	if (Delta < 0) Delta *= CVarDamageMultiplier.GetValueOnGameThread();
 
 	if (const float ProposedHealth = HealthCurrent + Delta; ProposedHealth < 0.0f) // Cases where the result would be overkill
 	{

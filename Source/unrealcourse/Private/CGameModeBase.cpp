@@ -6,6 +6,8 @@
 #include "Components/CAttributeComponent.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
 
+static TAutoConsoleVariable CVarSpawnEnemies(TEXT("course.SpawnEnemies"), true, TEXT("Enabled or disables spawning of enemies via timers."), ECVF_Cheat);
+
 ACGameModeBase::ACGameModeBase()
 {
 	SpawnTimerInterval = 2.0f;
@@ -22,6 +24,12 @@ void ACGameModeBase::StartPlay()
 
 void ACGameModeBase::OnSpawnEnemyTimerElapsed()
 {
+	if (!CVarSpawnEnemies.GetValueOnGameThread())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Enemy Spawn"))
+		return;
+	}
+
 	if (CanGameModeSpawnMoreEnemies(GetNumberOfEnemiesAlive()))
 	{
 		UEnvQueryInstanceBlueprintWrapper* QueryInstance = UEnvQueryManager::RunEQSQuery(GetWorld(), SpawnEnemyQuery, this, EEnvQueryRunMode::RandomBest5Pct, nullptr);
@@ -106,7 +114,7 @@ void ACGameModeBase::OnActorKilled(AActor* Victim, AActor* Killer)
 		GetWorldTimerManager().SetTimer(TimerHandle_RespawnDelay, [this, PlayerCharacter] { RespawnPlayer(PlayerCharacter->GetController()); }, 2.0f, false);
 	}
 
-	// TODO: During Assignment 5, unify UE_LOG calls to use the GetNameSafe way of calling the names, instead of other solutions.
+	// TODO: During Assignment 5, unify log calls to use the GetNameSafe way of calling the names, instead of other solutions.
 	UE_LOG(LogTemp, Log, TEXT("OnActorKilled: Victim: %s, Killer: %s"), *GetNameSafe(Victim), *GetNameSafe(Killer));
 }
 
