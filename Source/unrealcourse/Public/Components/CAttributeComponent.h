@@ -28,7 +28,7 @@ class UNREALCOURSE_API UCAttributeComponent : public UActorComponent
 public:
 	UCAttributeComponent();
 
-	UFUNCTION(BlueprintCallable, Category="Attributes")
+	UFUNCTION(BlueprintCallable, Category="Attributes", meta=(DisplayName = "Get AttributeComponent From Actor", Tooltip = "Returns the AttributeComponent from the Actor if it has any. Otherwise returns nullptr."))
 	static UCAttributeComponent* GetComponentFrom(AActor* FromActor);
 
 	UPROPERTY(BlueprintAssignable, Category="Attributes")

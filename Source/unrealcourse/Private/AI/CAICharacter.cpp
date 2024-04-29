@@ -2,7 +2,9 @@
 
 #include "AIController.h"
 #include "BrainComponent.h"
+#include "CWorldUserWidget.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Blueprint/UserWidget.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/CAttributeComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -37,12 +39,14 @@ void ACAICharacter::OnPawnSeen(APawn* Pawn)
 // ReSharper disable once CppParameterMayBeConstPtrOrRef ~ Incorrect suggestion
 void ACAICharacter::OnHealthChanged(AActor* InstigatorActor, UCAttributeComponent* UAttributeComponent, const float NewHealth, const float Delta)
 {
+	AddHealthBar();
+
 	if (Delta < 0.0f)
 	{
 		if (InstigatorActor != this) SetTargetActor(InstigatorActor); // Set Instigator as target if entity was damaged by it.
 
 		GetMesh()->SetScalarParameterValueOnMaterials("TimeToHit", GetWorld()->TimeSeconds);
-		
+
 		if (NewHealth == 0) // Fucking DIES.
 		{
 			SetLifeSpan(5.0f);
@@ -60,5 +64,18 @@ void ACAICharacter::SetTargetActor(AActor* NewTarget) const
 	{
 		// I'm unsure how to get the Blackboard's values here in the Editor, since there is no clear BlackBoard in the context of the Character. TODO: Work this out properly in the future.
 		AIController->GetBlackboardComponent()->SetValueAsObject("TargetActor", NewTarget);
+	}
+}
+
+void ACAICharacter::AddHealthBar()
+{
+	if (ActiveHealthBar == nullptr)
+	{
+		ActiveHealthBar = CreateWidget<UCWorldUserWidget>(GetWorld(), HealthBarWidgetClass);
+		if (ActiveHealthBar)
+		{
+			ActiveHealthBar->AttachedActor = this;
+			ActiveHealthBar->AddToViewport();
+		}
 	}
 }

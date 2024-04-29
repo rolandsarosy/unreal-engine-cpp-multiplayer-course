@@ -4,6 +4,7 @@
 #include "GameFramework/Character.h"
 #include "CAICharacter.generated.h"
 
+class UCWorldUserWidget;
 class UCAttributeComponent;
 class UPawnSensingComponent;
 
@@ -22,9 +23,14 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
 	TObjectPtr<UCAttributeComponent> AttributeComponent;
 
+	UPROPERTY(EditDefaultsOnly, Category="UI")
+	TSubclassOf<UUserWidget> HealthBarWidgetClass;
+
 	virtual void PostInitializeComponents() override;
 
 private:
+	TObjectPtr<UCWorldUserWidget> ActiveHealthBar;
+
 	UFUNCTION()
 	void OnPawnSeen(APawn* Pawn);
 
@@ -32,4 +38,6 @@ private:
 	void OnHealthChanged(AActor* InstigatorActor, UCAttributeComponent* UAttributeComponent, float NewHealth, float Delta);
 
 	void SetTargetActor(AActor* NewTarget) const;
+
+	void AddHealthBar();
 };
