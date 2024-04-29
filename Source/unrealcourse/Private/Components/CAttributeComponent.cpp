@@ -17,6 +17,7 @@ bool UCAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, const floa
 {
 	if (!IsAlive()) return false;
 	if (HealthCurrent == HealthMax && Delta >= 0) return false;
+	if (!GetOwner()->CanBeDamaged()) return false;
 
 	if (const float ProposedHealth = HealthCurrent + Delta; ProposedHealth < 0.0f) // Cases where the result would be overkill
 	{
@@ -40,6 +41,11 @@ bool UCAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, const floa
 bool UCAttributeComponent::IsAlive() const
 {
 	return HealthCurrent > 0.0f;
+}
+
+bool UCAttributeComponent::Kill(AActor* InstigatorActor)
+{
+	return ApplyHealthChange(InstigatorActor, -GetHealthMax());
 }
 
 UCAttributeComponent* UCAttributeComponent::GetComponentFrom(AActor* FromActor)

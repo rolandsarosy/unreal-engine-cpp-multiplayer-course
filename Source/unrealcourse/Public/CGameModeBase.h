@@ -18,6 +18,9 @@ public:
 
 	virtual void StartPlay() override;
 
+	UFUNCTION(Exec) // This is a cheat that'll work only in non-shipped builds. Conditional compiling is unnecessary as the console is disabled in shipped builds.
+	void KillAllEnemies();
+	
 protected:
 	UPROPERTY(EditDefaultsOnly, Category="AI")
 	float SpawnTimerInterval;

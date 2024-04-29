@@ -28,22 +28,26 @@ class UNREALCOURSE_API UCAttributeComponent : public UActorComponent
 public:
 	UCAttributeComponent();
 
-	UFUNCTION(BlueprintCallable, Category="Attributes", meta=(DisplayName = "Get AttributeComponent From Actor", Tooltip = "Returns the AttributeComponent from the Actor if it has any. Otherwise returns nullptr."))
+	UFUNCTION(BlueprintCallable, Category="Attributes",
+		meta=(DisplayName = "Get AttributeComponent From Actor", Tooltip = "Returns the AttributeComponent from the Actor if it has any. Otherwise returns nullptr."))
 	static UCAttributeComponent* GetComponentFrom(AActor* FromActor);
 
 	UPROPERTY(BlueprintAssignable, Category="Attributes")
 	FOnHealthChanged OnHealthChanged;
-	
+
 	UFUNCTION(BlueprintCallable, Category="Attributes")
 	bool ApplyHealthChange(AActor* InstigatorActor, float Delta);
-	
+
 	UFUNCTION(BlueprintCallable, Category="Attributes")
 	bool IsAlive() const;
+
+	UFUNCTION(BlueprintCallable, Category="Attributes")
+	bool Kill(AActor* InstigatorActor);
 
 	float GetHealthCurrent() const;
 
 	float GetHealthMax() const;
-	
+
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Attributes")
 	float HealthCurrent;

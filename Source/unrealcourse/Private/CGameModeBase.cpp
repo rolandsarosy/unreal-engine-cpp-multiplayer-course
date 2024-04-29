@@ -82,3 +82,16 @@ uint16 ACGameModeBase::GetNumberOfEnemiesAlive() const
 
 	return NumberOfEnemiesAlive;
 }
+
+// This is a cheat that'll work only in non-shipped builds. Conditional compiling is unnecessary as the console is disabled in shipped builds.
+// ReSharper disable once CppTooWideScopeInitStatement ~ Results in worse readability
+void ACGameModeBase::KillAllEnemies()
+{
+	for (TActorIterator<ACAICharacter> Iterator(GetWorld()); Iterator; ++Iterator)
+	{
+		ACAICharacter* Enemy = *Iterator;
+
+		UCAttributeComponent* AttributeComponent = UCAttributeComponent::GetComponentFrom(Enemy);
+		if (AttributeComponent && AttributeComponent->IsAlive()) AttributeComponent->Kill(this); // TODO: Consider passing the player instead for kill credit.
+	}
+}
