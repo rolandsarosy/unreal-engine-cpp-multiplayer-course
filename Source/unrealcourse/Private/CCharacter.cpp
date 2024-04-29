@@ -1,5 +1,6 @@
 #include "CCharacter.h"
 
+#include "CGameplayFunctionLibrary.h"
 #include "Components/CAttributeComponent.h"
 #include "Components/CInteractionComponent.h"
 #include "Camera/CameraComponent.h"
@@ -145,6 +146,11 @@ FRotator ACCharacter::TraceForProjectileSpawnRotator() const
 	return UKismetMathLibrary::FindLookAtRotation(GetMesh()->GetSocketLocation(AttackSocketName), SpawnRotatorTarget);
 }
 
+FVector ACCharacter::GetPawnViewLocation() const
+{
+	return CameraComponent->GetComponentLocation();
+}
+
 // Called to bind functionality to input
 void ACCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -170,5 +176,5 @@ void ACCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 // This is a cheat that'll work only in non-shipped builds. Conditional compiling is unnecessary as the console is disabled in shipped builds.
 void ACCharacter::HealSelf(const float Amount)
 {
-	AttributeComponent->ApplyHealthChange(this, Amount);
+	UCGameplayFunctionLibrary::ApplyHealing(this, this, Amount);
 }

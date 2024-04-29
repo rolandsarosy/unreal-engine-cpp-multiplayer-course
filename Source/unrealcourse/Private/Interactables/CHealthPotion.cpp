@@ -1,6 +1,6 @@
 #include "Interactables/CHealthPotion.h"
 
-#include "Components/CAttributeComponent.h"
+#include "CGameplayFunctionLibrary.h"
 
 ACHealthPotion::ACHealthPotion()
 {
@@ -10,10 +10,5 @@ ACHealthPotion::ACHealthPotion()
 
 bool ACHealthPotion::OnEffectTrigger(APawn* InstigatorPawn)
 {
-	if (UCAttributeComponent* AttributeComponent = UCAttributeComponent::GetComponentFrom(InstigatorPawn))
-	{
-		return AttributeComponent->ApplyHealthChange(this, HealthRestoreAmount);
-	}
-
-	return false;
+	return UCGameplayFunctionLibrary::ApplyHealing(this, InstigatorPawn, HealthRestoreAmount);
 }

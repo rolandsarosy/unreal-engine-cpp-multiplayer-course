@@ -1,6 +1,6 @@
 #include "Projectiles/CMagicProjectile.h"
 
-#include "Components/CAttributeComponent.h"
+#include "CGameplayFunctionLibrary.h"
 #include "Components/AudioComponent.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
@@ -34,11 +34,7 @@ void ACMagicProjectile::OnComponentHit(UPrimitiveComponent* HitComponent, AActor
 {
 	if (OtherActor && OtherActor != GetInstigator())
 	{
-		// If the target has an AttributeComponent attached, apply damage.
-		if (UCAttributeComponent* AttributeComponent = UCAttributeComponent::GetComponentFrom(OtherActor))
-		{
-			AttributeComponent->ApplyHealthChange(GetInstigator(), -DamageAmount);
-		}
+		UCGameplayFunctionLibrary::ApplyDirectionalImpulseDamage(GetInstigator(), OtherActor, DamageAmount, Hit);
 
 		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactParticleSystem, GetActorLocation(), GetActorRotation());
 		UGameplayStatics::PlaySoundAtLocation(GetWorld(), Cast<USoundBase>(ImpactSoundCue), GetActorLocation(), GetActorRotation());

@@ -108,4 +108,6 @@ protected:
 
 private:
 	FRotator TraceForProjectileSpawnRotator() const;
+
+	virtual FVector GetPawnViewLocation() const override;
 };

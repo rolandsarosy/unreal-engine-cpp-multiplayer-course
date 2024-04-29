@@ -22,7 +22,7 @@ bool UCAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delt
 {
 	if (!IsAlive()) return false;
 	if (HealthCurrent == HealthMax && Delta >= 0) return false;
-	if (!GetOwner()->CanBeDamaged()) return false;
+	if (!GetOwner()->CanBeDamaged() && Delta < 0) return false;
 
 	if (Delta > 0) Delta *= CVarHealingMultiplier.GetValueOnGameThread();
 	if (Delta < 0) Delta *= CVarDamageMultiplier.GetValueOnGameThread();
@@ -76,6 +76,6 @@ float UCAttributeComponent::GetHealthMax() const
 UCAttributeComponent* UCAttributeComponent::GetComponentFrom(AActor* FromActor)
 {
 	if (FromActor) return FromActor->FindComponentByClass<UCAttributeComponent>();
-	
+
 	return nullptr;
 }

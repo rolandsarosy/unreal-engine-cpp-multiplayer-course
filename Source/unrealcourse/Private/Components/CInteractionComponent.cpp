@@ -5,16 +5,15 @@
 
 static TAutoConsoleVariable CVarDebugDrawInteraction(TEXT("course.DebugDrawInteraction"), false, TEXT("Flags whether the interaction component should draw debug helpers in world."), ECVF_Cheat);
 
+// ReSharper disable once CppMemberFunctionMayBeConst ~ Incorrect suggestion
 void UCInteractionComponent::PrimaryInteract()
 {
-	bool DrawDebugLines = CVarDebugDrawInteraction.GetValueOnGameThread();
-
 	TArray<FHitResult> HitResults;
 
 	FVector EyeLocation;
 	FRotator EyeRotation;
 	GetOwner()->GetActorEyesViewPoint(EyeLocation, EyeRotation);
-	FVector End = EyeLocation + (EyeRotation.Vector() * 1000);
+	FVector End = EyeLocation + EyeRotation.Vector() * 1000;
 
 	FCollisionObjectQueryParams ObjectQueryParams;
 	ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldDynamic);
