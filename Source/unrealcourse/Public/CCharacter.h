@@ -79,12 +79,23 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category="Abilities")
 	TObjectPtr<UParticleSystem> MuzzleFlashParticleSystem;
-	
+
 	UPROPERTY(EditDefaultsOnly, Category="Abilities")
 	FName AttackSocketName;
 
+private:
 	FTimerHandle TimerHandle_Attack;
 
+	UFUNCTION()
+	void OnHealthChanged(AActor* Actor, UCAttributeComponent* UAttributeComponent, float NewHealth, float Delta);
+
+	UFUNCTION()
+	void OnDeath(AActor* KillerActor, UCAttributeComponent* OwnerComponent);
+
+	virtual FVector GetPawnViewLocation() const override;
+	
+	FRotator TraceForProjectileSpawnRotator() const;
+	
 	void Move(const FInputActionInstance& InputActionInstance);
 
 	void Look(const FInputActionValue& InputActionValue);
@@ -102,12 +113,4 @@ protected:
 	void TeleportAttack_TimeElapsed();
 
 	virtual void PostInitializeComponents() override;
-	
-	UFUNCTION()
-	void OnHealthChanged(AActor* Actor, UCAttributeComponent* UAttributeComponent, float NewHealth, float Delta);
-
-private:
-	FRotator TraceForProjectileSpawnRotator() const;
-
-	virtual FVector GetPawnViewLocation() const override;
 };

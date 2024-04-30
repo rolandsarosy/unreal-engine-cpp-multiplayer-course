@@ -32,14 +32,18 @@ void ACCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 	AttributeComponent->OnHealthChanged.AddDynamic(this, &ACCharacter::OnHealthChanged);
+	AttributeComponent->OnDeath.AddDynamic(this, &ACCharacter::OnDeath);
 }
 
+// ReSharper disable once CppMemberFunctionMayBeConst - Incorrect suggestion
 void ACCharacter::OnHealthChanged(AActor* Actor, UCAttributeComponent* UAttributeComponent, const float NewHealth, const float Delta)
 {
 	if (Delta < 0.0f) GetMesh()->SetScalarParameterValueOnMaterials("TimeToHit", GetWorld()->TimeSeconds);
+}
 
-	// Check for death condition. TODO: Work this out properly in the future, this is a hack for the time being.
-	if (NewHealth <= 0.0f && Delta < 0.0f) DisableInput(Cast<APlayerController>(GetController()));
+void ACCharacter::OnDeath(AActor* KillerActor, UCAttributeComponent* OwnerComponent)
+{
+	DisableInput(Cast<APlayerController>(GetController()));
 }
 
 void ACCharacter::Move(const FInputActionInstance& InputActionInstance)

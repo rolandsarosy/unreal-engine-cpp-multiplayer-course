@@ -26,6 +26,7 @@ void ACAICharacter::PostInitializeComponents()
 	Super::PostInitializeComponents();
 	PawnSensingComponent->OnSeePawn.AddDynamic(this, &ACAICharacter::OnPawnSeen);
 	AttributeComponent->OnHealthChanged.AddDynamic(this, &ACAICharacter::OnHealthChanged);
+	AttributeComponent->OnDeath.AddDynamic(this, &ACAICharacter::OnDeath);
 }
 
 // ReSharper disable once CppMemberFunctionMayBeConst ~ Incorrect suggestion
@@ -36,7 +37,6 @@ void ACAICharacter::OnPawnSeen(APawn* Pawn)
 }
 
 // ReSharper disable once CppMemberFunctionMayBeConst ~ Incorrect suggestion
-// ReSharper disable once CppParameterMayBeConstPtrOrRef ~ Incorrect suggestion
 void ACAICharacter::OnHealthChanged(AActor* InstigatorActor, UCAttributeComponent* UAttributeComponent, const float NewHealth, const float Delta)
 {
 	AddHealthBar();
@@ -44,19 +44,18 @@ void ACAICharacter::OnHealthChanged(AActor* InstigatorActor, UCAttributeComponen
 	if (Delta < 0.0f)
 	{
 		if (InstigatorActor != this) SetTargetActor(InstigatorActor); // Set Instigator as target if entity was damaged by it.
-
 		GetMesh()->SetScalarParameterValueOnMaterials("TimeToHit", GetWorld()->TimeSeconds);
-
-		if (NewHealth == 0) // Fucking DIES.
-		{
-			SetLifeSpan(5.0f);
-			if (const AAIController* AIController = Cast<AAIController>(GetController())) AIController->BrainComponent->StopLogic("Got killed");
-			GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-			GetCharacterMovement()->DisableMovement();
-			GetMesh()->SetCollisionProfileName("Ragdoll");
-			GetMesh()->SetAllBodiesSimulatePhysics(true); // Enables ragdolling. 
-		}
 	}
+}
+
+void ACAICharacter::OnDeath(AActor* KillerActor, UCAttributeComponent* OwnerComponent)
+{
+	SetLifeSpan(3.5f);
+	if (const AAIController* AIController = Cast<AAIController>(GetController())) AIController->BrainComponent->StopLogic("Got killed");
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetCharacterMovement()->DisableMovement();
+	GetMesh()->SetCollisionProfileName("Ragdoll");
+	GetMesh()->SetAllBodiesSimulatePhysics(true); // Enables ragdolling. 
 }
 
 void ACAICharacter::SetTargetActor(AActor* NewTarget) const

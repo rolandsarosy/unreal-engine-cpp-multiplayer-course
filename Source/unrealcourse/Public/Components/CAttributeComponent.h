@@ -20,6 +20,19 @@
  */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FOnHealthChanged, AActor*, InstigatorActor, UCAttributeComponent*, OwnerComponent, float, NewHealth, float, Delta);
 
+/** 
+ * @brief Parameterized Multicast Delegate that responds to the event when health hits zero, death.
+ *
+ * The FOnDeath Multicast Delegate is designed to respond to when health reaches zero
+ * in an entity. It broadcasts to all subscribed listeners when this happens, after the FOnHealthChanged Multicast Delegate has broadcasted. They're not exclusive.
+ * 
+ * @param KillerActor: The Actor that initiated the health change, typically the "attacker". In cases of healing, it can be itself or the healing item or Actor who heals.
+ * @param OwnerComponent: The Attribute Component instance that owns the health attribute.
+ *
+ * Subscribed listeners can use these parameters to perform appropriate logic, such as disabling input, setting ragdolling or a new lifespan.
+ */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnDeath, AActor*, KillerActor, UCAttributeComponent*, OwnerComponent);
+
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class UNREALCOURSE_API UCAttributeComponent : public UActorComponent
 {
@@ -28,12 +41,14 @@ class UNREALCOURSE_API UCAttributeComponent : public UActorComponent
 public:
 	UCAttributeComponent();
 
-	UFUNCTION(BlueprintCallable, Category="Attributes",
-		meta=(DisplayName = "Get AttributeComponent From Actor", Tooltip = "Returns the AttributeComponent from the Actor if it has any. Otherwise returns nullptr."))
+	UFUNCTION(BlueprintCallable, Category="Attributes", meta=(DisplayName = "Get AttributeComponent From Actor", Tooltip = "Returns AttributeComponent if the Actor has any. Otherwise a nullptr."))
 	static UCAttributeComponent* GetComponentFrom(AActor* FromActor);
 
 	UPROPERTY(BlueprintAssignable, Category="Attributes")
 	FOnHealthChanged OnHealthChanged;
+
+	UPROPERTY(BlueprintAssignable, Category="Attributes")
+	FOnDeath OnDeath;
 
 	UFUNCTION(BlueprintCallable, Category="Attributes")
 	bool ApplyHealthChange(AActor* InstigatorActor, float Delta);
@@ -42,17 +57,18 @@ public:
 	bool IsAlive() const;
 
 	UFUNCTION(BlueprintCallable, Category="Attributes")
-	bool Kill(AActor* InstigatorActor);
+	bool KillOwner(AActor* InstigatorActor);
 
+	UFUNCTION(BlueprintCallable, Category="Attributes", meta= (DisplayName = "Get Current Health"))
 	float GetHealthCurrent() const;
 
+	UFUNCTION(BlueprintCallable, Category="Attributes", meta =(Displayname = "Get Max Health"))
 	float GetHealthMax() const;
 
-	// TODO: Unify whether there are accessor methods or fields with this class. Accessor methods are preferred as they don't allow for direct changes to the fields.
-protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Attributes")
+private:
+	UPROPERTY(EditDefaultsOnly, Category="Attributes")
 	float HealthCurrent;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Attributes")
+	UPROPERTY(EditDefaultsOnly, Category="Attributes")
 	float HealthMax;
 };

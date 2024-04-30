@@ -101,7 +101,7 @@ void ACGameModeBase::KillAllEnemies()
 		ACAICharacter* Enemy = *Iterator;
 
 		UCAttributeComponent* AttributeComponent = UCAttributeComponent::GetComponentFrom(Enemy);
-		if (AttributeComponent && AttributeComponent->IsAlive()) AttributeComponent->Kill(this); // TODO: Consider passing the player instead for kill credit.
+		if (AttributeComponent && AttributeComponent->IsAlive()) AttributeComponent->KillOwner(this); // TODO: Consider passing the player instead for kill credit.
 	}
 }
 

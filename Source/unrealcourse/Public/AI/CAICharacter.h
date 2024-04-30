@@ -25,7 +25,7 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category="UI")
 	TSubclassOf<UUserWidget> HealthBarWidgetClass;
-
+	
 	virtual void PostInitializeComponents() override;
 
 private:
@@ -37,6 +37,9 @@ private:
 	UFUNCTION()
 	void OnHealthChanged(AActor* InstigatorActor, UCAttributeComponent* UAttributeComponent, float NewHealth, float Delta);
 
+	UFUNCTION()
+	void OnDeath(AActor* KillerActor, UCAttributeComponent* OwnerComponent);
+	
 	void SetTargetActor(AActor* NewTarget) const;
 
 	void AddHealthBar();
