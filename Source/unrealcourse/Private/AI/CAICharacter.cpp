@@ -24,16 +24,9 @@ ACAICharacter::ACAICharacter()
 void ACAICharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
-	PawnSensingComponent->OnSeePawn.AddDynamic(this, &ACAICharacter::OnPawnSeen);
+	PawnSensingComponent->OnSeePawn.AddDynamic(this, &ACAICharacter::OnSeePawn);
 	AttributeComponent->OnHealthChanged.AddDynamic(this, &ACAICharacter::OnHealthChanged);
 	AttributeComponent->OnDeath.AddDynamic(this, &ACAICharacter::OnDeath);
-}
-
-// ReSharper disable once CppMemberFunctionMayBeConst ~ Incorrect suggestion
-void ACAICharacter::OnPawnSeen(APawn* Pawn)
-{
-	// TODO: Consider not overriding the Target if it already has a target. Current behavior prevents the potentially fun behavior of them going to town on each other if they hit a friendly. 
-	SetTargetActor(Pawn);
 }
 
 // ReSharper disable once CppMemberFunctionMayBeConst ~ Incorrect suggestion
@@ -43,7 +36,7 @@ void ACAICharacter::OnHealthChanged(AActor* InstigatorActor, UCAttributeComponen
 
 	if (Delta < 0.0f)
 	{
-		if (InstigatorActor != this) SetTargetActor(InstigatorActor); // Set Instigator as target if entity was damaged by it.
+		if (InstigatorActor != this) SetTargetActor(Cast<APawn>(InstigatorActor), true);
 		GetMesh()->SetScalarParameterValueOnMaterials("TimeToHit", GetWorld()->TimeSeconds);
 	}
 }
@@ -55,17 +48,29 @@ void ACAICharacter::OnDeath(AActor* KillerActor, UCAttributeComponent* OwnerComp
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetCharacterMovement()->DisableMovement();
 	GetMesh()->SetCollisionProfileName("Ragdoll");
-	GetMesh()->SetAllBodiesSimulatePhysics(true); // Enables ragdolling. 
+	GetMesh()->SetAllBodiesSimulatePhysics(true);
 }
 
-void ACAICharacter::SetTargetActor(AActor* NewTarget) const
+
+void ACAICharacter::SetTargetActor(AActor* NewTarget, const bool ShouldOverrideCurrentTarget) const
 {
-	if (AAIController* AIController = Cast<AAIController>(GetController()))
+	// I'm unsure how to get the Blackboard's values here in the Editor, since there is no clear BlackBoard in the context of the Character. TODO: Work this out properly in the future.
+	const FName BlackboardKeyName = TEXT("TargetActor");
+
+	AAIController* AIController = Cast<AAIController>(GetController());
+	if (!ensure(AIController)) return;
+
+	UBlackboardComponent* BlackboardComponent = AIController->GetBlackboardComponent();
+	if (!ensure(BlackboardComponent)) return;
+
+	if (ShouldOverrideCurrentTarget || !BlackboardComponent->GetValueAsObject(BlackboardKeyName))
 	{
-		// I'm unsure how to get the Blackboard's values here in the Editor, since there is no clear BlackBoard in the context of the Character. TODO: Work this out properly in the future.
-		AIController->GetBlackboardComponent()->SetValueAsObject("TargetActor", NewTarget);
+		BlackboardComponent->SetValueAsObject(BlackboardKeyName, NewTarget);
 	}
 }
+
+// ReSharper disable once CppMemberFunctionMayBeConst - Incorrect suggestion 
+void ACAICharacter::OnSeePawn(APawn* Pawn) { SetTargetActor(Pawn, false); }
 
 void ACAICharacter::AddHealthBar()
 {

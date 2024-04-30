@@ -25,22 +25,23 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category="UI")
 	TSubclassOf<UUserWidget> HealthBarWidgetClass;
-	
+
 	virtual void PostInitializeComponents() override;
 
 private:
 	TObjectPtr<UCWorldUserWidget> ActiveHealthBar;
 
 	UFUNCTION()
-	void OnPawnSeen(APawn* Pawn);
-
-	UFUNCTION()
 	void OnHealthChanged(AActor* InstigatorActor, UCAttributeComponent* UAttributeComponent, float NewHealth, float Delta);
 
 	UFUNCTION()
 	void OnDeath(AActor* KillerActor, UCAttributeComponent* OwnerComponent);
-	
-	void SetTargetActor(AActor* NewTarget) const;
 
+	UFUNCTION()
+	void SetTargetActor(AActor* NewTarget, bool ShouldOverrideCurrentTarget) const;
+
+	UFUNCTION()
+	void OnSeePawn(APawn* Pawn);
+		
 	void AddHealthBar();
 };
