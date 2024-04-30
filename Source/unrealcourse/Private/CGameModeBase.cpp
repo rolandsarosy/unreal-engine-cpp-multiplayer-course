@@ -57,7 +57,7 @@ void ACGameModeBase::OnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryIn
 void ACGameModeBase::SpawnEnemyAtLocation(const FVector& SpawnLocation) const
 {
 	const AActor* SpawnedActor = GetWorld()->SpawnActor<AActor>(EnemyClass, SpawnLocation, FRotator::ZeroRotator);
-	UE_LOG(LogTemp, Log, TEXT("%s attempted to spawn enemy class of %s at %s. Return value was: %p"), *this->GetName(), *EnemyClass->GetName(), *SpawnLocation.ToString(), SpawnedActor);
+	UE_LOG(LogTemp, Log, TEXT("%s attempted to spawn enemy class of %s at %s. Return value was: %p"), *GetNameSafe, *GetNameSafe(EnemyClass), *SpawnLocation.ToString(), *GetNameSafe(SpawnedActor));
 
 #if WITH_EDITOR
 	if (SpawnedActor)
