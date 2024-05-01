@@ -10,7 +10,8 @@ static TAutoConsoleVariable CVarSpawnEnemies(TEXT("course.SpawnEnemies"), true, 
 
 ACGameModeBase::ACGameModeBase()
 {
-	SpawnTimerInterval = 2.0f;
+	EnemySpawnTimerInterval = 2.0f;
+	PlayerRespawnDelay = 5.0f;
 }
 
 void ACGameModeBase::StartPlay()
@@ -19,7 +20,7 @@ void ACGameModeBase::StartPlay()
 
 	// Continuous timer to spawn in more enemies. Actual amount of enemies and whether it is allowed to spawn determined by spawn logic down in the chain.
 	FTimerHandle TimerHandle_SpawnEnemies;
-	GetWorldTimerManager().SetTimer(TimerHandle_SpawnEnemies, this, &ACGameModeBase::OnSpawnEnemyTimerElapsed, SpawnTimerInterval, true);
+	GetWorldTimerManager().SetTimer(TimerHandle_SpawnEnemies, this, &ACGameModeBase::OnSpawnEnemyTimerElapsed, EnemySpawnTimerInterval, true);
 }
 
 void ACGameModeBase::OnSpawnEnemyTimerElapsed()
@@ -32,7 +33,7 @@ void ACGameModeBase::OnSpawnEnemyTimerElapsed()
 
 	if (CanGameModeSpawnMoreEnemies(GetNumberOfEnemiesAlive()))
 	{
-		UEnvQueryInstanceBlueprintWrapper* QueryInstance = UEnvQueryManager::RunEQSQuery(GetWorld(), SpawnEnemyQuery, this, EEnvQueryRunMode::RandomBest5Pct, nullptr);
+		UEnvQueryInstanceBlueprintWrapper* QueryInstance = UEnvQueryManager::RunEQSQuery(GetWorld(), SpawnEnemyEQ, this, EEnvQueryRunMode::RandomBest5Pct, nullptr);
 
 		if (!ensure(QueryInstance)) return;
 		QueryInstance->GetOnQueryFinishedEvent().AddDynamic(this, &ACGameModeBase::OnQueryCompleted);
@@ -56,10 +57,12 @@ void ACGameModeBase::OnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryIn
 
 void ACGameModeBase::SpawnEnemyAtLocation(const FVector& SpawnLocation) const
 {
-	const AActor* SpawnedActor = GetWorld()->SpawnActor<AActor>(EnemyClass, SpawnLocation, FRotator::ZeroRotator);
-	UE_LOG(LogTemp, Log, TEXT("%s attempted to spawn enemy class of %s at %s. Return value was: %p"), *GetNameSafe, *GetNameSafe(EnemyClass), *SpawnLocation.ToString(), *GetNameSafe(SpawnedActor));
+	const AActor* SpawnedActor = GetWorld()->SpawnActor<AActor>(SpawnEnemyClass, SpawnLocation, FRotator::ZeroRotator);
 
 #if WITH_EDITOR
+	UE_LOG(LogTemp, Log, TEXT("%s attempted to spawn enemy class of %s at %s. Return value was: %p"),
+	       *GetNameSafe(this), *GetNameSafe(SpawnEnemyClass), *SpawnLocation.ToString(), *GetNameSafe(SpawnedActor));
+
 	if (SpawnedActor)
 	{
 		DrawDebugSphere(GetWorld(), SpawnLocation, 15.0f, 16, FColor::Yellow, false, 5.0f, 0, 1);
@@ -70,9 +73,10 @@ void ACGameModeBase::SpawnEnemyAtLocation(const FVector& SpawnLocation) const
 
 bool ACGameModeBase::CanGameModeSpawnMoreEnemies(const uint16 NumberOfEnemiesAlive) const
 {
-	if (!ensureMsgf(DifficultyCurve, TEXT("Difficulty curve asset must be set for GameMode."))) return false; // Automatically reject enemy spawns if the difficulty curve hasn't been set yet.
+	// Automatically reject enemy spawns if the difficulty curve hasn't been set yet.
+	if (!ensureMsgf(MaxEnemyCountOverTimeCurve, TEXT("Difficulty curve asset must be set for GameMode."))) return false;
 
-	const uint16 MaxNumberOfEnemiesAlive = DifficultyCurve->GetFloatValue(GetWorld()->TimeSeconds);
+	const uint16 MaxNumberOfEnemiesAlive = MaxEnemyCountOverTimeCurve->GetFloatValue(GetWorld()->TimeSeconds);
 	return NumberOfEnemiesAlive < MaxNumberOfEnemiesAlive;
 }
 
@@ -92,29 +96,22 @@ uint16 ACGameModeBase::GetNumberOfEnemiesAlive() const
 	return NumberOfEnemiesAlive;
 }
 
-// This is a cheat that'll work only in non-shipped builds. Conditional compiling is unnecessary as the console is disabled in shipped builds.
-// ReSharper disable once CppTooWideScopeInitStatement ~ Results in worse readability
-void ACGameModeBase::KillAllEnemies()
-{
-	for (TActorIterator<ACAICharacter> Iterator(GetWorld()); Iterator; ++Iterator)
-	{
-		ACAICharacter* Enemy = *Iterator;
-
-		UCAttributeComponent* AttributeComponent = UCAttributeComponent::GetComponentFrom(Enemy);
-		if (AttributeComponent && AttributeComponent->IsAlive()) AttributeComponent->KillOwner(this); // TODO: Consider passing the player instead for kill credit.
-	}
-}
-
+/**
+ * @brief Called when an actor is killed.
+ *
+ * @note This method is usually directly called from the Victim's @UCAttributeComponent.
+ *
+ * @param Victim The actor that was killed.
+ * @param Killer The actor that killed the victim.
+ */
 void ACGameModeBase::OnActorKilled(AActor* Victim, AActor* Killer)
 {
 	if (ACCharacter* PlayerCharacter = Cast<ACCharacter>(Victim))
 	{
 		FTimerHandle TimerHandle_RespawnDelay;
-
-		GetWorldTimerManager().SetTimer(TimerHandle_RespawnDelay, [this, PlayerCharacter] { RespawnPlayer(PlayerCharacter->GetController()); }, 2.0f, false);
+		GetWorldTimerManager().SetTimer(TimerHandle_RespawnDelay, [this, PlayerCharacter] { RespawnPlayer(PlayerCharacter->GetController()); }, PlayerRespawnDelay, false);
 	}
 
-	// TODO: During Assignment 5, unify log calls to use the GetNameSafe way of calling the names, instead of other solutions.
 	UE_LOG(LogTemp, Log, TEXT("OnActorKilled: Victim: %s, Killer: %s"), *GetNameSafe(Victim), *GetNameSafe(Killer));
 }
 

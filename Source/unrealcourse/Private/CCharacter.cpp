@@ -8,6 +8,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -43,7 +44,10 @@ void ACCharacter::OnHealthChanged(AActor* Actor, UCAttributeComponent* UAttribut
 
 void ACCharacter::OnDeath(AActor* KillerActor, UCAttributeComponent* OwnerComponent)
 {
+	SetLifeSpan(25.0f);
 	DisableInput(Cast<APlayerController>(GetController()));
+	GetCharacterMovement()->DisableMovement();
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 void ACCharacter::Move(const FInputActionInstance& InputActionInstance)

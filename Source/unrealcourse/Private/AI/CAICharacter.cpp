@@ -51,7 +51,15 @@ void ACAICharacter::OnDeath(AActor* KillerActor, UCAttributeComponent* OwnerComp
 	GetMesh()->SetAllBodiesSimulatePhysics(true);
 }
 
-
+/**
+ * @brief Sets the target actor for the AI character.
+ *
+ * This method is used to set the target actor for the AI character, which is responsible for tracking and engaging the target.
+ *
+ * @param NewTarget     The new target actor to set.
+ * @param ShouldOverrideCurrentTarget    Flag indicating whether the current target should be overridden even if it is alive.
+ *
+ */
 void ACAICharacter::SetTargetActor(AActor* NewTarget, const bool ShouldOverrideCurrentTarget) const
 {
 	// I'm unsure how to get the Blackboard's values here in the Editor, since there is no clear BlackBoard in the context of the Character. TODO: Work this out properly in the future.
@@ -63,14 +71,20 @@ void ACAICharacter::SetTargetActor(AActor* NewTarget, const bool ShouldOverrideC
 	UBlackboardComponent* BlackboardComponent = AIController->GetBlackboardComponent();
 	if (!ensure(BlackboardComponent)) return;
 
-	if (ShouldOverrideCurrentTarget || !BlackboardComponent->GetValueAsObject(BlackboardKeyName))
+	AActor* CurrentTarget = Cast<AActor>(BlackboardComponent->GetValueAsObject(BlackboardKeyName));
+
+	bool IsCurrentTargetAlive = false;
+	if (CurrentTarget)
 	{
-		BlackboardComponent->SetValueAsObject(BlackboardKeyName, NewTarget);
+		if (const UCAttributeComponent* CurrentTargetAttributeComponent = UCAttributeComponent::GetComponentFrom(CurrentTarget)) IsCurrentTargetAlive = CurrentTargetAttributeComponent->IsAlive();
 	}
+
+	if (ShouldOverrideCurrentTarget || !CurrentTarget || !IsCurrentTargetAlive) BlackboardComponent->SetValueAsObject(BlackboardKeyName, NewTarget);
 }
 
 // ReSharper disable once CppMemberFunctionMayBeConst - Incorrect suggestion 
 void ACAICharacter::OnSeePawn(APawn* Pawn) { SetTargetActor(Pawn, false); }
+
 
 void ACAICharacter::AddHealthBar()
 {

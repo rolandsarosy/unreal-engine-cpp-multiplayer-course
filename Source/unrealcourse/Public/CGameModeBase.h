@@ -20,21 +20,21 @@ public:
 
 	virtual void OnActorKilled(AActor* Victim, AActor* Killer);
 
-	UFUNCTION(Exec) // This is a cheat that'll work only in non-shipped builds. Conditional compiling is unnecessary as the console is disabled in shipped builds.
-	void KillAllEnemies();
-	
 protected:
 	UPROPERTY(EditDefaultsOnly, Category="AI")
-	float SpawnTimerInterval;
+	float EnemySpawnTimerInterval;
 
 	UPROPERTY(EditDefaultsOnly, Category="AI")
-	TObjectPtr<UEnvQuery> SpawnEnemyQuery;
+	TObjectPtr<UEnvQuery> SpawnEnemyEQ;
 
 	UPROPERTY(EditDefaultsOnly, Category="AI")
-	TSubclassOf<AActor> EnemyClass;
+	TSubclassOf<AActor> SpawnEnemyClass;
 
 	UPROPERTY(EditDefaultsOnly, Category="AI")
-	TObjectPtr<UCurveFloat> DifficultyCurve;
+	TObjectPtr<UCurveFloat> MaxEnemyCountOverTimeCurve;
+
+	UPROPERTY(EditDefaultsOnly, Category="GameMode")
+	float PlayerRespawnDelay;
 
 	UFUNCTION()
 	void RespawnPlayer(AController* PlayerController);
