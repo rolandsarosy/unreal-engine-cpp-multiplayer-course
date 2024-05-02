@@ -1,15 +1,19 @@
 #include "CGameModeBase.h"
 
 #include "CCharacter.h"
+#include "CPlayerState.h"
 #include "EngineUtils.h"
 #include "AI/CAICharacter.h"
 #include "Components/CAttributeComponent.h"
+#include "Components/CPickupSpawnerComponent.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
 
 static TAutoConsoleVariable CVarSpawnEnemies(TEXT("course.SpawnEnemies"), true, TEXT("Enabled or disables spawning of enemies via timers."), ECVF_Cheat);
 
 ACGameModeBase::ACGameModeBase()
 {
+	PickupSpawnerComponent = CreateDefaultSubobject<UCPickupSpawnerComponent>("PickupSpawnerComponent");
+	
 	EnemySpawnTimerInterval = 2.0f;
 	PlayerRespawnDelay = 5.0f;
 }
@@ -17,10 +21,12 @@ ACGameModeBase::ACGameModeBase()
 void ACGameModeBase::StartPlay()
 {
 	Super::StartPlay();
+	PickupSpawnerComponent->SpawnItems();
 
 	// Continuous timer to spawn in more enemies. Actual amount of enemies and whether it is allowed to spawn determined by spawn logic down in the chain.
 	FTimerHandle TimerHandle_SpawnEnemies;
 	GetWorldTimerManager().SetTimer(TimerHandle_SpawnEnemies, this, &ACGameModeBase::OnSpawnEnemyTimerElapsed, EnemySpawnTimerInterval, true);
+
 }
 
 void ACGameModeBase::OnSpawnEnemyTimerElapsed()
@@ -106,13 +112,22 @@ uint16 ACGameModeBase::GetNumberOfEnemiesAlive() const
  */
 void ACGameModeBase::OnActorKilled(AActor* Victim, AActor* Killer)
 {
+	UE_LOG(LogTemp, Log, TEXT("OnActorKilled: Victim: %s, Killer: %s"), *GetNameSafe(Victim), *GetNameSafe(Killer));
+
+	// Check if the Victim is the Player and start respawn timer
 	if (ACCharacter* PlayerCharacter = Cast<ACCharacter>(Victim))
 	{
 		FTimerHandle TimerHandle_RespawnDelay;
 		GetWorldTimerManager().SetTimer(TimerHandle_RespawnDelay, [this, PlayerCharacter] { RespawnPlayer(PlayerCharacter->GetController()); }, PlayerRespawnDelay, false);
+		return;
 	}
 
-	UE_LOG(LogTemp, Log, TEXT("OnActorKilled: Victim: %s, Killer: %s"), *GetNameSafe(Victim), *GetNameSafe(Killer));
+	// Check if the Victim is an enemy and reward coins
+	if (Victim->IsA(SpawnEnemyClass) && Killer->IsA(ACCharacter::StaticClass()))
+	{
+		Cast<ACPlayerState>(Cast<APawn>(Killer)->GetPlayerState())->AddCoins(Victim, Cast<ACAICharacter>(Victim)->CoinRewardUponDeath);
+		return;
+	}
 }
 
 void ACGameModeBase::RespawnPlayer(AController* PlayerController)

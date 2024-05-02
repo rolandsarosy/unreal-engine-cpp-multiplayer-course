@@ -19,6 +19,8 @@ ACAICharacter::ACAICharacter()
 
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->bUseControllerDesiredRotation = true;
+
+	CoinRewardUponDeath = 13;
 }
 
 void ACAICharacter::PostInitializeComponents()

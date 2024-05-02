@@ -6,6 +6,8 @@
 #include "GameFramework/GameModeBase.h"
 #include "CGameModeBase.generated.h"
 
+class UCPickupSpawnerComponent;
+class ACAICharacter;
 class UEnvQuery;
 
 UCLASS()
@@ -24,11 +26,14 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="AI")
 	float EnemySpawnTimerInterval;
 
+	UPROPERTY(EditDefaultsOnly, Category="Components") 
+	TObjectPtr<UCPickupSpawnerComponent> PickupSpawnerComponent;
+
 	UPROPERTY(EditDefaultsOnly, Category="AI")
 	TObjectPtr<UEnvQuery> SpawnEnemyEQ;
 
 	UPROPERTY(EditDefaultsOnly, Category="AI")
-	TSubclassOf<AActor> SpawnEnemyClass;
+	TSubclassOf<ACAICharacter> SpawnEnemyClass;
 
 	UPROPERTY(EditDefaultsOnly, Category="AI")
 	TObjectPtr<UCurveFloat> MaxEnemyCountOverTimeCurve;

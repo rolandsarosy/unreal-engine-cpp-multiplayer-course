@@ -16,6 +16,9 @@ class UNREALCOURSE_API ACAICharacter : public ACharacter
 public:
 	ACAICharacter();
 
+	UPROPERTY(EditDefaultsOnly, Category="Coins")
+	int CoinRewardUponDeath;
+
 protected:
 	UPROPERTY(VisibleAnywhere, Category="Components")
 	TObjectPtr<UPawnSensingComponent> PawnSensingComponent;
