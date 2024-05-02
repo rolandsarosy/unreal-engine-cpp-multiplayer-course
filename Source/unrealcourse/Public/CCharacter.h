@@ -15,7 +15,7 @@ class UCameraComponent;
 class USpringArmComponent;
 class UAnimMontage;
 
-UCLASS()
+UCLASS(Abstract)
 class UNREALCOURSE_API ACCharacter : public ACharacter
 {
 	GENERATED_BODY()

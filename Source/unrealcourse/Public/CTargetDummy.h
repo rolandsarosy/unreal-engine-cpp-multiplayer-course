@@ -6,7 +6,7 @@
 
 class UCAttributeComponent;
 
-UCLASS()
+UCLASS(Abstract)
 class UNREALCOURSE_API ACTargetDummy : public AActor
 {
 	GENERATED_BODY()

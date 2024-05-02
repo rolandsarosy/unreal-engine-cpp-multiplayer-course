@@ -6,7 +6,7 @@
 
 class URadialForceComponent;
 
-UCLASS()
+UCLASS(Abstract)
 class UNREALCOURSE_API AExplosiveBarrel : public AActor
 {
 	GENERATED_BODY()

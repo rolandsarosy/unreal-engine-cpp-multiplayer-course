@@ -6,7 +6,7 @@
 
 class URadialForceComponent;
 
-UCLASS()
+UCLASS(Abstract)
 class UNREALCOURSE_API ACBlackHoleProjectile : public ACBaseProjectile
 {
 	GENERATED_BODY()

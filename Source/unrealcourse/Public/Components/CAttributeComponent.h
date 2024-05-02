@@ -33,7 +33,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FOnHealthChanged, AActor*, Instiga
  */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnDeath, AActor*, KillerActor, UCAttributeComponent*, OwnerComponent);
 
-UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
+UCLASS(ClassGroup=(Custom))
 class UNREALCOURSE_API UCAttributeComponent : public UActorComponent
 {
 	GENERATED_BODY()

@@ -5,7 +5,7 @@
 #include "GameFramework/Actor.h"
 #include "CItemChest.generated.h"
 
-UCLASS()
+UCLASS(Abstract)
 class UNREALCOURSE_API ACItemChest : public AActor, public ICGameplayInterface
 {
 	GENERATED_BODY()

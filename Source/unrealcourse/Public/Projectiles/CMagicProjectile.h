@@ -8,7 +8,7 @@ class USoundCue;
 class UAudioComponent;
 class UParticleSystem;
 
-UCLASS()
+UCLASS(Abstract)
 class UNREALCOURSE_API ACMagicProjectile : public ACBaseProjectile
 {
 	GENERATED_BODY()

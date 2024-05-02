@@ -4,7 +4,7 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "CGameplayFunctionLibrary.generated.h"
 
-UCLASS()
+UCLASS(Abstract)
 class UNREALCOURSE_API UCGameplayFunctionLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()

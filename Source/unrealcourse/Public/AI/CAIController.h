@@ -6,7 +6,7 @@
 
 class UBehaviorTree;
 
-UCLASS()
+UCLASS(Abstract)
 class UNREALCOURSE_API ACAIController : public AAIController
 {
 	GENERATED_BODY()
