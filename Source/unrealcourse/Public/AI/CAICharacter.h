@@ -8,7 +8,7 @@ class UCWorldUserWidget;
 class UCAttributeComponent;
 class UPawnSensingComponent;
 
-UCLASS()
+UCLASS(Abstract)
 class UNREALCOURSE_API ACAICharacter : public ACharacter
 {
 	GENERATED_BODY()

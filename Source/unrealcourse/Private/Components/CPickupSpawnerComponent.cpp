@@ -3,7 +3,13 @@
 #include "EnvironmentQuery/EnvQueryManager.h"
 #include "Interactables/CBasePickup.h"
 
-void UCPickupSpawnerComponent::SpawnItems()
+void UCPickupSpawnerComponent::BeginPlay()
+{
+	Super::BeginPlay();
+	QueryItemSpawnPoints();
+}
+
+void UCPickupSpawnerComponent::QueryItemSpawnPoints()
 {
 	UEnvQueryInstanceBlueprintWrapper* QueryInstance = UEnvQueryManager::RunEQSQuery(GetWorld(), SpawnPickupsEQ, this, EEnvQueryRunMode::AllMatching, nullptr);
 	if (!ensure(QueryInstance)) return;

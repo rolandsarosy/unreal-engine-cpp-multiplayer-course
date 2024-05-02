@@ -26,15 +26,15 @@ class UNREALCOURSE_API UCPickupSpawnerComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
-public:
-	void SpawnItems();
-
-private:
 	UPROPERTY(EditDefaultsOnly, Category="Spawner Info")
 	TObjectPtr<UEnvQuery> SpawnPickupsEQ;
 
 	UPROPERTY(EditAnywhere, Category="Spawner Info")
 	TArray<FCPickupItemSpawnInfo> PickupItemsToSpawn;
+
+	virtual void BeginPlay() override;
+
+	void QueryItemSpawnPoints();
 
 	UFUNCTION()
 	void OnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus);
