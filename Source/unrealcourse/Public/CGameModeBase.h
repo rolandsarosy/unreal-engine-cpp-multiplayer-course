@@ -1,12 +1,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "EnvironmentQuery/EnvQuery.h"
-#include "EnvironmentQuery/EnvQueryInstanceBlueprintWrapper.h"
 #include "GameFramework/GameModeBase.h"
 #include "CGameModeBase.generated.h"
 
-class UEnvQuery;
+class UCEnemySpawnerComponent;
+class UCPickupSpawnerComponent;
 
 UCLASS()
 class UNREALCOURSE_API ACGameModeBase : public AGameModeBase
@@ -16,38 +15,18 @@ class UNREALCOURSE_API ACGameModeBase : public AGameModeBase
 public:
 	ACGameModeBase();
 
-	virtual void StartPlay() override;
-
 	virtual void OnActorKilled(AActor* Victim, AActor* Killer);
 
-	UFUNCTION(Exec) // This is a cheat that'll work only in non-shipped builds. Conditional compiling is unnecessary as the console is disabled in shipped builds.
-	void KillAllEnemies();
-	
-protected:
-	UPROPERTY(EditDefaultsOnly, Category="AI")
-	float SpawnTimerInterval;
+private:
+	UPROPERTY(EditDefaultsOnly, Category="Components")
+	TObjectPtr<UCPickupSpawnerComponent> PickupSpawnerComponent;
 
-	UPROPERTY(EditDefaultsOnly, Category="AI")
-	TObjectPtr<UEnvQuery> SpawnEnemyQuery;
+	UPROPERTY(EditDefaultsOnly, Category="Components")
+	TObjectPtr<UCEnemySpawnerComponent> EnemySpawnerComponent;
 
-	UPROPERTY(EditDefaultsOnly, Category="AI")
-	TSubclassOf<AActor> EnemyClass;
-
-	UPROPERTY(EditDefaultsOnly, Category="AI")
-	TObjectPtr<UCurveFloat> DifficultyCurve;
+	UPROPERTY(EditDefaultsOnly, Category="GameMode")
+	float PlayerRespawnDelay;
 
 	UFUNCTION()
 	void RespawnPlayer(AController* PlayerController);
-
-private:
-	UFUNCTION()
-	void OnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus);
-
-	void OnSpawnEnemyTimerElapsed();
-
-	void SpawnEnemyAtLocation(const FVector& SpawnLocation) const;
-
-	uint16 GetNumberOfEnemiesAlive() const;
-
-	bool CanGameModeSpawnMoreEnemies(uint16 NumberOfEnemiesAlive) const;
 };

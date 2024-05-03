@@ -21,6 +21,15 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="Pickup")
 	float CooldownDuration;
 
+	/**
+	 * @brief Called when the effect of the pickup is triggered by an instigator pawn.
+	 *
+	 * This method is a pure virtual function that needs to be implemented in derived classes.
+	 *
+	 * @param InstigatorPawn The pawn that triggered the effect.
+	 *
+	 * @return True if the effect was successfully triggered, false otherwise.
+	 */
 	virtual bool OnEffectTrigger(APawn* InstigatorPawn) PURE_VIRTUAL(ACBasePickup::OnEffectTrigger, return false;);
 
 private:

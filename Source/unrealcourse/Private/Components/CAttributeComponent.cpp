@@ -30,52 +30,36 @@ bool UCAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delt
 	if (const float ProposedHealth = HealthCurrent + Delta; ProposedHealth < 0.0f) // Cases where the result would be overkill
 	{
 		HealthCurrent = 0.0f;
-		OnHealthChanged.Broadcast(nullptr, this, HealthCurrent, Delta - ProposedHealth);
+		OnHealthChanged.Broadcast(InstigatorActor, this, HealthCurrent, Delta - ProposedHealth);
 	}
 	else if (ProposedHealth > HealthMax) // Cases where the result would be overheal
 	{
 		HealthCurrent = HealthMax;
-		OnHealthChanged.Broadcast(nullptr, this, HealthCurrent, HealthMax - ProposedHealth + Delta);
+		OnHealthChanged.Broadcast(InstigatorActor, this, HealthCurrent, HealthMax - ProposedHealth + Delta);
 	}
-	else
+	else // Cases where the result is within 0 and max health.
 	{
 		HealthCurrent = ProposedHealth;
-		OnHealthChanged.Broadcast(nullptr, this, HealthCurrent, Delta);
+		OnHealthChanged.Broadcast(InstigatorActor, this, HealthCurrent, Delta);
 	}
-
-	// TODO - Refactor this during assignment 5, to have proper (such as death) callbacks that are included with the AttributeComponent itself.
-	if (HealthCurrent == 0.0f)
+	
+	if (!IsAlive())
 	{
-		ACGameModeBase* GameMode = GetWorld()->GetAuthGameMode<ACGameModeBase>();
-		GameMode->OnActorKilled(GetOwner(), InstigatorActor);
+		OnDeath.Broadcast(InstigatorActor, this);
+
+		// I greatly dislike this hard-coupled nightmare of a statement, but this is what was done in class. TODO: Use something like a GameplayMessage or maybe a delegate of sorts here.
+		GetWorld()->GetAuthGameMode<ACGameModeBase>()->OnActorKilled(GetOwner(), InstigatorActor);
 	}
 
 	return true;
 }
 
-bool UCAttributeComponent::IsAlive() const
-{
-	return HealthCurrent > 0.0f;
-}
+bool UCAttributeComponent::IsAlive() const { return HealthCurrent > 0.0f; }
 
-bool UCAttributeComponent::Kill(AActor* InstigatorActor)
-{
-	return ApplyHealthChange(InstigatorActor, -GetHealthMax());
-}
+bool UCAttributeComponent::KillOwner(AActor* InstigatorActor) { return ApplyHealthChange(InstigatorActor, -GetHealthMax()); }
 
-float UCAttributeComponent::GetHealthCurrent() const
-{
-	return HealthCurrent;
-}
+float UCAttributeComponent::GetHealthCurrent() const { return HealthCurrent; }
 
-float UCAttributeComponent::GetHealthMax() const
-{
-	return HealthMax;
-}
+float UCAttributeComponent::GetHealthMax() const { return HealthMax; }
 
-UCAttributeComponent* UCAttributeComponent::GetComponentFrom(AActor* FromActor)
-{
-	if (FromActor) return FromActor->FindComponentByClass<UCAttributeComponent>();
-
-	return nullptr;
-}
+UCAttributeComponent* UCAttributeComponent::GetComponentFrom(AActor* FromActor) { return FromActor ? FromActor->FindComponentByClass<UCAttributeComponent>() : nullptr; }

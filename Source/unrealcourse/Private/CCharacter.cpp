@@ -8,6 +8,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -32,14 +33,21 @@ void ACCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 	AttributeComponent->OnHealthChanged.AddDynamic(this, &ACCharacter::OnHealthChanged);
+	AttributeComponent->OnDeath.AddDynamic(this, &ACCharacter::OnDeath);
 }
 
+// ReSharper disable once CppMemberFunctionMayBeConst - Incorrect suggestion
 void ACCharacter::OnHealthChanged(AActor* Actor, UCAttributeComponent* UAttributeComponent, const float NewHealth, const float Delta)
 {
 	if (Delta < 0.0f) GetMesh()->SetScalarParameterValueOnMaterials("TimeToHit", GetWorld()->TimeSeconds);
+}
 
-	// Check for death condition. TODO: Work this out properly in the future, this is a hack for the time being.
-	if (NewHealth <= 0.0f && Delta < 0.0f) DisableInput(Cast<APlayerController>(GetController()));
+void ACCharacter::OnDeath(AActor* KillerActor, UCAttributeComponent* OwnerComponent)
+{
+	SetLifeSpan(25.0f);
+	DisableInput(Cast<APlayerController>(GetController()));
+	GetCharacterMovement()->DisableMovement();
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 void ACCharacter::Move(const FInputActionInstance& InputActionInstance)

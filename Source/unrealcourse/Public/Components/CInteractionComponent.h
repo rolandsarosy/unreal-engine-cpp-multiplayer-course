@@ -4,7 +4,7 @@
 #include "Components/ActorComponent.h"
 #include "CInteractionComponent.generated.h"
 
-UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
+UCLASS(ClassGroup=(Custom))
 class UNREALCOURSE_API UCInteractionComponent : public UActorComponent
 {
 	GENERATED_BODY()

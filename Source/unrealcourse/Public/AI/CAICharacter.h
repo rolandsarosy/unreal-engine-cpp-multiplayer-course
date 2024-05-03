@@ -8,13 +8,16 @@ class UCWorldUserWidget;
 class UCAttributeComponent;
 class UPawnSensingComponent;
 
-UCLASS()
+UCLASS(Abstract)
 class UNREALCOURSE_API ACAICharacter : public ACharacter
 {
 	GENERATED_BODY()
 
 public:
 	ACAICharacter();
+
+	UPROPERTY(EditDefaultsOnly, Category="Coins")
+	int CoinRewardUponDeath;
 
 protected:
 	UPROPERTY(VisibleAnywhere, Category="Components")
@@ -32,12 +35,16 @@ private:
 	TObjectPtr<UCWorldUserWidget> ActiveHealthBar;
 
 	UFUNCTION()
-	void OnPawnSeen(APawn* Pawn);
-
-	UFUNCTION()
 	void OnHealthChanged(AActor* InstigatorActor, UCAttributeComponent* UAttributeComponent, float NewHealth, float Delta);
 
-	void SetTargetActor(AActor* NewTarget) const;
+	UFUNCTION()
+	void OnDeath(AActor* KillerActor, UCAttributeComponent* OwnerComponent);
 
+	UFUNCTION()
+	void SetTargetActor(AActor* NewTarget, bool ShouldOverrideCurrentTarget) const;
+
+	UFUNCTION()
+	void OnSeePawn(APawn* Pawn);
+		
 	void AddHealthBar();
 };

@@ -6,7 +6,7 @@
 
 class UParticleSystemComponent;
 
-UCLASS()
+UCLASS(Abstract)
 class UNREALCOURSE_API ACTeleportProjectile : public ACBaseProjectile
 {
 	GENERATED_BODY()
