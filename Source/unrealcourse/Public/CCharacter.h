@@ -5,6 +5,7 @@
 #include "GameFramework/Character.h"
 #include "CCharacter.generated.h"
 
+class UCActionComponent;
 struct FInputActionInstance;
 struct FInputActionValue;
 class UCAttributeComponent;
@@ -13,7 +14,6 @@ class UInputMappingContext;
 class UInputAction;
 class UCameraComponent;
 class USpringArmComponent;
-class UAnimMontage;
 
 UCLASS(Abstract)
 class UNREALCOURSE_API ACCharacter : public ACharacter
@@ -22,11 +22,6 @@ class UNREALCOURSE_API ACCharacter : public ACharacter
 
 public:
 	ACCharacter();
-
-	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
-
-	UFUNCTION(Exec) // This is a cheat that'll work only in non-shipped builds. Conditional compiling is unnecessary as the console is disabled in shipped builds.
-	void HealSelf(float Amount = 100.0f);
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category="Input")
@@ -53,6 +48,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TObjectPtr<UInputAction> Input_Jump;
 
+	UPROPERTY(EditDefaultsOnly, Category="Input")
+	TObjectPtr<UInputAction> Input_Sprint;
+
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UCameraComponent> CameraComponent;
 
@@ -65,23 +63,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
 	TObjectPtr<UCAttributeComponent> AttributeComponent;
 
-	UPROPERTY(EditAnywhere, Category="Abilities")
-	TSubclassOf<AActor> PrimaryAttackProjectile;
-
-	UPROPERTY(EditAnywhere, Category="Abilities")
-	TSubclassOf<AActor> SpecialAttackProjectile;
-
-	UPROPERTY(EditAnywhere, Category="Abilities")
-	TSubclassOf<AActor> TeleportAttackProjectile;
-
-	UPROPERTY(EditAnywhere, Category="Abilities")
-	TObjectPtr<UAnimMontage> AttackAnimation;
-
-	UPROPERTY(EditDefaultsOnly, Category="Abilities")
-	TObjectPtr<UParticleSystem> MuzzleFlashParticleSystem;
-
-	UPROPERTY(EditDefaultsOnly, Category="Abilities")
-	FName AttackSocketName;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
+	TObjectPtr<UCActionComponent> ActionComponent;
 
 private:
 	FTimerHandle TimerHandle_Attack;
@@ -93,24 +76,22 @@ private:
 	void OnDeath(AActor* KillerActor, UCAttributeComponent* OwnerComponent);
 
 	virtual FVector GetPawnViewLocation() const override;
-	
-	FRotator TraceForProjectileSpawnRotator() const;
-	
+
 	void Move(const FInputActionInstance& InputActionInstance);
 
 	void Look(const FInputActionValue& InputActionValue);
 
-	void PrimaryAttack_Start();
+	void SprintStart();
 
-	void PrimaryAttack_TimeElapsed();
+	void SprintStop();
 
-	void SpecialAttack_Start();
+	void PrimaryAttack();
 
-	void SpecialAttack_TimeElapsed();
+	void SpecialAttack();
 
-	void TeleportAttack_Start();
-
-	void TeleportAttack_TimeElapsed();
+	void TeleportAttack();
 
 	virtual void PostInitializeComponents() override;
+
+	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 };

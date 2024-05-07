@@ -1,6 +1,6 @@
 #include "CCharacter.h"
 
-#include "CGameplayFunctionLibrary.h"
+#include "AbilitySystem/CActionComponent.h"
 #include "Components/CAttributeComponent.h"
 #include "Components/CInteractionComponent.h"
 #include "Camera/CameraComponent.h"
@@ -10,8 +10,6 @@
 #include "EnhancedInputSubsystems.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "Kismet/GameplayStatics.h"
-#include "Kismet/KismetMathLibrary.h"
 
 ACCharacter::ACCharacter()
 {
@@ -24,6 +22,7 @@ ACCharacter::ACCharacter()
 
 	InteractionComponent = CreateDefaultSubobject<UCInteractionComponent>("InteractionComponent");
 	AttributeComponent = CreateDefaultSubobject<UCAttributeComponent>("AttributeComponent");
+	ActionComponent = CreateDefaultSubobject<UCActionComponent>("ActionComponent");
 
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
@@ -70,96 +69,18 @@ void ACCharacter::Look(const FInputActionValue& InputActionValue)
 	AddControllerPitchInput(Value.Y);
 }
 
-void ACCharacter::PrimaryAttack_Start()
-{
-	PlayAnimMontage(AttackAnimation);
+void ACCharacter::SprintStart() { ActionComponent->StartActionByName(this, "Sprint"); }
 
-	// TODO: This is merely temporary, and animation notifies will be used here in the future.
-	GetWorldTimerManager().SetTimer(TimerHandle_Attack, this, &ACCharacter::PrimaryAttack_TimeElapsed, 0.2F);
-}
+void ACCharacter::SprintStop() { ActionComponent->StopActionByName(this, "Sprint"); }
 
-void ACCharacter::PrimaryAttack_TimeElapsed()
-{
-	const FTransform SpawnTransform = FTransform(TraceForProjectileSpawnRotator(), GetMesh()->GetSocketLocation(AttackSocketName));
-	FActorSpawnParameters SpawnParameters = FActorSpawnParameters();
-	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	SpawnParameters.Instigator = this;
+void ACCharacter::PrimaryAttack() { ActionComponent->StartActionByName(this, "PrimaryAttack"); }
 
-	UGameplayStatics::SpawnEmitterAttached(MuzzleFlashParticleSystem, GetMesh(), GetMesh()->GetSocketBoneName(AttackSocketName));
-	GetWorld()->SpawnActor<AActor>(PrimaryAttackProjectile, SpawnTransform, SpawnParameters);
-}
+void ACCharacter::SpecialAttack() { ActionComponent->StartActionByName(this, "SpecialAttack"); }
 
-void ACCharacter::SpecialAttack_Start()
-{
-	PlayAnimMontage(AttackAnimation);
+void ACCharacter::TeleportAttack() { ActionComponent->StartActionByName(this, "TeleportAttack"); }
 
-	// TODO: This is merely temporary, and animation notifies will be used here in the future.
-	GetWorldTimerManager().SetTimer(TimerHandle_Attack, this, &ACCharacter::SpecialAttack_TimeElapsed, 0.2F);
-}
+FVector ACCharacter::GetPawnViewLocation() const { return CameraComponent->GetComponentLocation(); }
 
-void ACCharacter::SpecialAttack_TimeElapsed()
-{
-	const FTransform SpawnTransform = FTransform(TraceForProjectileSpawnRotator(), GetMesh()->GetSocketLocation(AttackSocketName));
-	FActorSpawnParameters SpawnParameters = FActorSpawnParameters();
-	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	SpawnParameters.Instigator = this;
-
-	UGameplayStatics::SpawnEmitterAttached(MuzzleFlashParticleSystem, GetMesh(), GetMesh()->GetSocketBoneName(AttackSocketName));
-	GetWorld()->SpawnActor<AActor>(SpecialAttackProjectile, SpawnTransform, SpawnParameters);
-}
-
-void ACCharacter::TeleportAttack_Start()
-{
-	PlayAnimMontage(AttackAnimation);
-
-	// TODO: This is merely temporary, and animation notifies will be used here in the future.
-	GetWorldTimerManager().SetTimer(TimerHandle_Attack, this, &ACCharacter::TeleportAttack_TimeElapsed, 0.2F);
-}
-
-void ACCharacter::TeleportAttack_TimeElapsed()
-{
-	const FTransform SpawnTransform = FTransform(TraceForProjectileSpawnRotator(), GetMesh()->GetSocketLocation(AttackSocketName));
-	FActorSpawnParameters SpawnParameters = FActorSpawnParameters();
-	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	SpawnParameters.Instigator = this;
-
-	UGameplayStatics::SpawnEmitterAttached(MuzzleFlashParticleSystem, GetMesh(), GetMesh()->GetSocketBoneName(AttackSocketName));
-	GetWorld()->SpawnActor<AActor>(TeleportAttackProjectile, SpawnTransform, SpawnParameters);
-}
-
-/**
- * @brief Traces for the rotation to be used when spawning a projectile.
- *
- * @details This method performs a line trace from the camera component to find the target location for spawning a projectile.
- * It checks for collisions with specified object types and returns the rotation required to face the target location.
- * If the line trace does not result in a blocking hit, the rotation will be calculated based on the end location of the trace.
- *
- * @return The rotation to be used when spawning a projectile.
- */
-FRotator ACCharacter::TraceForProjectileSpawnRotator() const
-{
-	FHitResult TraceHitResult;
-	FVector TraceStart = CameraComponent->GetComponentLocation();
-	FVector TraceEnd = CameraComponent->GetComponentLocation() + CameraComponent->GetForwardVector() * 5000;
-	FCollisionObjectQueryParams QueryParams = FCollisionObjectQueryParams();
-	FCollisionQueryParams TraceParams(FName("Actor Self-Ignore trace parameter"), true, this);
-
-	QueryParams.AddObjectTypesToQuery(ECC_WorldDynamic);
-	QueryParams.AddObjectTypesToQuery(ECC_WorldStatic);
-	QueryParams.AddObjectTypesToQuery(ECC_Pawn);
-	QueryParams.AddObjectTypesToQuery(ECC_PhysicsBody);
-
-	bool bIsTraceBlockingHit = GetWorld()->LineTraceSingleByObjectType(TraceHitResult, TraceStart, TraceEnd, QueryParams, TraceParams);
-	FVector SpawnRotatorTarget = bIsTraceBlockingHit ? TraceHitResult.ImpactPoint : TraceEnd; // Handle cases where the tracing did not result in a blocking hit.
-	return UKismetMathLibrary::FindLookAtRotation(GetMesh()->GetSocketLocation(AttackSocketName), SpawnRotatorTarget);
-}
-
-FVector ACCharacter::GetPawnViewLocation() const
-{
-	return CameraComponent->GetComponentLocation();
-}
-
-// Called to bind functionality to input
 void ACCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
@@ -175,14 +96,10 @@ void ACCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	EnhancedInputComponent->BindAction(Input_Move, ETriggerEvent::Triggered, this, &ACCharacter::Move);
 	EnhancedInputComponent->BindAction(Input_Look, ETriggerEvent::Triggered, this, &ACCharacter::Look);
 	EnhancedInputComponent->BindAction(Input_PrimaryInteract, ETriggerEvent::Triggered, InteractionComponent.Get(), &UCInteractionComponent::PrimaryInteract);
-	EnhancedInputComponent->BindAction(Input_PrimaryAttack, ETriggerEvent::Triggered, this, &ACCharacter::PrimaryAttack_Start);
-	EnhancedInputComponent->BindAction(Input_SpecialAttack, ETriggerEvent::Triggered, this, &ACCharacter::SpecialAttack_Start);
-	EnhancedInputComponent->BindAction(Input_TeleportAttack, ETriggerEvent::Triggered, this, &ACCharacter::TeleportAttack_Start);
+	EnhancedInputComponent->BindAction(Input_PrimaryAttack, ETriggerEvent::Triggered, this, &ACCharacter::PrimaryAttack);
+	EnhancedInputComponent->BindAction(Input_SpecialAttack, ETriggerEvent::Triggered, this, &ACCharacter::SpecialAttack);
+	EnhancedInputComponent->BindAction(Input_TeleportAttack, ETriggerEvent::Triggered, this, &ACCharacter::TeleportAttack);
 	EnhancedInputComponent->BindAction(Input_Jump, ETriggerEvent::Triggered, this, &ACCharacter::Jump);
-}
-
-// This is a cheat that'll work only in non-shipped builds. Conditional compiling is unnecessary as the console is disabled in shipped builds.
-void ACCharacter::HealSelf(const float Amount)
-{
-	UCGameplayFunctionLibrary::ApplyHealing(this, this, Amount);
+	EnhancedInputComponent->BindAction(Input_Sprint, ETriggerEvent::Started, this, &ACCharacter::SprintStart);
+	EnhancedInputComponent->BindAction(Input_Sprint, ETriggerEvent::Completed, this, &ACCharacter::SprintStop);
 }

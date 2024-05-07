@@ -19,7 +19,11 @@ bool UCGameplayFunctionLibrary::ApplyDirectionalImpulseDamage(AActor* DamageInst
 	{
 		if (UPrimitiveComponent* HitComponent = HitResult.GetComponent(); HitComponent && HitComponent->IsSimulatingPhysics(HitResult.BoneName))
 		{
-			HitComponent->AddImpulseAtLocation(-HitResult.ImpactNormal * 150000.0f, HitResult.Location, HitResult.BoneName);
+			// Direction equals to target minus the origin.
+			FVector Direction = HitResult.TraceEnd - HitResult.TraceStart;
+			Direction.Normalize();
+			
+			HitComponent->AddImpulseAtLocation(Direction * 150000.0f, HitResult.Location, HitResult.BoneName);
 		}
 
 		return true;

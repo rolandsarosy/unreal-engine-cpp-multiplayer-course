@@ -58,7 +58,7 @@ void UCPickupSpawnerComponent::SpawnPickupItemsToQueryLocations(TArray<FVector>&
  *
  * @param SpawnLocations The array of spawn locations for the pickup items.
  *
- * @return True if the number of spawn points is less than the total spawn amount of pickup items, false otherwise.
+ * @return True if there are enough spawn points for the items to be spawned, false otherwise.
  */
 bool UCPickupSpawnerComponent::GetSpawnPointsAmountValidity(const TArray<FVector>& SpawnLocations)
 {
