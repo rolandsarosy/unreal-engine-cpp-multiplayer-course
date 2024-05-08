@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "Components/ActorComponent.h"
 #include "CActionComponent.generated.h"
 
@@ -19,6 +20,9 @@ class UNREALCOURSE_API UCActionComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Tags")
+	FGameplayTagContainer ActiveGameplayTags;
+
 	UFUNCTION(BlueprintCallable, Category="Actions")
 	void AddAction(TSubclassOf<UCAction> ActionClass);
 
@@ -35,5 +39,9 @@ private:
 	UPROPERTY(EditAnywhere, Category="Actions")
 	TArray<TSubclassOf<UCAction>> DefaultActions;
 
+	UCActionComponent();
+	
 	virtual void BeginPlay() override;
+
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 };

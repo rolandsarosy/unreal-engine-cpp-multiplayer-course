@@ -1,8 +1,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "CAction.generated.h"
 
+class UCActionComponent;
 /**
  * @class UCAction
  * @brief The base class for all GAS-like actions in the game.
@@ -28,5 +30,26 @@ public:
 	UFUNCTION(BlueprintNativeEvent, Category="Action")
 	void StopAction(AActor* Instigator);
 
+	UFUNCTION(BlueprintNativeEvent, Category="Action")
+	bool CanStart(AActor* Instigator);
+
+	UFUNCTION(BlueprintCallable, Category="Action")
+	bool IsRunning() const;
+	
 	virtual UWorld* GetWorld() const override;
+
+protected:
+	/** Tags added to owning actor when activated, removed when actions stops. **/
+	UPROPERTY(EditDefaultsOnly, Category="Tags")
+	FGameplayTagContainer GrantsTags;
+
+	/** Action can only start if OwningActor has none of these tags applied. **/
+	UPROPERTY(EditDefaultsOnly, Category="Tags")
+	FGameplayTagContainer BlockedTags;
+
+private:
+	UFUNCTION(BlueprintCallable, Category="Action")
+	UCActionComponent* GetOwningComponent() const;
+
+	bool bIsRunning;
 };

@@ -1,16 +1,26 @@
 #include "AbilitySystem/CAction.h"
 
+#include "AbilitySystem/CActionComponent.h"
+
 void UCAction::StartAction_Implementation(AActor* Instigator)
 {
-	UE_LOG(LogTemp, Log, TEXT("Starting Action (%s)"), *GetNameSafe(this));
+	GetOwningComponent()->ActiveGameplayTags.AppendTags(GrantsTags);
+	bIsRunning = true;
 }
 
 void UCAction::StopAction_Implementation(AActor* Instigator)
 {
-	UE_LOG(LogTemp, Log, TEXT("Stopping Action (%s)"), *GetNameSafe(this));
+	ensureAlways(bIsRunning); // Sanity check to notify developers that an issue got introduced as an action that isn't running, could never be stopped.
+
+	GetOwningComponent()->ActiveGameplayTags.RemoveTags(GrantsTags);
+	bIsRunning = false;
 }
 
-// I don't know about this... This was written in class but this seems pretty hacky, tightly-coupled and quite unsafe. 
+bool UCAction::CanStart_Implementation(AActor* Instigator)
+{
+	return !bIsRunning && !GetOwningComponent()->ActiveGameplayTags.HasAny(BlockedTags);
+}
+
 UWorld* UCAction::GetWorld() const
 {
 	// Outer is set when creating a new action via NewObject<T>.
@@ -19,4 +29,14 @@ UWorld* UCAction::GetWorld() const
 		return ActorComponent->GetWorld();
 	}
 	return nullptr;
+}
+
+UCActionComponent* UCAction::GetOwningComponent() const
+{
+	return Cast<UCActionComponent>(GetOuter());
+}
+
+bool UCAction::IsRunning() const
+{
+	return bIsRunning;
 }
