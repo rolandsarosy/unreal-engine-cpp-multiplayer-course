@@ -35,11 +35,11 @@ void UCActionComponent::AddAction(const TSubclassOf<UCAction> ActionClass)
 	if (ensure(NewAction)) CurrentActions.Add(NewAction);
 }
 
-bool UCActionComponent::StartActionByName(AActor* Instigator, const FName ActionName)
+bool UCActionComponent::StartActionByTag(AActor* Instigator, const FGameplayTag Tag)
 {
 	for (UCAction* Action : CurrentActions)
 	{
-		if (Action && Action->ActionName == ActionName && Action->CanStart(Instigator))
+		if (Action && Action->Tag == Tag && Action->CanStart(Instigator))
 		{
 			Action->StartAction(Instigator);
 			return true;
@@ -49,11 +49,11 @@ bool UCActionComponent::StartActionByName(AActor* Instigator, const FName Action
 	return false;
 }
 
-bool UCActionComponent::StopActionByName(AActor* Instigator, const FName ActionName)
+bool UCActionComponent::StopActionByTag(AActor* Instigator, FGameplayTag Tag)
 {
 	for (UCAction* Action : CurrentActions)
 	{
-		if (Action && Action->ActionName == ActionName && Action->IsRunning())
+		if (Action && Action->Tag == Tag && Action->IsRunning())
 		{
 			Action->StopAction(Instigator);
 			return true;
@@ -62,3 +62,7 @@ bool UCActionComponent::StopActionByName(AActor* Instigator, const FName ActionN
 
 	return false;
 }
+
+void UCActionComponent::AddGameplayTag(const FGameplayTag Tag) { ActiveGameplayTags.AddTag(Tag); }
+
+bool UCActionComponent::RemoveGameplayTag(const FGameplayTag Tag) { return ActiveGameplayTags.RemoveTag(Tag); }

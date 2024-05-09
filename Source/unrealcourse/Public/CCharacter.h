@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "InputAction.h"
 #include "GameFramework/Character.h"
 #include "CCharacter.generated.h"
@@ -53,6 +54,21 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TObjectPtr<UInputAction> Input_Parry;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Input")
+	FGameplayTag ActionTag_PrimaryAttack;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Input")
+	FGameplayTag ActionTag_SpecialAttack;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Input")
+	FGameplayTag ActionTag_TeleportAttack;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Input")
+	FGameplayTag ActionTag_Sprint;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Input")
+	FGameplayTag ActionTag_Parry;
 	
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UCameraComponent> CameraComponent;

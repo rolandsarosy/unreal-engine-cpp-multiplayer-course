@@ -20,27 +20,33 @@ class UNREALCOURSE_API UCActionComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Tags")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Tags")
 	FGameplayTagContainer ActiveGameplayTags;
 
 	UFUNCTION(BlueprintCallable, Category="Actions")
 	void AddAction(TSubclassOf<UCAction> ActionClass);
 
 	UFUNCTION(BlueprintCallable, Category="Actions")
-	bool StartActionByName(AActor* Instigator, FName ActionName);
+	bool StartActionByTag(AActor* Instigator, FGameplayTag Tag);
 
 	UFUNCTION(BlueprintCallable, Category="Actions")
-	bool StopActionByName(AActor* Instigator, FName ActionName);
+	bool StopActionByTag(AActor* Instigator, FGameplayTag Tag);
+
+	UFUNCTION(BlueprintCallable, Category="Tags", meta=(Tooltip = "Should be used for adding/removing keycard-style GameplayTags."))
+	void AddGameplayTag(FGameplayTag Tag);
+
+	UFUNCTION(BlueprintCallable, Category="Tags", meta=(Tooltip = "Should be used for adding/removing keycard-style GameplayTags."))
+	bool RemoveGameplayTag(FGameplayTag Tag);
 
 private:
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere)
 	TArray<TObjectPtr<UCAction>> CurrentActions;
 
 	UPROPERTY(EditAnywhere, Category="Actions")
 	TArray<TSubclassOf<UCAction>> DefaultActions;
 
 	UCActionComponent();
-	
+
 	virtual void BeginPlay() override;
 
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;

@@ -69,17 +69,17 @@ void ACCharacter::Look(const FInputActionValue& InputActionValue)
 	AddControllerPitchInput(Value.Y);
 }
 
-void ACCharacter::SprintStart() { ActionComponent->StartActionByName(this, "Sprint"); }
+void ACCharacter::SprintStart() { ActionComponent->StartActionByTag(this, ActionTag_Sprint); }
 
-void ACCharacter::SprintStop() { ActionComponent->StopActionByName(this, "Sprint"); }
+void ACCharacter::SprintStop() { ActionComponent->StopActionByTag(this, ActionTag_Sprint); }
 
-void ACCharacter::PrimaryAttack() { ActionComponent->StartActionByName(this, "PrimaryAttack"); }
+void ACCharacter::PrimaryAttack() { ActionComponent->StartActionByTag(this, ActionTag_PrimaryAttack); }
 
-void ACCharacter::SpecialAttack() { ActionComponent->StartActionByName(this, "SpecialAttack"); }
+void ACCharacter::SpecialAttack() { ActionComponent->StartActionByTag(this, ActionTag_SpecialAttack); }
 
-void ACCharacter::TeleportAttack() { ActionComponent->StartActionByName(this, "TeleportAttack"); }
+void ACCharacter::TeleportAttack() { ActionComponent->StartActionByTag(this, ActionTag_TeleportAttack); }
 
-void ACCharacter::Parry() { ActionComponent->StartActionByName(this, "Parry"); }
+void ACCharacter::Parry() { ActionComponent->StartActionByTag(this, ActionTag_Parry); }
 
 FVector ACCharacter::GetPawnViewLocation() const { return CameraComponent->GetComponentLocation(); }
 

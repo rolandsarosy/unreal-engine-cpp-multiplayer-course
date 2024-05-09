@@ -20,9 +20,9 @@ class UNREALCOURSE_API UCAction : public UObject
 	GENERATED_BODY()
 
 public:
-	/** Action name to start/stop without a reference to the object. **/
-	UPROPERTY(EditDefaultsOnly, Category="Action") // TODO: Refactor this to use GameplayTags instead of FNames
-	FName ActionName;
+	/** Action tag to start/stop without a reference to the object. **/
+	UPROPERTY(EditDefaultsOnly, Category="Action")
+	FGameplayTag Tag;
 
 	UFUNCTION(BlueprintNativeEvent, Category="Action")
 	void StartAction(AActor* Instigator);
@@ -35,7 +35,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="Action")
 	bool IsRunning() const;
-	
+
 	virtual UWorld* GetWorld() const override;
 
 protected:
