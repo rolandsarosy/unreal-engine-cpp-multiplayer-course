@@ -51,6 +51,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TObjectPtr<UInputAction> Input_Sprint;
 
+	UPROPERTY(EditDefaultsOnly, Category="Input")
+	TObjectPtr<UInputAction> Input_Parry;
+	
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UCameraComponent> CameraComponent;
 
@@ -91,7 +94,9 @@ private:
 
 	void TeleportAttack();
 
-	virtual void PostInitializeComponents() override;
+	void Parry();
 
+	virtual void PostInitializeComponents() override;
+	
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 };

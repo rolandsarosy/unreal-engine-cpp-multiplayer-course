@@ -79,6 +79,8 @@ void ACCharacter::SpecialAttack() { ActionComponent->StartActionByName(this, "Sp
 
 void ACCharacter::TeleportAttack() { ActionComponent->StartActionByName(this, "TeleportAttack"); }
 
+void ACCharacter::Parry() { ActionComponent->StartActionByName(this, "Parry"); }
+
 FVector ACCharacter::GetPawnViewLocation() const { return CameraComponent->GetComponentLocation(); }
 
 void ACCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -102,4 +104,5 @@ void ACCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	EnhancedInputComponent->BindAction(Input_Jump, ETriggerEvent::Triggered, this, &ACCharacter::Jump);
 	EnhancedInputComponent->BindAction(Input_Sprint, ETriggerEvent::Started, this, &ACCharacter::SprintStart);
 	EnhancedInputComponent->BindAction(Input_Sprint, ETriggerEvent::Completed, this, &ACCharacter::SprintStop);
+	EnhancedInputComponent->BindAction(Input_Parry, ETriggerEvent::Triggered, this, &ACCharacter::Parry);
 }

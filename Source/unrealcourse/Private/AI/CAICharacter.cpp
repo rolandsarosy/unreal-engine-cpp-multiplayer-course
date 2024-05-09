@@ -87,7 +87,6 @@ void ACAICharacter::SetTargetActor(AActor* NewTarget, const bool ShouldOverrideC
 // ReSharper disable once CppMemberFunctionMayBeConst - Incorrect suggestion 
 void ACAICharacter::OnSeePawn(APawn* Pawn) { SetTargetActor(Pawn, false); }
 
-
 void ACAICharacter::AddHealthBar()
 {
 	if (ActiveHealthBar == nullptr)

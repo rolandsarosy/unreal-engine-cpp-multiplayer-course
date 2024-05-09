@@ -22,12 +22,18 @@ void AExplosiveBarrel::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 	StaticMeshComponent->OnComponentHit.AddDynamic(this, &AExplosiveBarrel::OnComponentHit);
+	StaticMeshComponent->OnComponentBeginOverlap.AddDynamic(this, &AExplosiveBarrel::OnComponentOverlap);
 }
 
+// ReSharper disable once CppMemberFunctionMayBeConst ~ Incorrect suggestion
 void AExplosiveBarrel::OnComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	UE_LOG(LogTemp, Log, TEXT("OtherActor %s at game time: %f"), *GetNameSafe(OtherActor), GetWorld()->TimeSeconds);
-	DrawDebugString(GetWorld(), Hit.ImpactPoint, FString::Printf(TEXT("Hit at location: %s"), *Hit.ImpactPoint.ToString()), nullptr, FColor::Green, true, true);
-	
+	RadialForceComponent->FireImpulse();
+}
+
+// ReSharper disable once CppMemberFunctionMayBeConst ~ Incorrect suggestion
+void AExplosiveBarrel::OnComponentOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+                                          const FHitResult& SweepResult)
+{
 	RadialForceComponent->FireImpulse();
 }

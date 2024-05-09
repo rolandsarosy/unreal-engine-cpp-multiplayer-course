@@ -45,6 +45,6 @@ private:
 
 	UFUNCTION()
 	void OnSeePawn(APawn* Pawn);
-		
+
 	void AddHealthBar();
 };

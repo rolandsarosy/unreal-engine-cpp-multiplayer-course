@@ -21,13 +21,13 @@ class UNREALCOURSE_API UCAction : public UObject
 
 public:
 	/** Action name to start/stop without a reference to the object. **/
-	UPROPERTY(EditDefaultsOnly, Category="Action")
+	UPROPERTY(EditDefaultsOnly, Category="Action") // TODO: Refactor this to use GameplayTags instead of FNames
 	FName ActionName;
 
 	UFUNCTION(BlueprintNativeEvent, Category="Action")
 	void StartAction(AActor* Instigator);
 
-	UFUNCTION(BlueprintNativeEvent, Category="Action")
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="Action")
 	void StopAction(AActor* Instigator);
 
 	UFUNCTION(BlueprintNativeEvent, Category="Action")

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "Projectiles/CBaseProjectile.h"
 #include "CMagicProjectile.generated.h"
 
@@ -20,10 +21,7 @@ public:
 
 	virtual void BeginPlay() override;
 
-protected:
-	UFUNCTION()
-	void OnComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
-
+private:
 	UPROPERTY(EditDefaultsOnly, Category="Audio")
 	TObjectPtr<UAudioComponent> LoopingAudioComponent;
 
@@ -38,4 +36,20 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category="Damage")
 	float DamageAmount;
+
+	UPROPERTY(EditDefaultsOnly, Category="Damage", meta=(Tooltip = "Describes how many times (exclusive) the projectile can be bounced back-and-forth before parrying is ignored."))
+	uint8 MaxParryAmount;
+
+	UPROPERTY(EditDefaultsOnly, Category="Damage", meta=(Tooltip = "Should be set to the ability system's Parry tag. If this tag is present, the projectile will be reflected."))
+	FGameplayTag ParryTag;
+
+	uint8 CurrentParryAmount;
+
+	UFUNCTION()
+	void OnComponentOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void OnComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
+	void PlayEffectsAndDestroy();
 };
