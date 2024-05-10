@@ -15,21 +15,30 @@ public:
 	virtual void StartAction_Implementation(AActor* Instigator) override;
 
 protected:
-	UPROPERTY(EditAnywhere, Category="Abilities")
+	UPROPERTY(EditDefaultsOnly, Category="Abilities")
 	TSubclassOf<AActor> ProjectileClass;
 
-	UPROPERTY(EditAnywhere, Category="Abilities")
+	UPROPERTY(EditDefaultsOnly, Category="Abilities")
 	TObjectPtr<UAnimMontage> AttackAnimation;
 
 	UPROPERTY(EditDefaultsOnly, Category="Abilities")
 	TObjectPtr<UParticleSystem> MuzzleFlashParticleSystem;
 
-	UPROPERTY(VisibleDefaultsOnly, Category="Abilities")
+	UPROPERTY(VisibleAnywhere, Category="Abilities")
 	FName AttackSocketName;
 
+	UPROPERTY(VisibleAnywhere, Category="Abilities")
+	FName AttackAnimationMontageNotifyStart;
+
+	UPROPERTY(VisibleAnywhere, Category="Abilities")
+	FName AttackAnimationMontageNotifyEnd;
+
 	UFUNCTION()
-	void AttackDelay_TimeElapsed(ACharacter* InstigatorCharacter);
+	void SpawnProjectile(ACharacter* InstigatorCharacter) const;
 
 private:
+	UFUNCTION()
+	void OnMontageNotifyBegin(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload);
+
 	FRotator TraceForProjectileSpawnRotator(ACharacter* InstigatorCharacter) const;
 };

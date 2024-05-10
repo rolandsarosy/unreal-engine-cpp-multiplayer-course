@@ -8,6 +8,8 @@
 UCAction_ProjectileAttack::UCAction_ProjectileAttack()
 {
 	AttackSocketName = "Muzzle_01";
+	AttackAnimationMontageNotifyStart = "AttackReady";
+	AttackAnimationMontageNotifyEnd = "AttackDone";
 }
 
 void UCAction_ProjectileAttack::StartAction_Implementation(AActor* Instigator)
@@ -20,11 +22,13 @@ void UCAction_ProjectileAttack::StartAction_Implementation(AActor* Instigator)
 	InstigatorCharacter->PlayAnimMontage(AttackAnimation);
 	UGameplayStatics::SpawnEmitterAttached(MuzzleFlashParticleSystem, InstigatorCharacter->GetMesh(), InstigatorCharacter->GetMesh()->GetSocketBoneName(AttackSocketName));
 
-	FTimerHandle TimerHandle_AttackDelay;
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle_AttackDelay, [this, InstigatorCharacter] { AttackDelay_TimeElapsed(InstigatorCharacter); }, 0.2f, false);
+	if (UAnimInstance* AnimationInstance = InstigatorCharacter->GetMesh()->GetAnimInstance())
+	{
+		AnimationInstance->OnPlayMontageNotifyBegin.AddDynamic(this, &UCAction_ProjectileAttack::OnMontageNotifyBegin);
+	}
 }
 
-void UCAction_ProjectileAttack::AttackDelay_TimeElapsed(ACharacter* InstigatorCharacter)
+void UCAction_ProjectileAttack::SpawnProjectile(ACharacter* InstigatorCharacter) const
 {
 	const FTransform SpawnTransform = FTransform(TraceForProjectileSpawnRotator(InstigatorCharacter), InstigatorCharacter->GetMesh()->GetSocketLocation(AttackSocketName));
 	FActorSpawnParameters SpawnParameters = FActorSpawnParameters();
@@ -32,8 +36,6 @@ void UCAction_ProjectileAttack::AttackDelay_TimeElapsed(ACharacter* InstigatorCh
 	SpawnParameters.Instigator = InstigatorCharacter;
 
 	GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTransform, SpawnParameters);
-
-	StopAction(InstigatorCharacter);
 }
 
 /**
@@ -61,4 +63,24 @@ FRotator UCAction_ProjectileAttack::TraceForProjectileSpawnRotator(ACharacter* I
 	bool bIsTraceBlockingHit = GetWorld()->LineTraceSingleByObjectType(TraceHitResult, TraceStart, TraceEnd, QueryParams, TraceParams);
 	FVector SpawnRotatorTarget = bIsTraceBlockingHit ? TraceHitResult.ImpactPoint : TraceEnd; // Handle cases where the tracing did not result in a blocking hit.
 	return UKismetMathLibrary::FindLookAtRotation(InstigatorCharacter->GetMesh()->GetSocketLocation(AttackSocketName), SpawnRotatorTarget);
+}
+
+// I think the way the casting from the Payload is done is a nasty hack, but the result is still somehow better than using flat Timers instead of AnimNotifies. 
+void UCAction_ProjectileAttack::OnMontageNotifyBegin(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload)
+{
+	ACharacter* InstigatorCharacter = Cast<ACharacter>(BranchingPointPayload.SkelMeshComponent->GetOwner());
+	if (!ensureAlways(InstigatorCharacter)) return;
+
+	UAnimInstance* AnimationInstance = InstigatorCharacter->GetMesh()->GetAnimInstance();
+	if (!ensureAlways(AnimationInstance)) return;
+
+	if (NotifyName == AttackAnimationMontageNotifyStart)
+	{
+		SpawnProjectile(InstigatorCharacter);
+	}
+	else if (NotifyName == AttackAnimationMontageNotifyEnd)
+	{
+		AnimationInstance->OnPlayMontageNotifyBegin.RemoveDynamic(this, &UCAction_ProjectileAttack::OnMontageNotifyBegin);
+		StopAction(InstigatorCharacter);
+	}
 }
