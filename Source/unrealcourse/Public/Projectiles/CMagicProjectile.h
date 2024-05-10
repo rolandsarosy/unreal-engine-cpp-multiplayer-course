@@ -5,6 +5,8 @@
 #include "Projectiles/CBaseProjectile.h"
 #include "CMagicProjectile.generated.h"
 
+class UCAction;
+class UCActionEffect;
 class USoundCue;
 class UAudioComponent;
 class UParticleSystem;
@@ -42,6 +44,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category="Damage", meta=(Tooltip = "Should be set to the ability system's Parry tag. If this tag is present, the projectile will be reflected."))
 	FGameplayTag ParryTag;
+
+	UPROPERTY(EditDefaultsOnly, Category="Damage", meta=(Tooltip = "Applies the given effect on sucessfully damaging an Actor who is holding an ActionComponent."))
+	TSubclassOf<UCActionEffect> AppliedEffectClass;
 
 	uint8 CurrentParryAmount;
 

@@ -79,7 +79,7 @@ void UCAction_ProjectileAttack::OnMontageNotifyBegin(FName NotifyName, const FBr
 		SpawnProjectile(InstigatorCharacter);
 	}
 	else if (NotifyName == AttackAnimationMontageNotifyEnd)
-	{
+	{ 
 		AnimationInstance->OnPlayMontageNotifyBegin.RemoveDynamic(this, &UCAction_ProjectileAttack::OnMontageNotifyBegin);
 		StopAction(InstigatorCharacter);
 	}

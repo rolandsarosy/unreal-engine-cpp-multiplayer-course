@@ -36,6 +36,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Action")
 	bool IsRunning() const;
 
+	/** Start immediately when added to an action component. **/
+	UPROPERTY(EditDefaultsOnly, Category="Action")
+	bool bAutoStart;
+
 	virtual UWorld* GetWorld() const override;
 
 protected:
@@ -47,9 +51,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="Tags")
 	FGameplayTagContainer BlockedTags;
 
-private:
 	UFUNCTION(BlueprintCallable, Category="Action")
 	UCActionComponent* GetOwningComponent() const;
 
+private:
 	bool bIsRunning;
 };

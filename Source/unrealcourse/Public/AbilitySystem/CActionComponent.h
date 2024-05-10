@@ -24,14 +24,17 @@ public:
 	FGameplayTagContainer ActiveGameplayTags;
 
 	UFUNCTION(BlueprintCallable, Category="Actions")
-	void AddAction(TSubclassOf<UCAction> ActionClass);
-
+	void AddAction(TSubclassOf<UCAction> ActionClass, AActor* Instigator);
+	
+	UFUNCTION(BlueprintCallable, Category="Actions")
+	void RemoveAction(UCAction* ActionToRemove);
+	
 	UFUNCTION(BlueprintCallable, Category="Actions")
 	bool StartActionByTag(AActor* Instigator, FGameplayTag Tag);
 
 	UFUNCTION(BlueprintCallable, Category="Actions")
 	bool StopActionByTag(AActor* Instigator, FGameplayTag Tag);
-
+	
 	UFUNCTION(BlueprintCallable, Category="Tags", meta=(Tooltip = "Should be used for adding/removing keycard-style GameplayTags."))
 	void AddGameplayTag(FGameplayTag Tag);
 

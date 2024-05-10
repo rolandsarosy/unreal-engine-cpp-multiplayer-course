@@ -1,7 +1,9 @@
 #include "Projectiles/CMagicProjectile.h"
 
 #include "CGameplayFunctionLibrary.h"
+#include "AbilitySystem/CAction.h"
 #include "AbilitySystem/CActionComponent.h"
+#include "AbilitySystem/CActionEffect.h"
 #include "Components/AudioComponent.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
@@ -33,13 +35,14 @@ void ACMagicProjectile::BeginPlay()
 	Super::BeginPlay();
 }
 
-// ReSharper disable once CppTooWideScopeInitStatement ~ Results in worse readability
 void ACMagicProjectile::OnComponentOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
                                            const FHitResult& SweepResult)
 {
 	if (OtherActor && OtherActor != GetInstigator())
 	{
-		const UCActionComponent* ActionComponent = Cast<UCActionComponent>(OtherActor->GetComponentByClass(UCActionComponent::StaticClass()));
+		UCActionComponent* ActionComponent = Cast<UCActionComponent>(OtherActor->GetComponentByClass(UCActionComponent::StaticClass()));
+
+		// Parry the projectile if possible
 		if (ActionComponent && ActionComponent->ActiveGameplayTags.HasTag(ParryTag) && CurrentParryAmount < MaxParryAmount)
 		{
 			CurrentParryAmount++;
@@ -47,6 +50,9 @@ void ACMagicProjectile::OnComponentOverlap(UPrimitiveComponent* OverlappedCompon
 			SetInstigator(Cast<APawn>(OtherActor));
 			return;
 		}
+
+		// Apply effects if there is one set.
+		if (ActionComponent && AppliedEffectClass) ActionComponent->AddAction(AppliedEffectClass, GetInstigator());
 		
 		UCGameplayFunctionLibrary::ApplyDirectionalImpulseDamage(GetInstigator(), OtherActor, DamageAmount, SweepResult);
 		PlayEffectsAndDestroy();

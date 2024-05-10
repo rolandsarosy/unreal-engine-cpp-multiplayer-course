@@ -9,8 +9,6 @@ int32 ACPlayerState::GetCoinsAmount() const { return CurrentCoinsAmount; }
 
 bool ACPlayerState::AddCoins(AActor* InstigatorActor, const int32 AmountToAdd)
 {
-	if (AmountToAdd < 1) return false;
-	
 	if (CurrentCoinsAmount + AmountToAdd < MAX_int32)
 	{
 		CurrentCoinsAmount += AmountToAdd;
@@ -23,8 +21,6 @@ bool ACPlayerState::AddCoins(AActor* InstigatorActor, const int32 AmountToAdd)
 
 bool ACPlayerState::RemoveCoins(AActor* InstigatorActor, const int32 AmountToRemove)
 {
-	if (AmountToRemove > -1) return false;
-	
 	if (AmountToRemove <= CurrentCoinsAmount)
 	{
 		CurrentCoinsAmount -= AmountToRemove;

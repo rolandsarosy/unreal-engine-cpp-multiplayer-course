@@ -4,6 +4,7 @@
 #include "GameFramework/Character.h"
 #include "CAICharacter.generated.h"
 
+class UCActionComponent;
 class UCWorldUserWidget;
 class UCAttributeComponent;
 class UPawnSensingComponent;
@@ -25,6 +26,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
 	TObjectPtr<UCAttributeComponent> AttributeComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
+	TObjectPtr<UCActionComponent> ActionComponent;
 
 	UPROPERTY(EditDefaultsOnly, Category="UI")
 	TSubclassOf<UUserWidget> HealthBarWidgetClass;

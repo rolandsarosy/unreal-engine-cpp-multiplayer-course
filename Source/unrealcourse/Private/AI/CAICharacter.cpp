@@ -3,6 +3,7 @@
 #include "AIController.h"
 #include "BrainComponent.h"
 #include "CWorldUserWidget.h"
+#include "AbilitySystem/CActionComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/CapsuleComponent.h"
@@ -14,6 +15,7 @@ ACAICharacter::ACAICharacter()
 {
 	PawnSensingComponent = CreateDefaultSubobject<UPawnSensingComponent>("PawnSensingComponent");
 	AttributeComponent = CreateDefaultSubobject<UCAttributeComponent>("AttributeComponent");
+	ActionComponent = CreateDefaultSubobject<UCActionComponent>("ActionComponent");
 
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 

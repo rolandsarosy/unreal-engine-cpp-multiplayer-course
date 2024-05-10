@@ -13,7 +13,7 @@ void UCActionComponent::BeginPlay()
 
 	for (const TSubclassOf<UCAction> ActionClass : DefaultActions)
 	{
-		AddAction(ActionClass);
+		AddAction(ActionClass, GetOwner()); // At BeginPlay, only default actions are added, so we can assume that the owner is the instigator.
 	}
 }
 
@@ -26,13 +26,23 @@ void UCActionComponent::TickComponent(const float DeltaTime, const ELevelTick Ti
 }
 
 // ReSharper disable once CppTooWideScopeInitStatement - Results in worse readability
-void UCActionComponent::AddAction(const TSubclassOf<UCAction> ActionClass)
+void UCActionComponent::AddAction(const TSubclassOf<UCAction> ActionClass, AActor* Instigator)
 {
 	if (!ensure(ActionClass)) return;
 
 	UCAction* NewAction = NewObject<UCAction>(this, ActionClass);
 
-	if (ensure(NewAction)) CurrentActions.Add(NewAction);
+	if (ensure(NewAction))
+	{
+		CurrentActions.Add(NewAction);
+		if (NewAction->bAutoStart && ensure(NewAction->CanStart(Instigator))) NewAction->StartAction(Instigator);
+	}
+}
+
+void UCActionComponent::RemoveAction(UCAction* ActionToRemove)
+{
+	if (!ensure(ActionToRemove && !ActionToRemove->IsRunning())) return;
+	CurrentActions.Remove(ActionToRemove);
 }
 
 bool UCActionComponent::StartActionByTag(AActor* Instigator, const FGameplayTag Tag)
