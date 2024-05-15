@@ -25,16 +25,16 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="Actions")
 	void AddAction(TSubclassOf<UCAction> ActionClass, AActor* Instigator);
-	
+
 	UFUNCTION(BlueprintCallable, Category="Actions")
 	void RemoveAction(UCAction* ActionToRemove);
-	
+
 	UFUNCTION(BlueprintCallable, Category="Actions")
 	bool StartActionByTag(AActor* Instigator, FGameplayTag Tag);
 
 	UFUNCTION(BlueprintCallable, Category="Actions")
 	bool StopActionByTag(AActor* Instigator, FGameplayTag Tag);
-	
+
 	UFUNCTION(BlueprintCallable, Category="Tags", meta=(Tooltip = "Should be used for adding/removing keycard-style GameplayTags."))
 	void AddGameplayTag(FGameplayTag Tag);
 
@@ -48,9 +48,5 @@ private:
 	UPROPERTY(EditAnywhere, Category="Actions")
 	TArray<TSubclassOf<UCAction>> DefaultActions;
 
-	UCActionComponent();
-
 	virtual void BeginPlay() override;
-
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 };
