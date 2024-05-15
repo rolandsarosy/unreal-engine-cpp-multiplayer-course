@@ -22,7 +22,7 @@ void UCActionComponent::TickComponent(const float DeltaTime, const ELevelTick Ti
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	const FString DebugMessage = GetNameSafe(GetOwner()) + " " + ActiveGameplayTags.ToStringSimple();
-	GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::White, DebugMessage);
+	// GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::White, DebugMessage);
 }
 
 // ReSharper disable once CppTooWideScopeInitStatement - Results in worse readability
