@@ -1,18 +1,18 @@
-#include "AbilitySystem/CAction_ProjectileAttack.h"
+#include "GAS/CActionAbility_ProjectileAttack.h"
 
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 
 // This class is tightly coupled to the CCharacter class itself, which isn't ideal. This is going to stay like this for the time being and I might change it in the future. 
-UCAction_ProjectileAttack::UCAction_ProjectileAttack()
+UCActionAbility_ProjectileAttack::UCActionAbility_ProjectileAttack()
 {
 	AttackSocketName = "Muzzle_01";
 	AttackAnimationMontageNotifyStart = "AttackReady";
 	AttackAnimationMontageNotifyEnd = "AttackDone";
 }
 
-void UCAction_ProjectileAttack::StartAction_Implementation(AActor* Instigator)
+void UCActionAbility_ProjectileAttack::StartAction_Implementation(AActor* Instigator)
 {
 	Super::StartAction_Implementation(Instigator);
 
@@ -24,11 +24,11 @@ void UCAction_ProjectileAttack::StartAction_Implementation(AActor* Instigator)
 
 	if (UAnimInstance* AnimationInstance = InstigatorCharacter->GetMesh()->GetAnimInstance())
 	{
-		AnimationInstance->OnPlayMontageNotifyBegin.AddDynamic(this, &UCAction_ProjectileAttack::OnMontageNotifyBegin);
+		AnimationInstance->OnPlayMontageNotifyBegin.AddDynamic(this, &UCActionAbility_ProjectileAttack::OnMontageNotifyBegin);
 	}
 }
 
-void UCAction_ProjectileAttack::SpawnProjectile(ACharacter* InstigatorCharacter) const
+void UCActionAbility_ProjectileAttack::SpawnProjectile(ACharacter* InstigatorCharacter) const
 {
 	const FTransform SpawnTransform = FTransform(TraceForProjectileSpawnRotator(InstigatorCharacter), InstigatorCharacter->GetMesh()->GetSocketLocation(AttackSocketName));
 	FActorSpawnParameters SpawnParameters = FActorSpawnParameters();
@@ -47,7 +47,7 @@ void UCAction_ProjectileAttack::SpawnProjectile(ACharacter* InstigatorCharacter)
  *
  * @return The rotation to be used when spawning a projectile.
  */
-FRotator UCAction_ProjectileAttack::TraceForProjectileSpawnRotator(ACharacter* InstigatorCharacter) const
+FRotator UCActionAbility_ProjectileAttack::TraceForProjectileSpawnRotator(ACharacter* InstigatorCharacter) const
 {
 	FHitResult TraceHitResult;
 	FVector TraceStart = InstigatorCharacter->GetPawnViewLocation();
@@ -66,7 +66,7 @@ FRotator UCAction_ProjectileAttack::TraceForProjectileSpawnRotator(ACharacter* I
 }
 
 // I think the way the casting from the Payload is done is a nasty hack, but the result is still somehow better than using flat Timers instead of AnimNotifies. 
-void UCAction_ProjectileAttack::OnMontageNotifyBegin(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload)
+void UCActionAbility_ProjectileAttack::OnMontageNotifyBegin(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload)
 {
 	ACharacter* InstigatorCharacter = Cast<ACharacter>(BranchingPointPayload.SkelMeshComponent->GetOwner());
 	if (!ensureAlways(InstigatorCharacter)) return;
@@ -80,7 +80,7 @@ void UCAction_ProjectileAttack::OnMontageNotifyBegin(FName NotifyName, const FBr
 	}
 	else if (NotifyName == AttackAnimationMontageNotifyEnd)
 	{ 
-		AnimationInstance->OnPlayMontageNotifyBegin.RemoveDynamic(this, &UCAction_ProjectileAttack::OnMontageNotifyBegin);
+		AnimationInstance->OnPlayMontageNotifyBegin.RemoveDynamic(this, &UCActionAbility_ProjectileAttack::OnMontageNotifyBegin);
 		StopAction(InstigatorCharacter);
 	}
 }

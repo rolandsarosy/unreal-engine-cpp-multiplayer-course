@@ -1,6 +1,5 @@
-#include "AbilitySystem/CActionEffect.h"
-
-#include "AbilitySystem/CActionComponent.h"
+#include "GAS/CActionEffect.h"
+#include "Components/CActionComponent.h"
 
 UCActionEffect::UCActionEffect()
 {
@@ -33,7 +32,7 @@ void UCActionEffect::StopAction_Implementation(AActor* Instigator)
 	GetWorld()->GetTimerManager().ClearTimer(DurationHandle);
 	GetWorld()->GetTimerManager().ClearTimer(PeriodHandle);
 
-	if (UCActionComponent* ActionComponent = GetOwningComponent()) ActionComponent->RemoveAction(this);
+	if (UCActionComponent* ActionComponent = GetOwningComponent()) ActionComponent->RemoveAction(this, Instigator);
 }
 
 void UCActionEffect::ExecutePeriodicEffect_Implementation(AActor* Instigator)

@@ -5,7 +5,7 @@
 #include "Projectiles/CBaseProjectile.h"
 #include "CMagicProjectile.generated.h"
 
-class UCAction;
+class UCBaseAction;
 class UCActionEffect;
 class USoundCue;
 class UAudioComponent;
@@ -20,8 +20,6 @@ public:
 	ACMagicProjectile();
 
 	virtual void PostInitializeComponents() override;
-
-	virtual void BeginPlay() override;
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category="Audio")

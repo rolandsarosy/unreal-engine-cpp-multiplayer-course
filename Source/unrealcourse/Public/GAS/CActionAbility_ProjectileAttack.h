@@ -1,16 +1,16 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "CAction.h"
-#include "CAction_ProjectileAttack.generated.h"
+#include "CBaseAction.h"
+#include "CActionAbility_ProjectileAttack.generated.h"
 
 UCLASS(Abstract)
-class UNREALCOURSE_API UCAction_ProjectileAttack : public UCAction
+class UNREALCOURSE_API UCActionAbility_ProjectileAttack : public UCBaseAction
 {
 	GENERATED_BODY()
 
 public:
-	UCAction_ProjectileAttack();
+	UCActionAbility_ProjectileAttack();
 
 	virtual void StartAction_Implementation(AActor* Instigator) override;
 

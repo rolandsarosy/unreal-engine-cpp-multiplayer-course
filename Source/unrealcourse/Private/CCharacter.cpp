@@ -1,6 +1,5 @@
 #include "CCharacter.h"
 
-#include "AbilitySystem/CActionComponent.h"
 #include "Components/CAttributeComponent.h"
 #include "Components/CInteractionComponent.h"
 #include "Camera/CameraComponent.h"
@@ -8,6 +7,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Components/CActionComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 

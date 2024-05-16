@@ -1,14 +1,14 @@
-#include "AbilitySystem/CAction.h"
+#include "GAS/CBaseAction.h"
 
-#include "AbilitySystem/CActionComponent.h"
+#include "Components/CActionComponent.h"
 
-void UCAction::StartAction_Implementation(AActor* Instigator)
+void UCBaseAction::StartAction_Implementation(AActor* Instigator)
 {
 	GetOwningComponent()->ActiveGameplayTags.AppendTags(GrantsTags);
 	bIsRunning = true;
 }
 
-void UCAction::StopAction_Implementation(AActor* Instigator)
+void UCBaseAction::StopAction_Implementation(AActor* Instigator)
 {
 	ensureAlways(bIsRunning); // Sanity check to notify developers that an issue got introduced as an action that isn't running, could never be stopped.
 
@@ -16,12 +16,12 @@ void UCAction::StopAction_Implementation(AActor* Instigator)
 	bIsRunning = false;
 }
 
-bool UCAction::CanStart_Implementation(AActor* Instigator)
+bool UCBaseAction::CanStart_Implementation(AActor* Instigator)
 {
 	return !bIsRunning && !GetOwningComponent()->ActiveGameplayTags.HasAny(BlockedTags);
 }
 
-UWorld* UCAction::GetWorld() const
+UWorld* UCBaseAction::GetWorld() const
 {
 	// Outer is set when creating a new action via NewObject<T>.
 	if (const UActorComponent* ActorComponent = Cast<UActorComponent>(GetOuter()))
@@ -31,12 +31,12 @@ UWorld* UCAction::GetWorld() const
 	return nullptr;
 }
 
-UCActionComponent* UCAction::GetOwningComponent() const
+UCActionComponent* UCBaseAction::GetOwningComponent() const
 {
 	return Cast<UCActionComponent>(GetOuter());
 }
 
-bool UCAction::IsRunning() const
+bool UCBaseAction::IsRunning() const
 {
 	return bIsRunning;
 }

@@ -1,12 +1,11 @@
 #include "Projectiles/CMagicProjectile.h"
 
 #include "CGameplayFunctionLibrary.h"
-#include "AbilitySystem/CAction.h"
-#include "AbilitySystem/CActionComponent.h"
-#include "AbilitySystem/CActionEffect.h"
 #include "Components/AudioComponent.h"
+#include "Components/CActionComponent.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "GAS/CActionEffect.h"
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
 
@@ -30,33 +29,27 @@ void ACMagicProjectile::PostInitializeComponents()
 	SphereComponent->OnComponentHit.AddDynamic(this, &ACMagicProjectile::OnComponentHit);
 }
 
-void ACMagicProjectile::BeginPlay()
-{
-	Super::BeginPlay();
-}
-
 void ACMagicProjectile::OnComponentOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
                                            const FHitResult& SweepResult)
 {
-	if (OtherActor && OtherActor != GetInstigator())
+	if (!OtherActor || OtherActor == GetInstigator()) return;
+
+	UCActionComponent* ActionComponent = UCActionComponent::GetComponentFrom(OtherActor);
+
+	// Parry the projectile if possible
+	if (ActionComponent && ActionComponent->ActiveGameplayTags.HasTag(ParryTag) && CurrentParryAmount < MaxParryAmount)
 	{
-		UCActionComponent* ActionComponent = Cast<UCActionComponent>(OtherActor->GetComponentByClass(UCActionComponent::StaticClass()));
-
-		// Parry the projectile if possible
-		if (ActionComponent && ActionComponent->ActiveGameplayTags.HasTag(ParryTag) && CurrentParryAmount < MaxParryAmount)
-		{
-			CurrentParryAmount++;
-			ProjectileMovementComponent->Velocity = -ProjectileMovementComponent->Velocity;
-			SetInstigator(Cast<APawn>(OtherActor));
-			return;
-		}
-
-		// Apply effects if there is one set.
-		if (ActionComponent && AppliedEffectClass) ActionComponent->AddAction(AppliedEffectClass, GetInstigator());
-		
-		UCGameplayFunctionLibrary::ApplyDirectionalImpulseDamage(GetInstigator(), OtherActor, DamageAmount, SweepResult);
-		PlayEffectsAndDestroy();
+		CurrentParryAmount++;
+		ProjectileMovementComponent->Velocity = -ProjectileMovementComponent->Velocity;
+		SetInstigator(Cast<APawn>(OtherActor));
+		return;
 	}
+
+	// Apply effects if there is one set.
+	if (ActionComponent && AppliedEffectClass) ActionComponent->AddAction(AppliedEffectClass, GetInstigator());
+
+	UCGameplayFunctionLibrary::ApplyDirectionalImpulseDamage(GetInstigator(), OtherActor, DamageAmount, SweepResult);
+	PlayEffectsAndDestroy();
 }
 
 // ReSharper disable once CppParameterMayBeConstPtrOrRef ~ Incorrect suggestion

@@ -2,12 +2,13 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
-#include "CAction.generated.h"
+#include "CBaseAction.generated.h"
 
 class UCActionComponent;
+
 /**
- * @class UCAction
- * @brief The base class for all GAS-like actions in the game.
+ * @class UCBaseAction
+ * @brief The base class for all GAS-like actions in the game. Direct children should be used as base classes for actions and effects.
  *
  * This class provides a common interface and functionality for starting and stopping actions.
  * Each action has an ActionName property that can be used to start and stop actions without a reference to the object.
@@ -15,7 +16,7 @@ class UCActionComponent;
  * @note All Actions should be placed inside the @AActor's @CActionComponent. 
  */
 UCLASS(Blueprintable, Abstract)
-class UNREALCOURSE_API UCAction : public UObject
+class UNREALCOURSE_API UCBaseAction : public UObject
 {
 	GENERATED_BODY()
 
