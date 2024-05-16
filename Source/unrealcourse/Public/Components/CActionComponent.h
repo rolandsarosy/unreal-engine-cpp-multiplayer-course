@@ -84,11 +84,11 @@ class UNREALCOURSE_API UCActionComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintCallable, Category="Actions", meta=(DisplayName = "Get ActionComponent From Actor", Tooltip = "Returns ActionComponent if the Actor has any. Otherwise a nullptr."))
-	static UCActionComponent* GetComponentFrom(AActor* FromActor);
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Tags")
 	FGameplayTagContainer ActiveGameplayTags;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Actions")
+	TArray<TObjectPtr<UCBaseAction>> CurrentActions;
 
 	UPROPERTY(BlueprintAssignable, Category="Actions")
 	FOnActionAdded OnActionAdded;
@@ -107,6 +107,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category="Actions")
 	FOnGameplayTagRemoved OnGameplayTagRemoved;
+	
+	UFUNCTION(BlueprintCallable, Category="Actions", meta=(DisplayName = "Get ActionComponent From Actor", Tooltip = "Returns ActionComponent if the Actor has any. Otherwise a nullptr."))
+	static UCActionComponent* GetComponentFrom(AActor* FromActor);
 
 	UFUNCTION(BlueprintCallable, Category="Actions")
 	void AddAction(TSubclassOf<UCBaseAction> ActionClass, AActor* Instigator);
@@ -127,9 +130,6 @@ public:
 	bool RemoveGameplayTag(FGameplayTag Tag);
 
 private:
-	UPROPERTY(VisibleAnywhere, Category="Actions")
-	TArray<TObjectPtr<UCBaseAction>> CurrentActions;
-
 	UPROPERTY(EditAnywhere, Category="Actions")
 	TArray<TSubclassOf<UCBaseAction>> DefaultActions;
 

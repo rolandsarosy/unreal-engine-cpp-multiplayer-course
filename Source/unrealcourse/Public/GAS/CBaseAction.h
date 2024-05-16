@@ -22,7 +22,7 @@ class UNREALCOURSE_API UCBaseAction : public UObject
 
 public:
 	/** Action tag to start/stop without a reference to the object. **/
-	UPROPERTY(EditDefaultsOnly, Category="Action")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Action")
 	FGameplayTag Tag;
 
 	UFUNCTION(BlueprintNativeEvent, Category="Action")
