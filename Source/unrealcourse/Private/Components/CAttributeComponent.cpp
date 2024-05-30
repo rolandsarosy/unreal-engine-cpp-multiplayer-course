@@ -4,11 +4,17 @@
 
 static TAutoConsoleVariable CVarDamageMultiplier(TEXT("course.DamageMultiplier"), 1.0f, TEXT("Global damage multiplier for the AttributeComponent."), ECVF_Cheat);
 static TAutoConsoleVariable CVarHealingMultiplier(TEXT("course.HealingMultiplier"), 1.0f, TEXT("Global healing multiplier for the AttributeComponent."), ECVF_Cheat);
+static TAutoConsoleVariable CVarRageGainMultiplier(TEXT("course.RageGainMultiplier"), 1.0f, TEXT("Global Rage gain multiplier for the AttributeComponent."), ECVF_Cheat);
+static TAutoConsoleVariable CVarRageCostMultiplier(TEXT("course.RageCostMultiplier"), 1.0f, TEXT("Global Rage cost multiplier for the AttributeComponent."), ECVF_Cheat);
 
 UCAttributeComponent::UCAttributeComponent()
 {
 	HealthMax = 100;
 	HealthCurrent = HealthMax;
+	IsRageEnabled = false;
+	RageGainPercentage = 0;
+	RageCurrent = 0;
+	RageMax = 0;
 }
 
 /**
@@ -41,14 +47,45 @@ bool UCAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delt
 	{
 		HealthCurrent = ProposedHealth;
 		OnHealthChanged.Broadcast(InstigatorActor, this, HealthCurrent, Delta);
+
+		if (Delta < 0) ApplyRageChange(InstigatorActor, std::abs(Delta) * (static_cast<float>(RageGainPercentage) / 100.0F));
 	}
-	
+
 	if (!IsAlive())
 	{
 		OnDeath.Broadcast(InstigatorActor, this);
 
 		// I greatly dislike this hard-coupled nightmare of a statement, but this is what was done in class. TODO: Use something like a GameplayMessage or maybe a delegate of sorts here.
 		GetWorld()->GetAuthGameMode<ACGameModeBase>()->OnActorKilled(GetOwner(), InstigatorActor);
+	}
+
+	return true;
+}
+
+bool UCAttributeComponent::ApplyRageChange(AActor* InstigatorActor, float Delta)
+{
+	if (!IsRageEnabled) return false;
+	if (!IsAlive()) return false;
+	if (RageCurrent == 0 && Delta < 0) return false;
+	if (RageCurrent == RageMax) return false;
+
+	if (Delta > 0) Delta *= CVarRageGainMultiplier.GetValueOnGameThread();
+	if (Delta < 0) Delta *= CVarRageCostMultiplier.GetValueOnGameThread();
+
+	if (const float ProposedRage = RageCurrent + Delta; ProposedRage > RageMax) // Cases where the result would be over the maximum amount of Rage.
+	{
+		RageCurrent = RageMax;
+		OnRageChanged.Broadcast(InstigatorActor, this, RageCurrent, RageMax - (ProposedRage - Delta));
+	}
+	else if (ProposedRage < 0) // Cases where the result would be below 0
+	{
+		RageCurrent = 0;
+		OnRageChanged.Broadcast(InstigatorActor, this, RageCurrent, Delta - ProposedRage);
+	}
+	else // Cases where the result is between 0 and the maximum amount of Rage
+	{
+		RageCurrent = ProposedRage;
+		OnRageChanged.Broadcast(InstigatorActor, this, RageCurrent, Delta);
 	}
 
 	return true;
@@ -61,5 +98,9 @@ bool UCAttributeComponent::KillOwner(AActor* InstigatorActor) { return ApplyHeal
 float UCAttributeComponent::GetHealthCurrent() const { return HealthCurrent; }
 
 float UCAttributeComponent::GetHealthMax() const { return HealthMax; }
+
+float UCAttributeComponent::GetRageCurrent() const { return RageCurrent; }
+
+float UCAttributeComponent::GetRageMax() const { return RageMax; }
 
 UCAttributeComponent* UCAttributeComponent::GetComponentFrom(AActor* FromActor) { return FromActor ? FromActor->FindComponentByClass<UCAttributeComponent>() : nullptr; }
