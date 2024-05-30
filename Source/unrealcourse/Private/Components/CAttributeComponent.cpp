@@ -67,7 +67,7 @@ bool UCAttributeComponent::ApplyRageChange(AActor* InstigatorActor, float Delta)
 	if (!IsRageEnabled) return false;
 	if (!IsAlive()) return false;
 	if (RageCurrent == 0 && Delta < 0) return false;
-	if (RageCurrent == RageMax) return false;
+	if (RageCurrent == RageMax && Delta > 0) return false;
 
 	if (Delta > 0) Delta *= CVarRageGainMultiplier.GetValueOnGameThread();
 	if (Delta < 0) Delta *= CVarRageCostMultiplier.GetValueOnGameThread();
