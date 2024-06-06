@@ -47,7 +47,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnActionStarted, UCBaseAction*, Ac
  *
  * Subscribed listeners can use this, in combination with the other delegates, to react to changes to the owner's abilities and effects.
  */
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnActionStopped, UCBaseAction*, ActionStarted, AActor*, Instigator);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnActionStopped, UCBaseAction*, ActionStopped, AActor*, Instigator);
 
 /** 
  * @brief Parameterized Multicast Delegate that responds a @FGameplayTag being added to the @UCActionComponent.
@@ -69,7 +69,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGameplayTagAdded, FGameplayTag, T
  *
  * Subscribed listeners can use this, in combination with the other delegates, to react to changes to the owner's abilities and effects.
  */
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGameplayTagRemoved, FGameplayTag, TagAdded);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGameplayTagRemoved, FGameplayTag, TagRemoved);
 
 /**
  * @class UCActionComponent

@@ -65,7 +65,6 @@ bool UCActionComponent::StartActionByTag(AActor* Instigator, const FGameplayTag 
 		if (Action && Action->Tag == Tag && Action->CanStart(Instigator))
 		{
 			Action->StartAction(Instigator);
-			OnActionStarted.Broadcast(Action, Instigator);
 			return true;
 		}
 	}
@@ -88,7 +87,6 @@ bool UCActionComponent::StopActionByTag(AActor* Instigator, FGameplayTag Tag)
 		if (Action && Action->Tag == Tag && Action->IsRunning())
 		{
 			Action->StopAction(Instigator);
-			OnActionStopped.Broadcast(Action, Instigator);
 			return true;
 		}
 	}

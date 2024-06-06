@@ -5,6 +5,7 @@
 void UCBaseAction::StartAction_Implementation(AActor* Instigator)
 {
 	GetOwningComponent()->ActiveGameplayTags.AppendTags(GrantsTags);
+	GetOwningComponent()->OnActionStarted.Broadcast(this, Instigator);
 	bIsRunning = true;
 }
 
@@ -13,6 +14,7 @@ void UCBaseAction::StopAction_Implementation(AActor* Instigator)
 	ensureAlways(bIsRunning); // Sanity check to notify developers that an issue got introduced as an action that isn't running, could never be stopped.
 
 	GetOwningComponent()->ActiveGameplayTags.RemoveTags(GrantsTags);
+	GetOwningComponent()->OnActionStopped.Broadcast(this, Instigator);
 	bIsRunning = false;
 }
 
