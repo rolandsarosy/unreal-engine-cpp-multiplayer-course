@@ -32,7 +32,6 @@ void UCActionComponent::AddAction(const TSubclassOf<UCBaseAction> ActionClass, A
 		if (NewAction->bAutoStart && ensure(NewAction->CanStart(Instigator)))
 		{
 			NewAction->StartAction(Instigator);
-			OnActionStarted.Broadcast(NewAction, Instigator);
 		}
 	}
 }

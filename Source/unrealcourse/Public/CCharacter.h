@@ -22,6 +22,9 @@ class UNREALCOURSE_API ACCharacter : public ACharacter
 	GENERATED_BODY()
 
 public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
+	TObjectPtr<UCAttributeComponent> AttributeComponent;
+
 	ACCharacter();
 
 protected:
@@ -54,22 +57,22 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TObjectPtr<UInputAction> Input_Parry;
-	
+
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	FGameplayTag ActionTag_PrimaryAttack;
-	
+
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	FGameplayTag ActionTag_SpecialAttack;
-	
+
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	FGameplayTag ActionTag_TeleportAttack;
-	
+
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	FGameplayTag ActionTag_Sprint;
-	
+
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	FGameplayTag ActionTag_Parry;
-	
+
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UCameraComponent> CameraComponent;
 
@@ -78,9 +81,6 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category="Components")
 	TObjectPtr<UCInteractionComponent> InteractionComponent;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
-	TObjectPtr<UCAttributeComponent> AttributeComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
 	TObjectPtr<UCActionComponent> ActionComponent;
@@ -113,6 +113,6 @@ private:
 	void Parry();
 
 	virtual void PostInitializeComponents() override;
-	
+
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 };
