@@ -33,10 +33,15 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="UI")
 	TSubclassOf<UUserWidget> HealthBarWidgetClass;
 
+	UPROPERTY(EditDefaultsOnly, Category="UI")
+	TSubclassOf<UUserWidget> SpottedPopupWidgetClass;
+
 	virtual void PostInitializeComponents() override;
 
 private:
 	TObjectPtr<UCWorldUserWidget> ActiveHealthBar;
+
+	bool HasSeenPlayer;
 
 	UFUNCTION()
 	void OnHealthChanged(AActor* InstigatorActor, UCAttributeComponent* UAttributeComponent, float NewHealth, float Delta);
@@ -51,4 +56,6 @@ private:
 	void OnSeePawn(APawn* Pawn);
 
 	void AddHealthBar();
+
+	void AddSpottedWidgetConditionally(const AActor* InstigatorActor);
 };

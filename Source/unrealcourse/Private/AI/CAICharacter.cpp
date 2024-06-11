@@ -2,6 +2,7 @@
 
 #include "AIController.h"
 #include "BrainComponent.h"
+#include "CCharacter.h"
 #include "CWorldUserWidget.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Blueprint/UserWidget.h"
@@ -23,6 +24,8 @@ ACAICharacter::ACAICharacter()
 	GetCharacterMovement()->bUseControllerDesiredRotation = true;
 
 	CoinRewardUponDeath = 13;
+
+	HasSeenPlayer = false;
 }
 
 void ACAICharacter::PostInitializeComponents()
@@ -40,7 +43,11 @@ void ACAICharacter::OnHealthChanged(AActor* InstigatorActor, UCAttributeComponen
 
 	if (Delta < 0.0f)
 	{
-		if (InstigatorActor != this) SetTargetActor(Cast<APawn>(InstigatorActor), true);
+		if (InstigatorActor != this)
+		{
+			SetTargetActor(Cast<APawn>(InstigatorActor), true);
+			AddSpottedWidgetConditionally(InstigatorActor);
+		}
 		GetMesh()->SetScalarParameterValueOnMaterials("TimeToHit", GetWorld()->TimeSeconds);
 	}
 }
@@ -83,11 +90,18 @@ void ACAICharacter::SetTargetActor(AActor* NewTarget, const bool ShouldOverrideC
 		if (const UCAttributeComponent* CurrentTargetAttributeComponent = UCAttributeComponent::GetComponentFrom(CurrentTarget)) IsCurrentTargetAlive = CurrentTargetAttributeComponent->IsAlive();
 	}
 
-	if (ShouldOverrideCurrentTarget || !CurrentTarget || !IsCurrentTargetAlive) BlackboardComponent->SetValueAsObject(BlackboardKeyName, NewTarget);
+	if (ShouldOverrideCurrentTarget || !CurrentTarget || !IsCurrentTargetAlive)
+	{
+		BlackboardComponent->SetValueAsObject(BlackboardKeyName, NewTarget);
+	}
 }
 
 // ReSharper disable once CppMemberFunctionMayBeConst - Incorrect suggestion 
-void ACAICharacter::OnSeePawn(APawn* Pawn) { SetTargetActor(Pawn, false); }
+void ACAICharacter::OnSeePawn(APawn* Pawn)
+{
+	SetTargetActor(Pawn, false);
+	AddSpottedWidgetConditionally(Pawn);
+}
 
 void ACAICharacter::AddHealthBar()
 {
@@ -100,4 +114,15 @@ void ACAICharacter::AddHealthBar()
 			ActiveHealthBar->AddToViewport();
 		}
 	}
+}
+
+void ACAICharacter::AddSpottedWidgetConditionally(const AActor* InstigatorActor)
+{
+	if (HasSeenPlayer || !InstigatorActor->IsA(ACCharacter::StaticClass())) return;
+	
+	UCWorldUserWidget* Widget = CreateWidget<UCWorldUserWidget>(GetWorld(), SpottedPopupWidgetClass);
+	Widget->AttachedActor = this;
+	Widget->AddToViewport();
+
+	HasSeenPlayer = true;
 }
