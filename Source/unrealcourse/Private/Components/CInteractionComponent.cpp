@@ -19,10 +19,19 @@ UCInteractionComponent::UCInteractionComponent()
 	CollisionChannel = ECC_WorldDynamic;
 }
 
-// ReSharper disable once CppMemberFunctionMayBeConst ~ Incorrect suggestion
 void UCInteractionComponent::PrimaryInteract()
 {
-	if (FocusedActor) ICGameplayInterface::Execute_Interact(FocusedActor, Cast<APawn>(GetOwner()));
+	ServerInteract(FocusedActor);
+}
+
+void UCInteractionComponent::ServerInteract_Implementation(AActor* InFocus)
+{
+	if (!InFocus)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, "Interaction Component: No focused actor to interact with.");
+		return;
+	}
+	ICGameplayInterface::Execute_Interact(InFocus, Cast<APawn>(GetOwner()));
 }
 
 void UCInteractionComponent::BeginPlay()
@@ -31,8 +40,11 @@ void UCInteractionComponent::BeginPlay()
 
 	DefaultWidgetInstance = CreateWidget<UCWorldUserWidget>(GetWorld(), DefaultWidgetClass);
 
-	FTimerHandle TimerHandle;
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle, [this] { FindBestInteractable(); }, TraceFrequency, true);
+	if (Cast<APawn>(GetOwner())->IsLocallyControlled())
+	{
+		FTimerHandle TimerHandle;
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, [this] { FindBestInteractable(); }, TraceFrequency, true);
+	}
 }
 
 /**
@@ -62,12 +74,12 @@ void UCInteractionComponent::FindBestInteractable()
 		if (AActor* HitActor = SingleHit.GetActor(); HitActor && HitActor->Implements<UCGameplayInterface>())
 		{
 			FocusedActor = HitActor;
-			if (CVarDebugDrawInteraction.GetValueOnGameThread()) DrawDebugSphere(GetWorld(), SingleHit.Location, TraceRadius, 32, bIsBlockingHit ? FColor::Green : FColor::Red, false, 1.0F);
+			if (CVarDebugDrawInteraction.GetValueOnGameThread()) DrawDebugSphere(GetWorld(), SingleHit.Location, TraceRadius, 32, bIsBlockingHit ? FColor::Green : FColor::Red, false, 0.0F);
 			break;
 		}
 	}
 
-	if (CVarDebugDrawInteraction.GetValueOnGameThread()) DrawDebugLine(GetWorld(), EyeLocation, LineEnd, bIsBlockingHit ? FColor::Green : FColor::Red, false, 1.5, 0, 1.0F);
+	if (CVarDebugDrawInteraction.GetValueOnGameThread()) DrawDebugLine(GetWorld(), EyeLocation, LineEnd, bIsBlockingHit ? FColor::Green : FColor::Red, false, 1.5, 0, 0.0F);
 
 	SetWorldWidget();
 }

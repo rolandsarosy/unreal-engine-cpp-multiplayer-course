@@ -39,8 +39,11 @@ private:
 	TEnumAsByte<ECollisionChannel> CollisionChannel;
 
 	virtual void BeginPlay() override;
-	
-	void FindBestInteractable();
 
+	UFUNCTION(Server, Reliable)
+	void ServerInteract(AActor* InFocus);
+
+	void FindBestInteractable();
+	
 	void SetWorldWidget();
 };
