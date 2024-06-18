@@ -28,7 +28,7 @@ FVector UCWorldUserWidget::CalculateOffsetScreenPosition() const
 
 	FVector AttachedActorOrigin;
 	FVector AttachedActorBoxExtent;
-	AttachedActor->GetActorBounds(false, AttachedActorOrigin, AttachedActorBoxExtent);
+	AttachedActor->GetActorBounds(true, AttachedActorOrigin, AttachedActorBoxExtent);
 
 	FVector ActorLocation = AttachedActor->GetActorLocation();
 	ActorLocation.Z += AttachedActorBoxExtent.Z * VerticalOffsetMultiplier;

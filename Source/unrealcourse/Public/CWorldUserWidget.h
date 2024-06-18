@@ -12,7 +12,7 @@ class UNREALCOURSE_API UCWorldUserWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(BlueprintReadOnly, Category="UI")
+	UPROPERTY(BlueprintReadOnly, Category="UI", meta=(ExposeOnSpawn = true))
 	TObjectPtr<AActor> AttachedActor;
 
 protected:
