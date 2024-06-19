@@ -22,11 +22,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="ItemChest")
 	TObjectPtr<UStaticMeshComponent> LidMesh;
 
-	UPROPERTY(ReplicatedUsing="OnRep_IsLidOpened", BlueprintReadOnly)
+	UPROPERTY(Replicated, BlueprintReadOnly)
 	bool IsLidOpened;
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-
-	UFUNCTION()
-	void OnRep_IsLidOpened() const;
 };
