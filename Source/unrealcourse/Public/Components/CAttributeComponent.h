@@ -15,8 +15,7 @@
  * @param NewHealth: The new health value after the change occurred.
  * @param Delta: The change in health
  *
- * Subscribed listeners can use these parameters to perform appropriate logic, such as
- * displaying damage numbers or updating health bar UI.
+ * Subscribed listeners can use these parameters to perform appropriate logic, such as displaying damage numbers or updating health bar UI.
  */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FOnHealthChanged, AActor*, InstigatorActor, UCAttributeComponent*, OwnerComponent, float, NewHealth, float, Delta);
 
@@ -31,18 +30,17 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FOnHealthChanged, AActor*, Instiga
  * @param NewRage: The new Rage value after the change occurred.
  * @param Delta: The change in Rage. 
  *
- * Subscribed listeners can use these parameters to perform appropriate logic, such as
- * displaying damage numbers or updating health bar UI.
+ * Subscribed listeners can use these parameters to perform appropriate logic, such as displaying damage numbers or updating health bar UI.
  */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FOnRageChanged, AActor*, InstigatorActor, UCAttributeComponent*, OwnerComponent, float, NewRage, float, Delta);
 
 /** 
  * @brief Parameterized Multicast Delegate that responds to the event when health hits zero, death.
  *
- * The FOnDeath Multicast Delegate is designed to respond to when health reaches zero
- * in an entity. It broadcasts to all subscribed listeners when this happens, after the FOnHealthChanged Multicast Delegate has broadcasted. They're not exclusive.
+ * The FOnDeath Multicast Delegate is designed to respond to when health reaches zero in an entity.
+ *It broadcasts to all subscribed listeners when this happens, after the FOnHealthChanged Multicast Delegate has broadcasted. They're not exclusive.
  * 
- * @param KillerActor: The Actor that initiated the health change, typically the "attacker". In cases of healing, it can be itself or the healing item or Actor who heals.
+ * @param KillerActor: The Actor killed the owner of the AttributeComponent, typically the "attacker".
  * @param OwnerComponent: The Attribute Component instance that owns the health attribute.
  *
  * Subscribed listeners can use these parameters to perform appropriate logic, such as disabling input, setting ragdolling or a new lifespan.
@@ -94,21 +92,30 @@ public:
 	float GetRageMax() const;
 
 private:
-	UPROPERTY(EditDefaultsOnly, Category="Attributes", meta=(Tooltip = "Signals the current health of the owner. Also marks the starting health."))
+	UPROPERTY(EditDefaultsOnly, Replicated, Category="Attributes", meta=(Tooltip = "Signals the current health of the owner. Also marks the starting health."))
 	float HealthCurrent;
 
-	UPROPERTY(EditDefaultsOnly, Category="Attributes", meta=(Tooltip = "Signals the max health of the owner."))
+	UPROPERTY(EditDefaultsOnly, Replicated, Category="Attributes", meta=(Tooltip = "Signals the max health of the owner."))
 	float HealthMax;
 
-	UPROPERTY(EditDefaultsOnly, Category="Attributes", meta=(Tooltip = "Signals whether the owner collects and holds Rage or not."))
+	UPROPERTY(EditDefaultsOnly, Replicated, Category="Attributes", meta=(Tooltip = "Signals whether the owner collects and holds Rage or not."))
 	bool IsRageEnabled;
 
-	UPROPERTY(EditDefaultsOnly, Category="Attributes", meta=(EditCondition = "IsRageEnabled == true", Tooltip = "Signals which percentage of the incoming damage will be converted to Rage."))
+	UPROPERTY(EditDefaultsOnly, Replicated, Category="Attributes", meta=(EditCondition = "IsRageEnabled == true", Tooltip = "Signals which percentage of the incoming damage will be converted to Rage."))
 	int32 RageGainPercentage;
 
-	UPROPERTY(EditDefaultsOnly, Category="Attributes", meta=(EditCondition = "IsRageEnabled == true", Tooltip = "Signals the current amount of Rage held by the owner. Also marks the starting Rage amount."))
+	UPROPERTY(EditDefaultsOnly, Replicated, Category="Attributes", meta=(EditCondition = "IsRageEnabled == true", Tooltip = "Signals the current amount of Rage held by the owner. Also marks the starting Rage amount."))
 	float RageCurrent;
 
-	UPROPERTY(EditDefaultsOnly, Category="Attributes", meta=(EditCondition = "IsRageEnabled == true", Tooltip = "Signals the maximum amount of Rage the owner can ever hold."))
+	UPROPERTY(EditDefaultsOnly, Replicated, Category="Attributes", meta=(EditCondition = "IsRageEnabled == true", Tooltip = "Signals the maximum amount of Rage the owner can ever hold."))
 	float RageMax;
+
+	UFUNCTION(NetMulticast, Reliable) // @FIXME: Mark as unreliable once the state has been moved out of the ACCharacter
+	void MutlicastOnHealthChanged(AActor* InstigatorActor, float NewHealth, float Delta);
+
+	UFUNCTION(NetMulticast, Reliable) // @FIXME: Mark as unreliable once the state has been moved out of the ACCharacter
+	void MulticastOnRageChanged(AActor* InstigatorActor, float NewRage, float Delta);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastOnDeath(AActor* KillerActor);
 };

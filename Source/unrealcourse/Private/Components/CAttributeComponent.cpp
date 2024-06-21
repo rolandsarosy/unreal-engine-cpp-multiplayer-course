@@ -1,6 +1,7 @@
 #include "Components/CAttributeComponent.h"
 
 #include "CGameModeBase.h"
+#include "Net/UnrealNetwork.h"
 
 static TAutoConsoleVariable CVarDamageMultiplier(TEXT("course.DamageMultiplier"), 1.0f, TEXT("Global damage multiplier for the AttributeComponent."), ECVF_Cheat);
 static TAutoConsoleVariable CVarHealingMultiplier(TEXT("course.HealingMultiplier"), 1.0f, TEXT("Global healing multiplier for the AttributeComponent."), ECVF_Cheat);
@@ -15,6 +16,8 @@ UCAttributeComponent::UCAttributeComponent()
 	RageGainPercentage = 0;
 	RageCurrent = 0;
 	RageMax = 0;
+
+	SetIsReplicatedByDefault(true);
 }
 
 /**
@@ -29,34 +32,35 @@ bool UCAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delt
 	if (!IsAlive()) return false;
 	if (HealthCurrent == HealthMax && Delta >= 0) return false;
 	if (!GetOwner()->CanBeDamaged() && Delta < 0) return false;
+	if (Delta == 0) return false;
 
 	if (Delta > 0) Delta *= CVarHealingMultiplier.GetValueOnGameThread();
 	if (Delta < 0) Delta *= CVarDamageMultiplier.GetValueOnGameThread();
-
+	
 	if (const float ProposedHealth = HealthCurrent + Delta; ProposedHealth < 0.0f) // Cases where the result would be overkill
 	{
 		HealthCurrent = 0.0f;
-		OnHealthChanged.Broadcast(InstigatorActor, this, HealthCurrent, Delta - ProposedHealth);
+		MutlicastOnHealthChanged(InstigatorActor, HealthCurrent, Delta - ProposedHealth);
 	}
 	else if (ProposedHealth > HealthMax) // Cases where the result would be overheal
 	{
 		HealthCurrent = HealthMax;
-		OnHealthChanged.Broadcast(InstigatorActor, this, HealthCurrent, HealthMax - ProposedHealth + Delta);
+		MutlicastOnHealthChanged(InstigatorActor, HealthCurrent, HealthMax - ProposedHealth + Delta);
 	}
 	else // Cases where the result is within 0 and max health.
 	{
 		HealthCurrent = ProposedHealth;
-		OnHealthChanged.Broadcast(InstigatorActor, this, HealthCurrent, Delta);
+		MutlicastOnHealthChanged(InstigatorActor, HealthCurrent, Delta);
 
 		if (Delta < 0) ApplyRageChange(InstigatorActor, std::abs(Delta) * (static_cast<float>(RageGainPercentage) / 100.0F));
 	}
 
 	if (!IsAlive())
 	{
-		OnDeath.Broadcast(InstigatorActor, this);
-
+		MulticastOnDeath(InstigatorActor);
+		
 		// I greatly dislike this hard-coupled nightmare of a statement, but this is what was done in class. TODO: Use something like a GameplayMessage or maybe a delegate of sorts here.
-		GetWorld()->GetAuthGameMode<ACGameModeBase>()->OnActorKilled(GetOwner(), InstigatorActor);
+		if (GetOwner()->HasAuthority()) GetWorld()->GetAuthGameMode<ACGameModeBase>()->OnActorKilled(GetOwner(), InstigatorActor);
 	}
 
 	return true;
@@ -75,20 +79,48 @@ bool UCAttributeComponent::ApplyRageChange(AActor* InstigatorActor, float Delta)
 	if (const float ProposedRage = RageCurrent + Delta; ProposedRage > RageMax) // Cases where the result would be over the maximum amount of Rage.
 	{
 		RageCurrent = RageMax;
-		OnRageChanged.Broadcast(InstigatorActor, this, RageCurrent, RageMax - (ProposedRage - Delta));
+		MulticastOnRageChanged(InstigatorActor, RageCurrent, RageMax - (ProposedRage - Delta));
 	}
 	else if (ProposedRage < 0) // Cases where the result would be below 0
 	{
 		RageCurrent = 0;
-		OnRageChanged.Broadcast(InstigatorActor, this, RageCurrent, Delta - ProposedRage);
+		MulticastOnRageChanged(InstigatorActor, RageCurrent, Delta - ProposedRage);
 	}
 	else // Cases where the result is between 0 and the maximum amount of Rage
 	{
 		RageCurrent = ProposedRage;
-		OnRageChanged.Broadcast(InstigatorActor, this, RageCurrent, Delta);
+		MulticastOnRageChanged(InstigatorActor, RageCurrent, Delta);
 	}
 
 	return true;
+}
+
+void UCAttributeComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(UCAttributeComponent, HealthCurrent);
+	DOREPLIFETIME(UCAttributeComponent, HealthMax);
+
+	DOREPLIFETIME(UCAttributeComponent, RageCurrent);
+	DOREPLIFETIME_CONDITION(UCAttributeComponent, IsRageEnabled, COND_InitialOnly);
+	DOREPLIFETIME_CONDITION(UCAttributeComponent, RageMax, COND_InitialOnly);
+	DOREPLIFETIME_CONDITION(UCAttributeComponent, RageGainPercentage, COND_InitialOnly);
+}
+
+void UCAttributeComponent::MulticastOnRageChanged_Implementation(AActor* InstigatorActor, const float NewRage, const float Delta)
+{
+	OnRageChanged.Broadcast(InstigatorActor, this, NewRage, Delta);
+}
+
+void UCAttributeComponent::MutlicastOnHealthChanged_Implementation(AActor* InstigatorActor, const float NewHealth, const float Delta)
+{
+	OnHealthChanged.Broadcast(InstigatorActor, this, NewHealth, Delta);
+}
+
+void UCAttributeComponent::MulticastOnDeath_Implementation(AActor* KillerActor)
+{
+	OnDeath.Broadcast(KillerActor, this);
 }
 
 bool UCAttributeComponent::IsAlive() const { return HealthCurrent > 0.0f; }
