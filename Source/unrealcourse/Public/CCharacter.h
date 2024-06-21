@@ -22,9 +22,6 @@ class UNREALCOURSE_API ACCharacter : public ACharacter
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
-	TObjectPtr<UCAttributeComponent> AttributeComponent;
-
 	ACCharacter();
 
 protected:
@@ -85,6 +82,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
 	TObjectPtr<UCActionComponent> ActionComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
+	TObjectPtr<UCAttributeComponent> AttributeComponent;
 private:
 	FTimerHandle TimerHandle_Attack;
 
