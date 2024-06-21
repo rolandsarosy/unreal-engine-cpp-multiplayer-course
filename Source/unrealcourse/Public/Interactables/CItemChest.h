@@ -24,6 +24,4 @@ protected:
 
 	UPROPERTY(Replicated, BlueprintReadOnly)
 	bool IsLidOpened;
-
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 };

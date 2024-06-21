@@ -7,6 +7,8 @@ ACBasePickup::ACBasePickup()
 	
 	CooldownDuration = 10.0f;
 	IsOnCooldown = false;
+
+	bReplicates = true;
 }
 
 void ACBasePickup::Interact_Implementation(APawn* InstigatorPawn)
@@ -27,7 +29,7 @@ void ACBasePickup::OnStartCooldown()
 	IsOnCooldown = true;
 	FTimerHandle TimerHandle = FTimerHandle();
 	GetWorldTimerManager().SetTimer(TimerHandle, this, &ACBasePickup::OnResetCooldown, CooldownDuration);
-	// When we know more about the future uses of this base class, we can extract this behaviour to be required for overriding in children. 
+	// TODO - When we know more about the future uses of this base class, we can extract this behaviour to be required for overriding in children. 
 	RootComponent->ToggleVisibility(true);
 	SetActorEnableCollision(false);
 }
@@ -35,7 +37,7 @@ void ACBasePickup::OnStartCooldown()
 void ACBasePickup::OnResetCooldown()
 {
 	IsOnCooldown = false;
-	// When we know more about the future uses of this base class, we can extract this behaviour to be required for overriding in children. 
+	// TODO - When we know more about the future uses of this base class, we can extract this behaviour to be required for overriding in children. 
 	RootComponent->ToggleVisibility(true);
 	SetActorEnableCollision(true);
 }
