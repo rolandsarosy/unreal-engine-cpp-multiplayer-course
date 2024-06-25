@@ -59,10 +59,9 @@ void UCActionComponent::AddAction(const TSubclassOf<UCBaseAction> ActionClass, A
 {
 	if (!ensure(ActionClass)) return;
 
-	UCBaseAction* NewAction = NewObject<UCBaseAction>(GetOwner(), ActionClass);
+	UCBaseAction* NewAction = NewObject<UCBaseAction>(this, ActionClass);
 	if (ensure(NewAction))
 	{
-		NewAction->Initialize(this);
 		CurrentActions.Add(NewAction);
 		OnActionAdded.Broadcast(NewAction, Instigator);
 

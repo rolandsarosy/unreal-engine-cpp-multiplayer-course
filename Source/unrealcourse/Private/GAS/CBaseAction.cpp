@@ -4,11 +4,6 @@
 #include "Net/UnrealNetwork.h"
 #include "unrealcourse/unrealcourse.h"
 
-void UCBaseAction::Initialize(UCActionComponent* NewActionComponent)
-{
-	OwningActionComponent = NewActionComponent;
-}
-
 void UCBaseAction::StartAction_Implementation(AActor* Instigator)
 {
 	LogOnScreen(this, FString::Printf(TEXT("Started: %s"), *Tag.ToString()), FColor::Green, 1.5F);
@@ -35,9 +30,9 @@ bool UCBaseAction::CanStart_Implementation(AActor* Instigator)
 UWorld* UCBaseAction::GetWorld() const
 {
 	// Outer is set when creating a new action via NewObject<T>.
-	if (const AActor* Actor = Cast<AActor>(GetOuter()))
+	if (const UCActionComponent* ActorComponent = Cast<UCActionComponent>(GetOuter()))
 	{
-		return Actor->GetWorld();
+		return ActorComponent->GetWorld();
 	}
 	return nullptr;
 }
@@ -56,12 +51,11 @@ void UCBaseAction::OnRep_IsRunning()
 
 bool UCBaseAction::IsRunning() const { return bIsRunning; }
 
-UCActionComponent* UCBaseAction::GetOwningComponent() const { return OwningActionComponent; }
+UCActionComponent* UCBaseAction::GetOwningComponent() const { return Cast<UCActionComponent>(GetOuter()); }
 
 void UCBaseAction::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(UCBaseAction, bIsRunning);
-	DOREPLIFETIME(UCBaseAction, OwningActionComponent);
 }
