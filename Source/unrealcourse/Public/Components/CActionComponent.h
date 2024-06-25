@@ -18,7 +18,7 @@ class UCBaseAction;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnActionAdded, UCBaseAction*, ActionAdded, AActor*, Instigator);
 
 /** 
- * @brief Parameterized Multicast Delegate that responds to an @UCBaseAction being removed from an @UCActionComponent.
+ * @brief Parameterized Multicast Delegate that responds to a @UCBaseAction being removed from an @UCActionComponent.
  *
  * @param UCBaseAction: The action being removed from the component.
  * @param AActor: The instigator, who is responsible for this action being removed from the component.
@@ -87,7 +87,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Tags")
 	FGameplayTagContainer ActiveGameplayTags;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Actions")
+	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadOnly, Category="Actions")
 	TArray<TObjectPtr<UCBaseAction>> CurrentActions;
 
 	UPROPERTY(BlueprintAssignable, Category="Actions")
@@ -107,6 +107,8 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category="Actions")
 	FOnGameplayTagRemoved OnGameplayTagRemoved;
+
+	UCActionComponent();
 	
 	UFUNCTION(BlueprintCallable, Category="Actions", meta=(DisplayName = "Get ActionComponent From Actor", Tooltip = "Returns ActionComponent if the Actor has any. Otherwise a nullptr."))
 	static UCActionComponent* GetComponentFrom(AActor* FromActor);
@@ -133,5 +135,12 @@ private:
 	UPROPERTY(EditAnywhere, Category="Actions")
 	TArray<TSubclassOf<UCBaseAction>> DefaultActions;
 
+	UFUNCTION(Server, Reliable)
+	void ServerStartAction(AActor* Instigator, FGameplayTag Tag);
+	
 	virtual void BeginPlay() override;
+
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+	virtual bool ReplicateSubobjects(UActorChannel* Channel, FOutBunch* Bunch, FReplicationFlags* RepFlags) override;
 };

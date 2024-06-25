@@ -1,13 +1,49 @@
 #include "Components/CActionComponent.h"
+
+#include "Engine/ActorChannel.h"
 #include "GAS/CBaseAction.h"
+#include "Net/UnrealNetwork.h"
+#include "unrealcourse/unrealcourse.h"
+
+UCActionComponent::UCActionComponent()
+{
+	SetIsReplicatedByDefault(true);
+
+	// Enable this only for debugging and such. Make sure this is disabled in a final build.
+	PrimaryComponentTick.bCanEverTick = true;
+}
 
 void UCActionComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	for (const TSubclassOf<UCBaseAction> ActionClass : DefaultActions)
+	// Server only
+	if (GetOwner()->HasAuthority())
 	{
-		AddAction(ActionClass, GetOwner()); // At BeginPlay, only default actions are added, so we can assume that the owner is the instigator.
+		for (const TSubclassOf<UCBaseAction> ActionClass : DefaultActions)
+		{
+			AddAction(ActionClass, GetOwner()); // At BeginPlay, only default actions are added, so we can assume that the owner is the instigator.
+		}
+	}
+}
+
+// Use this only for debugging and such. Make sure this is disabled in a final build.
+void UCActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	if (CurrentActions.IsEmpty()) return;
+	for (const UCBaseAction* Action : CurrentActions)
+	{
+		if (!Action) return;
+		const FColor TextColor = Action->IsRunning() ? FColor::Blue : FColor::White;
+		FString ActionMSg = FString::Printf(TEXT("[%s] Action: %s : IsRunning: %s : Outer: %s"),
+		                                    *GetNameSafe(GetOwner()),
+		                                    *Action->Tag.ToString(),
+		                                    Action->IsRunning() ? TEXT("true") : TEXT("false"),
+		                                    *GetNameSafe(Action->GetOuter()));
+
+		LogOnScreen(this, ActionMSg, TextColor, 0.0f);
 	}
 }
 
@@ -23,9 +59,10 @@ void UCActionComponent::AddAction(const TSubclassOf<UCBaseAction> ActionClass, A
 {
 	if (!ensure(ActionClass)) return;
 
-	UCBaseAction* NewAction = NewObject<UCBaseAction>(this, ActionClass);
+	UCBaseAction* NewAction = NewObject<UCBaseAction>(GetOwner(), ActionClass);
 	if (ensure(NewAction))
 	{
+		NewAction->Initialize(this);
 		CurrentActions.Add(NewAction);
 		OnActionAdded.Broadcast(NewAction, Instigator);
 
@@ -63,12 +100,18 @@ bool UCActionComponent::StartActionByTag(AActor* Instigator, const FGameplayTag 
 	{
 		if (Action && Action->Tag == Tag && Action->CanStart(Instigator))
 		{
+			if (!GetOwner()->HasAuthority()) ServerStartAction(Instigator, Tag);
 			Action->StartAction(Instigator);
 			return true;
 		}
 	}
 
 	return false;
+}
+
+void UCActionComponent::ServerStartAction_Implementation(AActor* Instigator, FGameplayTag Tag)
+{
+	StartActionByTag(Instigator, Tag);
 }
 
 /**
@@ -117,7 +160,7 @@ bool UCActionComponent::RemoveGameplayTag(const FGameplayTag Tag)
 {
 	const bool IsSuccess = ActiveGameplayTags.RemoveTag(Tag);
 	if (IsSuccess) OnGameplayTagRemoved.Broadcast(Tag);
-	
+
 	return IsSuccess;
 }
 
@@ -129,3 +172,21 @@ bool UCActionComponent::RemoveGameplayTag(const FGameplayTag Tag)
  * @return UCActionComponent* The UCActionComponent attached to the FromActor, or nullptr if it does not have a UCActionComponent.
  */
 UCActionComponent* UCActionComponent::GetComponentFrom(AActor* FromActor) { return FromActor ? FromActor->FindComponentByClass<UCActionComponent>() : nullptr; }
+
+bool UCActionComponent::ReplicateSubobjects(UActorChannel* Channel, FOutBunch* Bunch, FReplicationFlags* RepFlags)
+{
+	bool ChangeOccured = Super::ReplicateSubobjects(Channel, Bunch, RepFlags);
+
+	for (UCBaseAction* Action : CurrentActions)
+	{
+		if (Action) ChangeOccured |= Channel->ReplicateSubobject(Action, *Bunch, *RepFlags);
+	}
+	return ChangeOccured;
+}
+
+void UCActionComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(UCActionComponent, CurrentActions);
+}

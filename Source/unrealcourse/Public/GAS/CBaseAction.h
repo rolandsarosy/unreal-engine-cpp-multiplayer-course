@@ -41,6 +41,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category="Action")
 	bool bAutoStart;
 
+	void Initialize(UCActionComponent* NewActionComponent);
+
 	virtual UWorld* GetWorld() const override;
 
 protected:
@@ -54,7 +56,16 @@ protected:
 
 	UFUNCTION(BlueprintCallable, Category="Action")
 	UCActionComponent* GetOwningComponent() const;
-
+	
 private:
+	UPROPERTY(Replicated)
+	UCActionComponent* OwningActionComponent;
+
+	UPROPERTY(ReplicatedUsing="OnRep_IsRunning")
 	bool bIsRunning;
+	
+	virtual bool IsSupportedForNetworking() const override { return true; };
+
+	UFUNCTION()
+	void OnRep_IsRunning();
 };

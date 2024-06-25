@@ -19,6 +19,8 @@ ACBaseProjectile::ACBaseProjectile()
 	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>("ProjectileMovementComponent");
 	ProjectileMovementComponent->bRotationFollowsVelocity = true;
 	ProjectileMovementComponent->bInitialVelocityInLocalSpace = true;
+
+	bReplicates = true;
 }
 
 void ACBaseProjectile::PostInitializeComponents()
