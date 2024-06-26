@@ -34,33 +34,36 @@ bool UCAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delt
 	if (!GetOwner()->CanBeDamaged() && Delta < 0) return false;
 	if (Delta == 0) return false;
 
-	if (Delta > 0) Delta *= CVarHealingMultiplier.GetValueOnGameThread();
-	if (Delta < 0) Delta *= CVarDamageMultiplier.GetValueOnGameThread();
-	
-	if (const float ProposedHealth = HealthCurrent + Delta; ProposedHealth < 0.0f) // Cases where the result would be overkill
+	if (GetOwner()->HasAuthority()) // Health calculations should only be done on the server, but generally knowing health events should be known by clients as well.
 	{
-		HealthCurrent = 0.0f;
-		MutlicastOnHealthChanged(InstigatorActor, HealthCurrent, Delta - ProposedHealth);
-	}
-	else if (ProposedHealth > HealthMax) // Cases where the result would be overheal
-	{
-		HealthCurrent = HealthMax;
-		MutlicastOnHealthChanged(InstigatorActor, HealthCurrent, HealthMax - ProposedHealth + Delta);
-	}
-	else // Cases where the result is within 0 and max health.
-	{
-		HealthCurrent = ProposedHealth;
-		MutlicastOnHealthChanged(InstigatorActor, HealthCurrent, Delta);
+		if (Delta > 0) Delta *= CVarHealingMultiplier.GetValueOnGameThread();
+		if (Delta < 0) Delta *= CVarDamageMultiplier.GetValueOnGameThread();
 
-		if (Delta < 0) ApplyRageChange(InstigatorActor, std::abs(Delta) * (static_cast<float>(RageGainPercentage) / 100.0F));
-	}
+		if (const float ProposedHealth = HealthCurrent + Delta; ProposedHealth < 0.0f) // Cases where the result would be overkill
+		{
+			HealthCurrent = 0.0f;
+			MutlicastOnHealthChanged(InstigatorActor, HealthCurrent, Delta - ProposedHealth);
+		}
+		else if (ProposedHealth > HealthMax) // Cases where the result would be overheal
+		{
+			HealthCurrent = HealthMax;
+			MutlicastOnHealthChanged(InstigatorActor, HealthCurrent, HealthMax - ProposedHealth + Delta);
+		}
+		else // Cases where the result is within 0 and max health.
+		{
+			HealthCurrent = ProposedHealth;
+			MutlicastOnHealthChanged(InstigatorActor, HealthCurrent, Delta);
 
-	if (!IsAlive())
-	{
-		MulticastOnDeath(InstigatorActor);
-		
-		// I greatly dislike this hard-coupled nightmare of a statement, but this is what was done in class. TODO: Use something like a GameplayMessage or maybe a delegate of sorts here.
-		if (GetOwner()->HasAuthority()) GetWorld()->GetAuthGameMode<ACGameModeBase>()->OnActorKilled(GetOwner(), InstigatorActor);
+			if (Delta < 0) ApplyRageChange(InstigatorActor, std::abs(Delta) * (static_cast<float>(RageGainPercentage) / 100.0F));
+		}
+
+		if (!IsAlive())
+		{
+			MulticastOnDeath(InstigatorActor);
+
+			// I greatly dislike this hard-coupled nightmare of a statement, but this is what was done in class. TODO: Use something like a GameplayMessage or maybe a delegate of sorts here.
+			GetWorld()->GetAuthGameMode<ACGameModeBase>()->OnActorKilled(GetOwner(), InstigatorActor);
+		}
 	}
 
 	return true;
@@ -73,25 +76,28 @@ bool UCAttributeComponent::ApplyRageChange(AActor* InstigatorActor, float Delta)
 	if (RageCurrent == 0 && Delta < 0) return false;
 	if (RageCurrent == RageMax && Delta > 0) return false;
 
-	if (Delta > 0) Delta *= CVarRageGainMultiplier.GetValueOnGameThread();
-	if (Delta < 0) Delta *= CVarRageCostMultiplier.GetValueOnGameThread();
+	if (GetOwner()->HasAuthority()) // Rage calculations should only be done on the server, but generally knowing Rage events should be known by clients as well.
+	{
+		if (Delta > 0) Delta *= CVarRageGainMultiplier.GetValueOnGameThread();
+		if (Delta < 0) Delta *= CVarRageCostMultiplier.GetValueOnGameThread();
 
-	if (const float ProposedRage = RageCurrent + Delta; ProposedRage > RageMax) // Cases where the result would be over the maximum amount of Rage.
-	{
-		RageCurrent = RageMax;
-		MulticastOnRageChanged(InstigatorActor, RageCurrent, RageMax - (ProposedRage - Delta));
+		if (const float ProposedRage = RageCurrent + Delta; ProposedRage > RageMax) // Cases where the result would be over the maximum amount of Rage.
+		{
+			RageCurrent = RageMax;
+			MulticastOnRageChanged(InstigatorActor, RageCurrent, RageMax - (ProposedRage - Delta));
+		}
+		else if (ProposedRage < 0) // Cases where the result would be below 0
+		{
+			RageCurrent = 0;
+			MulticastOnRageChanged(InstigatorActor, RageCurrent, Delta - ProposedRage);
+		}
+		else // Cases where the result is between 0 and the maximum amount of Rage
+		{
+			RageCurrent = ProposedRage;
+			MulticastOnRageChanged(InstigatorActor, RageCurrent, Delta);
+		}
 	}
-	else if (ProposedRage < 0) // Cases where the result would be below 0
-	{
-		RageCurrent = 0;
-		MulticastOnRageChanged(InstigatorActor, RageCurrent, Delta - ProposedRage);
-	}
-	else // Cases where the result is between 0 and the maximum amount of Rage
-	{
-		RageCurrent = ProposedRage;
-		MulticastOnRageChanged(InstigatorActor, RageCurrent, Delta);
-	}
-
+	
 	return true;
 }
 
