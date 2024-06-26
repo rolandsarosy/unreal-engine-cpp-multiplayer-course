@@ -6,25 +6,27 @@
 
 void UCBaseAction::StartAction_Implementation(AActor* Instigator)
 {
-	LogOnScreen(this, FString::Printf(TEXT("Started: %s"), *Tag.ToString()), FColor::Green, 1.5F);
+	LogOnScreen(this, FString::Printf(TEXT("Started: %s"), *Tag.ToString()), FColor::Green, 1.0F);
 
 	GetOwningComponent()->ActiveGameplayTags.AppendTags(GrantsTags);
 	GetOwningComponent()->OnActionStarted.Broadcast(this, Instigator);
-	bIsRunning = true;
+	ReplicationData.Instigator = Instigator;
+	ReplicationData.bIsRunning = true;
 }
 
 void UCBaseAction::StopAction_Implementation(AActor* Instigator)
 {
-	LogOnScreen(this, FString::Printf(TEXT("Stopped: %s"), *Tag.ToString()), FColor::White, 1.5F);
+	LogOnScreen(this, FString::Printf(TEXT("Stopped: %s"), *Tag.ToString()), FColor::Black, 1.0F);
 
 	GetOwningComponent()->ActiveGameplayTags.RemoveTags(GrantsTags);
 	GetOwningComponent()->OnActionStopped.Broadcast(this, Instigator);
-	bIsRunning = false;
+	ReplicationData.Instigator = Instigator;
+	ReplicationData.bIsRunning = false;
 }
 
 bool UCBaseAction::CanStart_Implementation(AActor* Instigator)
 {
-	return !bIsRunning && !GetOwningComponent()->ActiveGameplayTags.HasAny(BlockedTags);
+	return !ReplicationData.bIsRunning && !GetOwningComponent()->ActiveGameplayTags.HasAny(BlockedTags);
 }
 
 UWorld* UCBaseAction::GetWorld() const
@@ -37,19 +39,19 @@ UWorld* UCBaseAction::GetWorld() const
 	return nullptr;
 }
 
-void UCBaseAction::OnRep_IsRunning()
+void UCBaseAction::OnRep_ReplicationData()
 {
 	if (IsRunning())
 	{
-		StartAction(nullptr);
+		StartAction(ReplicationData.Instigator);
 	}
 	else
 	{
-		StopAction(nullptr);
+		StopAction(ReplicationData.Instigator);
 	}
 }
 
-bool UCBaseAction::IsRunning() const { return bIsRunning; }
+bool UCBaseAction::IsRunning() const { return ReplicationData.bIsRunning; }
 
 UCActionComponent* UCBaseAction::GetOwningComponent() const { return Cast<UCActionComponent>(GetOuter()); }
 
@@ -57,5 +59,5 @@ void UCBaseAction::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME(UCBaseAction, bIsRunning);
+	DOREPLIFETIME(UCBaseAction, ReplicationData);
 }

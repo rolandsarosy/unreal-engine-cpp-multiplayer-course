@@ -6,6 +6,18 @@
 
 class UCActionComponent;
 
+USTRUCT()
+struct FActionReplicationData
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	bool bIsRunning;
+	
+	UPROPERTY()
+	AActor* Instigator;
+};
+ 
 /**
  * @class UCBaseAction
  * @brief The base class for all GAS-like actions in the game. Direct children should be used as base classes for actions and effects.
@@ -56,11 +68,11 @@ protected:
 	UCActionComponent* GetOwningComponent() const;
 
 private:
-	UPROPERTY(ReplicatedUsing="OnRep_IsRunning")
-	bool bIsRunning;
+	UPROPERTY(ReplicatedUsing="OnRep_ReplicationData")
+	FActionReplicationData ReplicationData;
 
 	UFUNCTION()
-	void OnRep_IsRunning();
+	void OnRep_ReplicationData();
 
 	virtual bool IsSupportedForNetworking() const override { return true; };
 };

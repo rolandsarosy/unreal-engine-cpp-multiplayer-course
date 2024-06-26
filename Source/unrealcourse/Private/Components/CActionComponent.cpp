@@ -17,13 +17,10 @@ void UCActionComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// Server only
-	if (GetOwner()->HasAuthority())
+	if (GetOwner()->HasAuthority()) // Server only
 	{
-		for (const TSubclassOf<UCBaseAction> ActionClass : DefaultActions)
-		{
-			AddAction(ActionClass, GetOwner()); // At BeginPlay, only default actions are added, so we can assume that the owner is the instigator.
-		}
+		// At BeginPlay, only default actions are added, so we can assume that the owner is the instigator.
+		for (const TSubclassOf<UCBaseAction> ActionClass : DefaultActions) { AddAction(ActionClass, GetOwner()); }
 	}
 }
 
@@ -32,17 +29,11 @@ void UCActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (CurrentActions.IsEmpty()) return;
 	for (const UCBaseAction* Action : CurrentActions)
 	{
 		if (!Action) return;
 		const FColor TextColor = Action->IsRunning() ? FColor::Blue : FColor::White;
-		FString ActionMSg = FString::Printf(TEXT("[%s] Action: %s : IsRunning: %s : Outer: %s"),
-		                                    *GetNameSafe(GetOwner()),
-		                                    *Action->Tag.ToString(),
-		                                    Action->IsRunning() ? TEXT("true") : TEXT("false"),
-		                                    *GetNameSafe(Action->GetOuter()));
-
+		FString ActionMSg = FString::Printf(TEXT("[%s] Action: %s"), *GetNameSafe(GetOwner()), *Action->Tag.ToString());
 		LogOnScreen(this, ActionMSg, TextColor, 0.0f);
 	}
 }
@@ -59,8 +50,7 @@ void UCActionComponent::AddAction(const TSubclassOf<UCBaseAction> ActionClass, A
 {
 	if (!ensure(ActionClass)) return;
 
-	UCBaseAction* NewAction = NewObject<UCBaseAction>(this, ActionClass);
-	if (ensure(NewAction))
+	if (UCBaseAction* NewAction = NewObject<UCBaseAction>(this, ActionClass); ensure(NewAction))
 	{
 		CurrentActions.Add(NewAction);
 		OnActionAdded.Broadcast(NewAction, Instigator);

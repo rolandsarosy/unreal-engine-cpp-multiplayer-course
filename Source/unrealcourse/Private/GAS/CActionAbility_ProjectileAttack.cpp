@@ -30,12 +30,15 @@ void UCActionAbility_ProjectileAttack::StartAction_Implementation(AActor* Instig
 
 void UCActionAbility_ProjectileAttack::SpawnProjectile(ACharacter* InstigatorCharacter) const
 {
-	const FTransform SpawnTransform = FTransform(TraceForProjectileSpawnRotator(InstigatorCharacter), InstigatorCharacter->GetMesh()->GetSocketLocation(AttackSocketName));
-	FActorSpawnParameters SpawnParameters = FActorSpawnParameters();
-	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	SpawnParameters.Instigator = InstigatorCharacter;
+	if (InstigatorCharacter->HasAuthority()) // Only spawn the projectile on the server. The projectile itself however, is a replicated Actor.
+	{
+		const FTransform SpawnTransform = FTransform(TraceForProjectileSpawnRotator(InstigatorCharacter), InstigatorCharacter->GetMesh()->GetSocketLocation(AttackSocketName));
+		FActorSpawnParameters SpawnParameters = FActorSpawnParameters();
+		SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		SpawnParameters.Instigator = InstigatorCharacter;
 
-	GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTransform, SpawnParameters);
+		GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTransform, SpawnParameters);
+	}
 }
 
 /**
@@ -79,7 +82,7 @@ void UCActionAbility_ProjectileAttack::OnMontageNotifyBegin(FName NotifyName, co
 		SpawnProjectile(InstigatorCharacter);
 	}
 	else if (NotifyName == AttackAnimationMontageNotifyEnd)
-	{ 
+	{
 		AnimationInstance->OnPlayMontageNotifyBegin.RemoveDynamic(this, &UCActionAbility_ProjectileAttack::OnMontageNotifyBegin);
 		StopAction(InstigatorCharacter);
 	}

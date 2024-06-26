@@ -43,7 +43,7 @@ void ACCharacter::OnHealthChanged(AActor* Actor, UCAttributeComponent* UAttribut
 
 void ACCharacter::OnDeath(AActor* KillerActor, UCAttributeComponent* OwnerComponent)
 {
-	SetLifeSpan(25.0f);
+	SetLifeSpan(10.0f);
 	DisableInput(Cast<APlayerController>(GetController()));
 	GetCharacterMovement()->DisableMovement();
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
