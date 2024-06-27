@@ -103,7 +103,7 @@ bool UCActionComponent::StartActionByTag(AActor* Instigator, const FGameplayTag 
 	return false;
 }
 
-void UCActionComponent::ServerStartAction_Implementation(AActor* Instigator, FGameplayTag Tag)
+void UCActionComponent::ServerStartAction_Implementation(AActor* Instigator, const FGameplayTag Tag)
 {
 	StartActionByTag(Instigator, Tag);
 }
@@ -116,18 +116,24 @@ void UCActionComponent::ServerStartAction_Implementation(AActor* Instigator, FGa
  *
  * @return True if the action was successfully started, false otherwise.
  */
-bool UCActionComponent::StopActionByTag(AActor* Instigator, FGameplayTag Tag)
+bool UCActionComponent::StopActionByTag(AActor* Instigator, const FGameplayTag Tag)
 {
 	for (UCBaseAction* Action : CurrentActions)
 	{
 		if (Action && Action->Tag == Tag && Action->IsRunning())
 		{
+			if (!GetOwner()->HasAuthority()) ServerStopAction(Instigator, Tag);
 			Action->StopAction(Instigator);
 			return true;
 		}
 	}
 
 	return false;
+}
+
+void UCActionComponent::ServerStopAction_Implementation(AActor* Instigator, const FGameplayTag Tag)
+{
+	StopActionByTag(Instigator, Tag);
 }
 
 /**

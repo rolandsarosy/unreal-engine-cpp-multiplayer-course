@@ -109,7 +109,7 @@ public:
 	FOnGameplayTagRemoved OnGameplayTagRemoved;
 
 	UCActionComponent();
-	
+
 	UFUNCTION(BlueprintCallable, Category="Actions", meta=(DisplayName = "Get ActionComponent From Actor", Tooltip = "Returns ActionComponent if the Actor has any. Otherwise a nullptr."))
 	static UCActionComponent* GetComponentFrom(AActor* FromActor);
 
@@ -137,7 +137,10 @@ private:
 
 	UFUNCTION(Server, Reliable)
 	void ServerStartAction(AActor* Instigator, FGameplayTag Tag);
-	
+
+	UFUNCTION(Server, Reliable)
+	void ServerStopAction(AActor* Instigator, FGameplayTag Tag);
+
 	virtual void BeginPlay() override;
 
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
