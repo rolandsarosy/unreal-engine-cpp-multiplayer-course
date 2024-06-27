@@ -46,7 +46,7 @@ void ACMagicProjectile::OnComponentOverlap(UPrimitiveComponent* OverlappedCompon
 	}
 
 	// Apply effects if there is one set.
-	if (ActionComponent && AppliedEffectClass) ActionComponent->AddAction(AppliedEffectClass, GetInstigator());
+	if (ActionComponent && AppliedEffectClass && GetOwner()->HasAuthority()) ActionComponent->AddAction(AppliedEffectClass, GetInstigator());
 
 	// Apply damage
 	UCGameplayFunctionLibrary::ApplyDirectionalImpulseDamage(GetInstigator(), OtherActor, DamageAmount, SweepResult);

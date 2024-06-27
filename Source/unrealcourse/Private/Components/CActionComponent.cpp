@@ -49,6 +49,11 @@ void UCActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 void UCActionComponent::AddAction(const TSubclassOf<UCBaseAction> ActionClass, AActor* Instigator)
 {
 	if (!ensure(ActionClass)) return;
+	if (!ensure(GetOwner()->HasAuthority()))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("A non-authoritave client attempted to add an action. [Class: %s]"), *GetNameSafe(ActionClass));
+		return;
+	}
 
 	if (UCBaseAction* NewAction = NewObject<UCBaseAction>(this, ActionClass); ensure(NewAction))
 	{
