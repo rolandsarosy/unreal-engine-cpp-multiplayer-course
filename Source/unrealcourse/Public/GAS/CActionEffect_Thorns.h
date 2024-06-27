@@ -5,7 +5,7 @@
 #include "GAS/CActionEffect.h"
 #include "CActionEffect_Thorns.generated.h"
 
-UCLASS()
+UCLASS(Abstract)
 class UNREALCOURSE_API UCActionEffect_Thorns : public UCActionEffect
 {
 	GENERATED_BODY()
