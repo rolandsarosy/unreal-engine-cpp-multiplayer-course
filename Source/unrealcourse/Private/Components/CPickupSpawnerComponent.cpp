@@ -40,12 +40,15 @@ void UCPickupSpawnerComponent::SpawnPickupItemsToQueryLocations(TArray<FVector>&
 {
 	if (!GetSpawnPointsAmountValidity(SpawnLocations)) return;
 
+	FActorSpawnParameters SpawnParameters;
+	SpawnParameters.Owner = GetOwner();
+	
 	int CurrentLocationIndex = 0;
 	for (const auto& [Item, SpawnCount] : PickupItemsToSpawn)
 	{
 		for (int i = 0; i < SpawnCount; ++i)
 		{
-			const AActor* SpawnedActor = GetWorld()->SpawnActor<AActor>(Item, SpawnLocations[CurrentLocationIndex], FRotator::ZeroRotator);
+			const AActor* SpawnedActor = GetWorld()->SpawnActor<AActor>(Item, SpawnLocations[CurrentLocationIndex], FRotator::ZeroRotator, SpawnParameters);
 			if (SpawnedActor) CurrentLocationIndex++;
 		}
 	}

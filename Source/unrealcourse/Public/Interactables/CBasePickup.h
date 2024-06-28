@@ -33,7 +33,11 @@ protected:
 	virtual bool OnEffectTrigger(APawn* InstigatorPawn) PURE_VIRTUAL(ACBasePickup::OnEffectTrigger, return false;);
 
 private:
+	UPROPERTY(ReplicatedUsing="OnRep_IsOnCooldown")
 	bool IsOnCooldown;
+
+	UFUNCTION()
+	void OnRep_IsOnCooldown();
 
 	void OnAttemptPickup(APawn* InstigatorPawn);
 

@@ -20,7 +20,7 @@ bool ACAbilityPickup::OnEffectTrigger(APawn* InstigatorPawn)
 	}
 
 	if (HasAbilityAlready) return false;
-	
+
 	ActionComponent->AddAction(GrantsAbility, this);
 	return true;
 }
