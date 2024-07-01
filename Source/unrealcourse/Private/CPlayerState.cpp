@@ -1,5 +1,7 @@
 #include "CPlayerState.h"
 
+#include "Net/UnrealNetwork.h"
+
 ACPlayerState::ACPlayerState()
 {
 	CurrentCoinsAmount = 10;
@@ -11,8 +13,11 @@ bool ACPlayerState::AddCoins(AActor* InstigatorActor, const int32 AmountToAdd)
 {
 	if (CurrentCoinsAmount + AmountToAdd < MAX_int32)
 	{
-		CurrentCoinsAmount += AmountToAdd;
-		OnCoinsAmountChanged.Broadcast(InstigatorActor, CurrentCoinsAmount, AmountToAdd);
+		if (GetOwner()->HasAuthority()) // Coin calculations should only be done on the server, but generally knowing coin events should be known by clients as well.
+		{
+			CurrentCoinsAmount += AmountToAdd;
+			MulticastCoinsAmountChange(InstigatorActor, CurrentCoinsAmount, AmountToAdd);
+		}
 		return true;
 	}
 
@@ -23,8 +28,11 @@ bool ACPlayerState::RemoveCoins(AActor* InstigatorActor, const int32 AmountToRem
 {
 	if (AmountToRemove <= CurrentCoinsAmount)
 	{
-		CurrentCoinsAmount -= AmountToRemove;
-		OnCoinsAmountChanged.Broadcast(InstigatorActor, CurrentCoinsAmount, AmountToRemove);
+		if (GetOwner()->HasAuthority()) // Coin calculations should only be done on the server, but generally knowing coin events should be known by clients as well.
+		{
+			CurrentCoinsAmount -= AmountToRemove;
+			MulticastCoinsAmountChange(InstigatorActor, CurrentCoinsAmount, AmountToRemove);
+		}
 		return true;
 	}
 
@@ -37,4 +45,16 @@ ACPlayerState* ACPlayerState::GetFromActor(AActor* FromActor)
 	if (!Pawn) return nullptr;
 
 	return Cast<ACPlayerState>(Pawn->GetPlayerState());
+}
+
+void ACPlayerState::MulticastCoinsAmountChange_Implementation(AActor* InstigatorActor, int32 NewCoinsAmount, int32 Delta)
+{
+	OnCoinsAmountChanged.Broadcast(InstigatorActor, CurrentCoinsAmount, Delta);
+}
+
+void ACPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ACPlayerState, CurrentCoinsAmount);
 }

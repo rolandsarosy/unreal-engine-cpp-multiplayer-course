@@ -6,7 +6,7 @@
 
 void UCBaseAction::StartAction_Implementation(AActor* Instigator)
 {
-	LogOnScreen(this, FString::Printf(TEXT("Started: %s"), *Tag.ToString()), FColor::Green, 1.0F);
+	// LogOnScreen(this, FString::Printf(TEXT("Started: %s"), *Tag.ToString()), FColor::Green, 1.0F); // Should be enabled for Action debugging.
 
 	GetOwningComponent()->ActiveGameplayTags.AppendTags(GrantsTags);
 	GetOwningComponent()->OnActionStarted.Broadcast(this, Instigator);
@@ -16,7 +16,7 @@ void UCBaseAction::StartAction_Implementation(AActor* Instigator)
 
 void UCBaseAction::StopAction_Implementation(AActor* Instigator)
 {
-	LogOnScreen(this, FString::Printf(TEXT("Stopped: %s"), *Tag.ToString()), FColor::Black, 1.0F);
+	// LogOnScreen(this, FString::Printf(TEXT("Stopped: %s"), *Tag.ToString()), FColor::Black, 1.0F); // Should be enabled for Action debugging.
 
 	GetOwningComponent()->ActiveGameplayTags.RemoveTags(GrantsTags);
 	GetOwningComponent()->OnActionStopped.Broadcast(this, Instigator);

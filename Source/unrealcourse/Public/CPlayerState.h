@@ -30,5 +30,9 @@ public:
 	static ACPlayerState* GetFromActor(AActor* FromActor);
 
 private:
+	UPROPERTY(Replicated)
 	int32 CurrentCoinsAmount;
+
+	UFUNCTION(Unreliable, NetMulticast)
+	void MulticastCoinsAmountChange(AActor* InstigatorActor, int32 NewCoinsAmount, int32 Delta);
 };

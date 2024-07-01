@@ -10,7 +10,7 @@ UCActionComponent::UCActionComponent()
 	SetIsReplicatedByDefault(true);
 
 	// Enable this only for debugging and such. Make sure this is disabled in a final build.
-	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bCanEverTick = false;
 }
 
 void UCActionComponent::BeginPlay()
@@ -29,6 +29,7 @@ void UCActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+#if WITH_EDITOR
 	for (const UCBaseAction* Action : CurrentActions)
 	{
 		if (!Action) return;
@@ -36,6 +37,7 @@ void UCActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 		FString ActionMSg = FString::Printf(TEXT("[%s] Action: %s"), *GetNameSafe(GetOwner()), *Action->Tag.ToString());
 		LogOnScreen(this, ActionMSg, TextColor, 0.0f);
 	}
+#endif
 }
 
 /**
