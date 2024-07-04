@@ -2,7 +2,6 @@
 
 #include "Components/CActionComponent.h"
 #include "Net/UnrealNetwork.h"
-#include "unrealcourse/unrealcourse.h"
 
 void UCBaseAction::StartAction_Implementation(AActor* Instigator)
 {

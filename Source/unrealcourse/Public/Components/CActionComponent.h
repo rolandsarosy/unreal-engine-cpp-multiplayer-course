@@ -8,24 +8,22 @@
 class UCBaseAction;
 
 /** 
- * @brief Parameterized Multicast Delegate that responds to an @UCBaseAction being added to an @UCActionComponent.
+ * @brief Parameterized Multicast Delegate that responds to a @UCBaseAction being added to an @UCActionComponent.
 
- * @param UCBaseAction: The action being added to the component.
- * @param AActor: The instigator, who is responsible for this action being added to the component.
+ * @param UCBaseAction: The action being removed from the component.
  *
  * Subscribed listeners can use this, in combination with the other delegates, to react to changes to the owner's abilities and effects.
  */
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnActionAdded, UCBaseAction*, ActionAdded, AActor*, Instigator);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnActionAdded, UCBaseAction*, ActionAdded);
 
 /** 
  * @brief Parameterized Multicast Delegate that responds to a @UCBaseAction being removed from an @UCActionComponent.
  *
  * @param UCBaseAction: The action being removed from the component.
- * @param AActor: The instigator, who is responsible for this action being removed from the component.
  *
  * Subscribed listeners can use this, in combination with the other delegates, to react to changes to the owner's abilities and effects.
  */
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnActionRemoved, UCBaseAction*, ActionRemoved, AActor*, Instigator);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnActionRemoved, UCBaseAction*, ActionRemoved);
 
 /** 
  * @brief Parameterized Multicast Delegate that responds to an existing @UCBaseAction being started inside an @UCActionComponent
@@ -87,7 +85,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Tags")
 	FGameplayTagContainer ActiveGameplayTags;
 
-	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadOnly, Category="Actions")
+	UPROPERTY(ReplicatedUsing="OnRep_CurrentActions", VisibleAnywhere, BlueprintReadOnly, Category="Actions")
 	TArray<TObjectPtr<UCBaseAction>> CurrentActions;
 
 	UPROPERTY(BlueprintAssignable, Category="Actions")
@@ -135,11 +133,17 @@ private:
 	UPROPERTY(EditAnywhere, Category="Actions")
 	TArray<TSubclassOf<UCBaseAction>> DefaultActions;
 
+	UPROPERTY(VisibleInstanceOnly) // Stores the list of actions before an OnRep triggers, as OnRep cannot carry the previous value.
+	TArray<TObjectPtr<UCBaseAction>> PreviousActions;
+	
 	UFUNCTION(Server, Reliable)
 	void ServerStartAction(AActor* Instigator, FGameplayTag Tag);
 
 	UFUNCTION(Server, Reliable)
 	void ServerStopAction(AActor* Instigator, FGameplayTag Tag);
+	
+	UFUNCTION()
+	void OnRep_CurrentActions();
 
 	virtual void BeginPlay() override;
 

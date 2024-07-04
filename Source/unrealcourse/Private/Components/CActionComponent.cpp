@@ -9,8 +9,39 @@ UCActionComponent::UCActionComponent()
 {
 	SetIsReplicatedByDefault(true);
 
-	// Enable this only for debugging and such. Make sure this is disabled in a final build.
-	PrimaryComponentTick.bCanEverTick = false;
+#if !UE_BUILD_SHIPPING
+	PrimaryComponentTick.bCanEverTick = false; // Enable this only for debugging and such.
+#endif
+}
+
+/**
+ * @brief Called when the CurrentActions array is replicated.
+ *
+ * Compares the previous actions array with the current actions array to determine if any actions have been added or removed.
+ *
+ * @note Notifies observers locally.
+ */
+void UCActionComponent::OnRep_CurrentActions()
+{
+	if (PreviousActions.Num() == CurrentActions.Num()) return;
+
+	if (PreviousActions.Num() < CurrentActions.Num()) // Assume an Action got added.
+	{
+		for (const auto& Action : CurrentActions)
+		{
+			if (!PreviousActions.Contains(Action)) { OnActionAdded.Broadcast(Action); }
+		}
+	}
+
+	if (PreviousActions.Num() > CurrentActions.Num()) // Assume an Action got removed.
+	{
+		for (const auto& Action : PreviousActions)
+		{
+			if (!CurrentActions.Contains(Action)) { OnActionRemoved.Broadcast(Action); }
+		}
+	}
+
+	PreviousActions = CurrentActions;
 }
 
 void UCActionComponent::BeginPlay()
@@ -29,7 +60,7 @@ void UCActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-#if WITH_EDITOR
+#if !UE_BUILD_SHIPPING
 	for (const UCBaseAction* Action : CurrentActions)
 	{
 		if (!Action) return;
@@ -60,7 +91,7 @@ void UCActionComponent::AddAction(const TSubclassOf<UCBaseAction> ActionClass, A
 	if (UCBaseAction* NewAction = NewObject<UCBaseAction>(this, ActionClass); ensure(NewAction))
 	{
 		CurrentActions.Add(NewAction);
-		OnActionAdded.Broadcast(NewAction, Instigator);
+		OnRep_CurrentActions();
 
 		if (NewAction->bAutoStart && ensure(NewAction->CanStart(Instigator)))
 		{
@@ -79,7 +110,6 @@ void UCActionComponent::RemoveAction(UCBaseAction* ActionToRemove, AActor* Insti
 {
 	if (!ensure(ActionToRemove && !ActionToRemove->IsRunning())) return;
 	CurrentActions.Remove(ActionToRemove);
-	OnActionRemoved.Broadcast(ActionToRemove, Instigator);
 }
 
 /**
@@ -120,6 +150,8 @@ void UCActionComponent::ServerStartAction_Implementation(AActor* Instigator, con
  */
 bool UCActionComponent::StopActionByTag(AActor* Instigator, const FGameplayTag Tag)
 {
+	LogOnScreen(GetWorld(), FString::Printf(TEXT("StopActionByTag function running")));
+
 	for (UCBaseAction* Action : CurrentActions)
 	{
 		if (Action && Action->Tag == Tag && Action->IsRunning())

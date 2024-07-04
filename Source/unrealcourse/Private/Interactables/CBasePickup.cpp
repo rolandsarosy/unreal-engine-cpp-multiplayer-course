@@ -1,7 +1,6 @@
 #include "Interactables/CBasePickup.h"
 
 #include "Net/UnrealNetwork.h"
-#include "unrealcourse/unrealcourse.h"
 
 ACBasePickup::ACBasePickup()
 {
