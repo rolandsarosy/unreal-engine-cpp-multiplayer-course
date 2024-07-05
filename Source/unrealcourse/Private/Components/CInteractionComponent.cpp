@@ -38,12 +38,10 @@ void UCInteractionComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	DefaultWidgetInstance = CreateWidget<UCWorldUserWidget>(GetWorld(), DefaultWidgetClass);
-
 	if (Cast<APawn>(GetOwner())->IsLocallyControlled())
 	{
-		FTimerHandle TimerHandle;
-		GetWorld()->GetTimerManager().SetTimer(TimerHandle, [this] { FindBestInteractable(); }, TraceFrequency, true);
+		DefaultWidgetInstance = CreateWidget<UCWorldUserWidget>(GetWorld(), DefaultWidgetClass);
+		GetWorld()->GetTimerManager().SetTimer(FrequencyTimerHandle, [this] { FindBestInteractable(); }, TraceFrequency, true);
 	}
 }
 
@@ -52,7 +50,6 @@ void UCInteractionComponent::BeginPlay()
  *
  * @note It was required during class to do a timer-based, player-owned solution to the interaction problem instead of having the actors in the world, report back to the player
  * that they're interactable.
- *
  */
 void UCInteractionComponent::FindBestInteractable()
 {
@@ -100,4 +97,11 @@ void UCInteractionComponent::SetWorldWidget()
 	{
 		if (DefaultWidgetInstance) DefaultWidgetInstance->RemoveFromParent();
 	}
+}
+
+void UCInteractionComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+
+	GetWorld()->GetTimerManager().ClearTimer(FrequencyTimerHandle);
 }

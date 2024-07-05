@@ -150,8 +150,6 @@ void UCActionComponent::ServerStartAction_Implementation(AActor* Instigator, con
  */
 bool UCActionComponent::StopActionByTag(AActor* Instigator, const FGameplayTag Tag)
 {
-	LogOnScreen(GetWorld(), FString::Printf(TEXT("StopActionByTag function running")));
-
 	for (UCBaseAction* Action : CurrentActions)
 	{
 		if (Action && Action->Tag == Tag && Action->IsRunning())

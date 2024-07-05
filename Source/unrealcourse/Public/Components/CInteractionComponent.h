@@ -38,12 +38,16 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category="Interaction Trace", meta=(Tooltip = "The trace's collision channel to trace against."))
 	TEnumAsByte<ECollisionChannel> CollisionChannel;
 
+	FTimerHandle FrequencyTimerHandle;
+
 	virtual void BeginPlay() override;
+
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	UFUNCTION(Server, Reliable)
 	void ServerInteract(AActor* InFocus);
 
 	void FindBestInteractable();
-	
+
 	void SetWorldWidget();
 };

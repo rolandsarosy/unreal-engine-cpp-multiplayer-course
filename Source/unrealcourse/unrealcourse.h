@@ -20,5 +20,5 @@ static void LogOnScreen(const UObject* WorldContext, const FString& Msg, const F
 	if (!ensure(World)) return;
 
 	const FString NetPrefix = World->IsNetMode(NM_Client) ? "[CLIENT]" : "[SERVER]";
-	if (GEngine) GEngine->AddOnScreenDebugMessage(-1 , Duration, Color, NetPrefix + Msg);
+	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, Duration, Color, NetPrefix + Msg);
 }
