@@ -7,6 +7,8 @@ ACTargetDummy::ACTargetDummy()
 	RootComponent = StaticMeshComponent;
 
 	AttributeComponent = CreateDefaultSubobject<UCAttributeComponent>("AttributeComponent");
+
+	bReplicates = true;
 }
 
 void ACTargetDummy::PostInitializeComponents()
