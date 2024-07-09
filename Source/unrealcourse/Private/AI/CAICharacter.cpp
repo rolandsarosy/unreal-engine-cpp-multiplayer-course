@@ -11,6 +11,7 @@
 #include "Components/CAttributeComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Perception/PawnSensingComponent.h"
+#include "unrealcourse/unrealcourse.h"
 
 ACAICharacter::ACAICharacter()
 {
@@ -25,7 +26,7 @@ ACAICharacter::ACAICharacter()
 
 	CoinRewardUponDeath = 13;
 
-	HasSeenPlayer = false;
+	HasSeenPlayers = false;
 }
 
 void ACAICharacter::PostInitializeComponents()
@@ -39,16 +40,16 @@ void ACAICharacter::PostInitializeComponents()
 // ReSharper disable once CppMemberFunctionMayBeConst ~ Incorrect suggestion
 void ACAICharacter::OnHealthChanged(AActor* InstigatorActor, UCAttributeComponent* UAttributeComponent, const float NewHealth, const float Delta)
 {
-	AddHealthBar();
-
 	if (Delta < 0.0f)
 	{
-		if (InstigatorActor != this)
+		GetMesh()->SetScalarParameterValueOnMaterials("TimeToHit", GetWorld()->TimeSeconds);
+		
+		if (HasAuthority() && InstigatorActor != this)
 		{
 			SetTargetActor(Cast<APawn>(InstigatorActor), true);
-			AddSpottedWidgetConditionally(InstigatorActor);
+			MutlicastAddSpottedWidgetConditionally(InstigatorActor);
+			MulticastAddHealthBar();
 		}
-		GetMesh()->SetScalarParameterValueOnMaterials("TimeToHit", GetWorld()->TimeSeconds);
 	}
 }
 
@@ -100,11 +101,13 @@ void ACAICharacter::SetTargetActor(AActor* NewTarget, const bool ShouldOverrideC
 void ACAICharacter::OnSeePawn(APawn* Pawn)
 {
 	SetTargetActor(Pawn, false);
-	AddSpottedWidgetConditionally(Pawn);
+	MutlicastAddSpottedWidgetConditionally(Pawn);
 }
 
-void ACAICharacter::AddHealthBar()
+void ACAICharacter::MulticastAddHealthBar_Implementation()
 {
+	LogOnScreen(GetWorld(), FString::Printf(TEXT("AICharacter: AddHealthBar running")), FColor::Blue, 50.0F);
+
 	if (ActiveHealthBar == nullptr)
 	{
 		ActiveHealthBar = CreateWidget<UCWorldUserWidget>(GetWorld(), HealthBarWidgetClass);
@@ -116,13 +119,13 @@ void ACAICharacter::AddHealthBar()
 	}
 }
 
-void ACAICharacter::AddSpottedWidgetConditionally(const AActor* InstigatorActor)
+void ACAICharacter::MutlicastAddSpottedWidgetConditionally_Implementation(const AActor* InstigatorActor)
 {
-	if (HasSeenPlayer || !InstigatorActor->IsA(ACCharacter::StaticClass())) return;
-	
+	if (HasSeenPlayers || !InstigatorActor->IsA(ACCharacter::StaticClass())) return;
+
 	UCWorldUserWidget* Widget = CreateWidget<UCWorldUserWidget>(GetWorld(), SpottedPopupWidgetClass);
 	Widget->AttachedActor = this;
-	Widget->AddToViewport();
+	Widget->AddToViewport(10);
 
-	HasSeenPlayer = true;
+	HasSeenPlayers = true;
 }

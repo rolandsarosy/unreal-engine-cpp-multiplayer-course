@@ -41,7 +41,7 @@ protected:
 private:
 	TObjectPtr<UCWorldUserWidget> ActiveHealthBar;
 
-	bool HasSeenPlayer;
+	bool HasSeenPlayers;
 
 	UFUNCTION()
 	void OnHealthChanged(AActor* InstigatorActor, UCAttributeComponent* UAttributeComponent, float NewHealth, float Delta);
@@ -55,7 +55,9 @@ private:
 	UFUNCTION()
 	void OnSeePawn(APawn* Pawn);
 
-	void AddHealthBar();
-
-	void AddSpottedWidgetConditionally(const AActor* InstigatorActor);
+	UFUNCTION(Unreliable, NetMulticast)
+	void MulticastAddHealthBar();
+	
+	UFUNCTION(Unreliable, NetMulticast)
+	void MutlicastAddSpottedWidgetConditionally(const AActor* InstigatorActor);
 };
