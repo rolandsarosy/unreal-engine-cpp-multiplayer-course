@@ -11,7 +11,7 @@
 #include "Components/CAttributeComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Perception/PawnSensingComponent.h"
-#include "unrealcourse/unrealcourse.h"
+#include "CWorldHealthBar.h"
 
 ACAICharacter::ACAICharacter()
 {
@@ -48,7 +48,7 @@ void ACAICharacter::OnHealthChanged(AActor* InstigatorActor, UCAttributeComponen
 		{
 			SetTargetActor(Cast<APawn>(InstigatorActor), true);
 			MutlicastAddSpottedWidgetConditionally(InstigatorActor);
-			MulticastAddHealthBar();
+			MulticastAddHealthBar(NewHealth, AttributeComponent);
 		}
 	}
 }
@@ -104,16 +104,16 @@ void ACAICharacter::OnSeePawn(APawn* Pawn)
 	MutlicastAddSpottedWidgetConditionally(Pawn);
 }
 
-void ACAICharacter::MulticastAddHealthBar_Implementation()
+void ACAICharacter::MulticastAddHealthBar_Implementation(const float InitialHealth, UCAttributeComponent* OwnerAttributeComponent)
 {
-	LogOnScreen(GetWorld(), FString::Printf(TEXT("AICharacter: AddHealthBar running")), FColor::Blue, 50.0F);
-
 	if (ActiveHealthBar == nullptr)
 	{
-		ActiveHealthBar = CreateWidget<UCWorldUserWidget>(GetWorld(), HealthBarWidgetClass);
+		ActiveHealthBar = CreateWidget<UCWorldHealthBar>(GetWorld(), HealthBarWidgetClass);
 		if (ActiveHealthBar)
 		{
 			ActiveHealthBar->AttachedActor = this;
+			ActiveHealthBar->InitialHealth = InitialHealth;
+			ActiveHealthBar->AttributeComponent = OwnerAttributeComponent;
 			ActiveHealthBar->AddToViewport();
 		}
 	}

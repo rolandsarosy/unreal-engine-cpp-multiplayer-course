@@ -4,6 +4,7 @@
 #include "GameFramework/Character.h"
 #include "CAICharacter.generated.h"
 
+class UCWorldHealthBar;
 class UCActionComponent;
 class UCWorldUserWidget;
 class UCAttributeComponent;
@@ -31,7 +32,7 @@ protected:
 	TObjectPtr<UCActionComponent> ActionComponent;
 
 	UPROPERTY(EditDefaultsOnly, Category="UI")
-	TSubclassOf<UUserWidget> HealthBarWidgetClass;
+	TSubclassOf<UCWorldHealthBar> HealthBarWidgetClass;
 
 	UPROPERTY(EditDefaultsOnly, Category="UI")
 	TSubclassOf<UUserWidget> SpottedPopupWidgetClass;
@@ -39,7 +40,7 @@ protected:
 	virtual void PostInitializeComponents() override;
 
 private:
-	TObjectPtr<UCWorldUserWidget> ActiveHealthBar;
+	TObjectPtr<UCWorldHealthBar> ActiveHealthBar;
 
 	bool HasSeenPlayers;
 
@@ -56,7 +57,7 @@ private:
 	void OnSeePawn(APawn* Pawn);
 
 	UFUNCTION(Unreliable, NetMulticast)
-	void MulticastAddHealthBar();
+	void MulticastAddHealthBar(const float InitialHealth, UCAttributeComponent* OwnerAttributeComponent);
 	
 	UFUNCTION(Unreliable, NetMulticast)
 	void MutlicastAddSpottedWidgetConditionally(const AActor* InstigatorActor);
