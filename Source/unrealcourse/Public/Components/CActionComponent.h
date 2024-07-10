@@ -82,6 +82,8 @@ class UNREALCOURSE_API UCActionComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:
+	UCActionComponent();
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Tags")
 	FGameplayTagContainer ActiveGameplayTags;
 
@@ -105,9 +107,7 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category="Actions")
 	FOnGameplayTagRemoved OnGameplayTagRemoved;
-
-	UCActionComponent();
-
+	
 	UFUNCTION(BlueprintCallable, Category="Actions", meta=(DisplayName = "Get ActionComponent From Actor", Tooltip = "Returns ActionComponent if the Actor has any. Otherwise a nullptr."))
 	static UCActionComponent* GetComponentFrom(AActor* FromActor);
 
