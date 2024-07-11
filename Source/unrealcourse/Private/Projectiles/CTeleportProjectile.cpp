@@ -19,6 +19,7 @@ void ACTeleportProjectile::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 	SphereComponent->OnComponentHit.AddDynamic(this, &ACTeleportProjectile::OnComponentHit);
+	SphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ACTeleportProjectile::OnComponentBeginOverlap);
 }
 
 void ACTeleportProjectile::BeginPlay()
@@ -41,12 +42,27 @@ void ACTeleportProjectile::OnTeleport()
 	Destroy();
 }
 
-void ACTeleportProjectile::OnComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+void ACTeleportProjectile::OnProjectileExplosion(const AActor* HitActor)
 {
-	if (OtherActor != GetInstigator())
+	if (HitActor != GetInstigator())
 	{
+		GetWorldTimerManager().ClearAllTimersForObject(this);
+
 		TimerHandle_TeleportEffect.Invalidate();
 		TimerHandle_TeleportAction.Invalidate();
 		OnStartTeleportEffect();
 	}
+}
+
+void ACTeleportProjectile::OnComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	// Separating Hit and Overlap as there might be different behavior to Hit down the line.
+	OnProjectileExplosion(OtherActor);
+}
+
+void ACTeleportProjectile::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+                                                   const FHitResult& SweepResult)
+{
+	// Separating Hit and Overlap as there might be different behavior to Hit down the line.
+	OnProjectileExplosion(OtherActor);
 }
