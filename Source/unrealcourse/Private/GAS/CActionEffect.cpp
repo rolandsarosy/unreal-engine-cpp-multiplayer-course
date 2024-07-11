@@ -37,5 +37,5 @@ void UCActionEffect::StopAction_Implementation(AActor* Instigator)
 
 void UCActionEffect::ExecutePeriodicEffect_Implementation(AActor* Instigator)
 {
-	// This implementation will be done by children of this class. This class mustn't be marked with the PURE_VIRTUAL macro as it uses Unreal's Reflection system and has the BlueprintNative flag.
+	// This implementation will be done by children of this class. This function mustn't be marked with the PURE_VIRTUAL macro as it uses Unreal's Reflection system and has the BlueprintNative flag.
 }

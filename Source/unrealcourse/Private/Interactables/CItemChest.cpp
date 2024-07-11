@@ -15,9 +15,15 @@ ACItemChest::ACItemChest()
 	IsLidOpened = false;
 }
 
+void ACItemChest::OnRep_IsLidOpened_Implementation()
+{
+	// This implementation will be done by children of this class. This function mustn't be marked with the PURE_VIRTUAL macro as it uses Unreal's Reflection system and has the BlueprintNative flag.
+}
+
 void ACItemChest::Interact_Implementation(APawn* InstigatorPawn)
 {
 	IsLidOpened = !IsLidOpened;
+	OnRep_IsLidOpened();
 }
 
 void ACItemChest::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

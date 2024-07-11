@@ -22,6 +22,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="ItemChest")
 	TObjectPtr<UStaticMeshComponent> LidMesh;
 
-	UPROPERTY(Replicated, BlueprintReadOnly)
+	UPROPERTY(ReplicatedUsing="OnRep_IsLidOpened", BlueprintReadOnly)
 	bool IsLidOpened;
+
+	UFUNCTION(BlueprintNativeEvent)
+	void OnRep_IsLidOpened();
 };
