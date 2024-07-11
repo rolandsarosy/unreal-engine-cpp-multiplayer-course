@@ -23,7 +23,7 @@ protected:
 	TObjectPtr<UStaticMeshComponent> LidMesh;
 
 	UPROPERTY(ReplicatedUsing="OnRep_IsLidOpened", BlueprintReadOnly)
-	bool IsLidOpened;
+	bool bIsLidOpened;
 
 	UFUNCTION(BlueprintNativeEvent)
 	void OnRep_IsLidOpened();

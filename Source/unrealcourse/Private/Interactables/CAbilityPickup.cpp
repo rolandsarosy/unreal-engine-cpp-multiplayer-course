@@ -8,18 +8,18 @@ bool ACAbilityPickup::OnEffectTrigger(APawn* InstigatorPawn)
 	UCActionComponent* ActionComponent = UCActionComponent::GetComponentFrom(InstigatorPawn);
 	if (!ensure(ActionComponent)) return false;
 
-	bool HasAbilityAlready = false;
+	bool bHasAbilityAlready = false;
 
 	for (TObjectPtr<UCBaseAction> Action : ActionComponent->CurrentActions)
 	{
 		if (Action.IsA(GrantsAbility))
 		{
-			HasAbilityAlready = true;
+			bHasAbilityAlready = true;
 			break;
 		}
 	}
 
-	if (HasAbilityAlready) return false;
+	if (bHasAbilityAlready) return false;
 
 	ActionComponent->AddAction(GrantsAbility, this);
 	return true;

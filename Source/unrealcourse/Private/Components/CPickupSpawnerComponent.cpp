@@ -71,8 +71,8 @@ bool UCPickupSpawnerComponent::GetSpawnPointsAmountValidity(const TArray<FVector
 		TotalSpawnAmount += SpawnCount;
 	}
 
-	const bool IsSpawnPointsAmountValid = SpawnLocations.Num() >= TotalSpawnAmount;
-	if (!IsSpawnPointsAmountValid) UE_LOG(LogTemp, Error, TEXT("Pickup Spawner was unable to generate enough points for the desired amount of pickups. None will be spawned."))
+	const bool bIsSpawnPointsAmountValid = SpawnLocations.Num() >= TotalSpawnAmount;
+	if (!bIsSpawnPointsAmountValid) UE_LOG(LogTemp, Error, TEXT("Pickup Spawner was unable to generate enough points for the desired amount of pickups. None will be spawned."))
 
-	return IsSpawnPointsAmountValid;
+	return bIsSpawnPointsAmountValid;
 }

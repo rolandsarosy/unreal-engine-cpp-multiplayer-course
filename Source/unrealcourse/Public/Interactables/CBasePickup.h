@@ -34,7 +34,7 @@ protected:
 
 private:
 	UPROPERTY(ReplicatedUsing="OnRep_IsOnCooldown")
-	bool IsOnCooldown;
+	bool bIsOnCooldown;
 
 	UFUNCTION()
 	void OnRep_IsOnCooldown();

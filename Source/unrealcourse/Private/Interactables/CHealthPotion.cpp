@@ -15,13 +15,13 @@ bool ACHealthPotion::OnEffectTrigger(APawn* InstigatorPawn)
 	ACPlayerState* PlayerState = ACPlayerState::GetFromActor(InstigatorPawn);
 	if (!PlayerState) return false;
 
-	const bool HasEnoughCoins = PlayerState->GetCoinsAmount() >= CoinsCost;
-	if (!HasEnoughCoins) return false;
+	const bool bHasEnoughCoins = PlayerState->GetCoinsAmount() >= CoinsCost;
+	if (!bHasEnoughCoins) return false;
 
-	const bool DidHealSuccessfully = UCGameplayFunctionLibrary::ApplyHealing(this, InstigatorPawn, HealthRestoreAmount);
-	if (!DidHealSuccessfully) return false;
+	const bool bDidHealSuccessfully = UCGameplayFunctionLibrary::ApplyHealing(this, InstigatorPawn, HealthRestoreAmount);
+	if (!bDidHealSuccessfully) return false;
 
-	if (HasEnoughCoins && DidHealSuccessfully) return PlayerState->RemoveCoins(this, CoinsCost);
+	if (bHasEnoughCoins && bDidHealSuccessfully) return PlayerState->RemoveCoins(this, CoinsCost);
 
 	return false;
 }

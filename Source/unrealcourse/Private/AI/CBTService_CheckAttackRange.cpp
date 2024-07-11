@@ -16,12 +16,12 @@ void UCBTService_CheckAttackRange::TickNode(UBehaviorTreeComponent& OwnerComp, u
 	const AActor* TargetActor = GetTargetActor(OwnerComp);
 	if (!AIPawn || !TargetActor) return;
 
-	const bool IsWithinAttackRange = FVector::Distance(TargetActor->GetActorLocation(), AIPawn->GetActorLocation()) <= AttackRange;
-	bool HasLineOfSight = false;
+	const bool bIsWithinAttackRange = FVector::Distance(TargetActor->GetActorLocation(), AIPawn->GetActorLocation()) <= AttackRange;
+	bool bHasLineOfSight = false;
 
-	if (IsWithinAttackRange) HasLineOfSight = Cast<AAIController>(OwnerComp.GetOwner())->LineOfSightTo(TargetActor);
+	if (bIsWithinAttackRange) bHasLineOfSight = Cast<AAIController>(OwnerComp.GetOwner())->LineOfSightTo(TargetActor);
 
-	OwnerComp.GetBlackboardComponent()->SetValueAsBool(IsWithinAttackRangeKey.SelectedKeyName, IsWithinAttackRange && HasLineOfSight);
+	OwnerComp.GetBlackboardComponent()->SetValueAsBool(IsWithinAttackRangeKey.SelectedKeyName, bIsWithinAttackRange && bHasLineOfSight);
 }
 
 APawn* UCBTService_CheckAttackRange::GetAIPawn(const UBehaviorTreeComponent& OwnerComp)

@@ -26,8 +26,8 @@ void UCBTService_CheckSelfForLowHealth::TickNode(UBehaviorTreeComponent& OwnerCo
 	UBlackboardComponent* BlackboardComponent = OwnerComp.GetBlackboardComponent();
 	if (!ensureMsgf(BlackboardComponent, TEXT("BehaviorTreeService could not find relevant BlackBoardComponent to set values in."))) return;
 
-	const bool IsOnLowHealth = CurrentHealthPercentage <= LowHealthPercentageBreakPoint;
-	BlackboardComponent->SetValueAsBool(IsOnLowHealthKey.SelectedKeyName, IsOnLowHealth);
+	const bool bIsOnLowHealth = CurrentHealthPercentage <= LowHealthPercentageBreakPoint;
+	BlackboardComponent->SetValueAsBool(IsOnLowHealthKey.SelectedKeyName, bIsOnLowHealth);
 }
 
 APawn* UCBTService_CheckSelfForLowHealth::GetAIPawn(const UBehaviorTreeComponent& OwnerComp)

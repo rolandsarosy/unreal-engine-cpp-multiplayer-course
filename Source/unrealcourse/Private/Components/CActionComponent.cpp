@@ -190,10 +190,10 @@ void UCActionComponent::AddGameplayTag(const FGameplayTag Tag)
  */
 bool UCActionComponent::RemoveGameplayTag(const FGameplayTag Tag)
 {
-	const bool IsSuccess = ActiveGameplayTags.RemoveTag(Tag);
-	if (IsSuccess) OnGameplayTagRemoved.Broadcast(Tag);
+	const bool bIsSuccess = ActiveGameplayTags.RemoveTag(Tag);
+	if (bIsSuccess) OnGameplayTagRemoved.Broadcast(Tag);
 
-	return IsSuccess;
+	return bIsSuccess;
 }
 
 /**
@@ -207,13 +207,13 @@ UCActionComponent* UCActionComponent::GetComponentFrom(AActor* FromActor) { retu
 
 bool UCActionComponent::ReplicateSubobjects(UActorChannel* Channel, FOutBunch* Bunch, FReplicationFlags* RepFlags)
 {
-	bool ChangeOccured = Super::ReplicateSubobjects(Channel, Bunch, RepFlags);
+	bool bChangeOccured = Super::ReplicateSubobjects(Channel, Bunch, RepFlags);
 
 	for (UCBaseAction* Action : CurrentActions)
 	{
-		if (Action) ChangeOccured |= Channel->ReplicateSubobject(Action, *Bunch, *RepFlags);
+		if (Action) bChangeOccured |= Channel->ReplicateSubobject(Action, *Bunch, *RepFlags);
 	}
-	return ChangeOccured;
+	return bChangeOccured;
 }
 
 void UCActionComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

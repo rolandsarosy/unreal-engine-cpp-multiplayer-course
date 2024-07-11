@@ -99,7 +99,7 @@ private:
 	float HealthMax;
 
 	UPROPERTY(EditDefaultsOnly, Replicated, Category="Attributes", meta=(Tooltip = "Signals whether the owner collects and holds Rage or not."))
-	bool IsRageEnabled;
+	bool bIsRageEnabled;
 
 	UPROPERTY(EditDefaultsOnly, Replicated, Category="Attributes", meta=(EditCondition = "IsRageEnabled == true", Tooltip = "Signals which percentage of the incoming damage will be converted to Rage."))
 	int32 RageGainPercentage;

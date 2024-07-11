@@ -26,7 +26,7 @@ ACAICharacter::ACAICharacter()
 
 	CoinRewardUponDeath = 13;
 
-	HasSeenPlayers = false;
+	bHasSeenPlayers = false;
 }
 
 void ACAICharacter::PostInitializeComponents()
@@ -69,10 +69,10 @@ void ACAICharacter::OnDeath(AActor* KillerActor, UCAttributeComponent* OwnerComp
  * This method is used to set the target actor for the AI character, which is responsible for tracking and engaging the target.
  *
  * @param NewTarget     The new target actor to set.
- * @param ShouldOverrideCurrentTarget    Flag indicating whether the current target should be overridden even if it is alive.
+ * @param bShouldOverrideCurrentTarget    Flag indicating whether the current target should be overridden even if it is alive.
  *
  */
-void ACAICharacter::SetTargetActor(AActor* NewTarget, const bool ShouldOverrideCurrentTarget) const
+void ACAICharacter::SetTargetActor(AActor* NewTarget, const bool bShouldOverrideCurrentTarget) const
 {
 	// I'm unsure how to get the Blackboard's values here in the Editor, since there is no clear BlackBoard in the context of the Character. TODO: Work this out properly in the future.
 	const FName BlackboardKeyName = TEXT("TargetActor");
@@ -85,13 +85,13 @@ void ACAICharacter::SetTargetActor(AActor* NewTarget, const bool ShouldOverrideC
 
 	AActor* CurrentTarget = Cast<AActor>(BlackboardComponent->GetValueAsObject(BlackboardKeyName));
 
-	bool IsCurrentTargetAlive = false;
+	bool bIsCurrentTargetAlive = false;
 	if (CurrentTarget)
 	{
-		if (const UCAttributeComponent* CurrentTargetAttributeComponent = UCAttributeComponent::GetComponentFrom(CurrentTarget)) IsCurrentTargetAlive = CurrentTargetAttributeComponent->IsAlive();
+		if (const UCAttributeComponent* CurrentTargetAttributeComponent = UCAttributeComponent::GetComponentFrom(CurrentTarget)) bIsCurrentTargetAlive = CurrentTargetAttributeComponent->IsAlive();
 	}
 
-	if (ShouldOverrideCurrentTarget || !CurrentTarget || !IsCurrentTargetAlive)
+	if (bShouldOverrideCurrentTarget || !CurrentTarget || !bIsCurrentTargetAlive)
 	{
 		BlackboardComponent->SetValueAsObject(BlackboardKeyName, NewTarget);
 	}
@@ -121,11 +121,11 @@ void ACAICharacter::MulticastAddHealthBar_Implementation(const float InitialHeal
 
 void ACAICharacter::MutlicastAddSpottedWidgetConditionally_Implementation(const AActor* InstigatorActor)
 {
-	if (HasSeenPlayers || !InstigatorActor->IsA(ACCharacter::StaticClass())) return;
+	if (bHasSeenPlayers || !InstigatorActor->IsA(ACCharacter::StaticClass())) return;
 
 	UCWorldUserWidget* Widget = CreateWidget<UCWorldUserWidget>(GetWorld(), SpottedPopupWidgetClass);
 	Widget->AttachedActor = this;
 	Widget->AddToViewport(10);
 
-	HasSeenPlayers = true;
+	bHasSeenPlayers = true;
 }

@@ -9,7 +9,7 @@ ACBasePickup::ACBasePickup()
 	bReplicates = true;
 
 	CooldownDuration = 10.0f;
-	IsOnCooldown = false;
+	bIsOnCooldown = false;
 }
 
 void ACBasePickup::Interact_Implementation(APawn* InstigatorPawn)
@@ -19,12 +19,12 @@ void ACBasePickup::Interact_Implementation(APawn* InstigatorPawn)
 
 void ACBasePickup::OnAttemptPickup(APawn* InstigatorPawn)
 {
-	if (!IsOnCooldown && OnEffectTrigger(InstigatorPawn)) { OnStartCooldown(); }
+	if (!bIsOnCooldown && OnEffectTrigger(InstigatorPawn)) { OnStartCooldown(); }
 }
 
 void ACBasePickup::OnRep_IsOnCooldown()
 {
-	if (IsOnCooldown)
+	if (bIsOnCooldown)
 	{
 		RootComponent->ToggleVisibility(true);
 		SetActorEnableCollision(false);
@@ -41,7 +41,7 @@ void ACBasePickup::OnStartCooldown()
 {
 	if (!ensure(GetOwner()->HasAuthority())) return;
 
-	IsOnCooldown = true;
+	bIsOnCooldown = true;
 	OnRep_IsOnCooldown(); // OnRep_Foo() functions don't trigger automatically on the server. Clients will ignore the double call of the function as they already have the correct state set.
 
 	FTimerHandle TimerHandle = FTimerHandle();
@@ -53,7 +53,7 @@ void ACBasePickup::OnResetCooldown()
 {
 	if (!ensure(GetOwner()->HasAuthority())) return;
 
-	IsOnCooldown = false;
+	bIsOnCooldown = false;
 	OnRep_IsOnCooldown(); // OnRep_Foo() functions don't trigger automatically on the server. Clients will ignore the double call of the function as they already have the correct state set.
 }
 
@@ -61,5 +61,5 @@ void ACBasePickup::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME(ACBasePickup, IsOnCooldown);
+	DOREPLIFETIME(ACBasePickup, bIsOnCooldown);
 }

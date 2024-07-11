@@ -42,7 +42,7 @@ protected:
 private:
 	TObjectPtr<UCWorldHealthBar> ActiveHealthBar;
 
-	bool HasSeenPlayers;
+	bool bHasSeenPlayers;
 
 	UFUNCTION()
 	void OnHealthChanged(AActor* InstigatorActor, UCAttributeComponent* UAttributeComponent, float NewHealth, float Delta);
@@ -51,7 +51,7 @@ private:
 	void OnDeath(AActor* KillerActor, UCAttributeComponent* OwnerComponent);
 
 	UFUNCTION()
-	void SetTargetActor(AActor* NewTarget, bool ShouldOverrideCurrentTarget) const;
+	void SetTargetActor(AActor* NewTarget, bool bShouldOverrideCurrentTarget) const;
 
 	UFUNCTION()
 	void OnSeePawn(APawn* Pawn);

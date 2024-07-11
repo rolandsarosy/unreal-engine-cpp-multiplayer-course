@@ -12,7 +12,7 @@ UCAttributeComponent::UCAttributeComponent()
 {
 	HealthMax = 100;
 	HealthCurrent = HealthMax;
-	IsRageEnabled = false;
+	bIsRageEnabled = false;
 	RageGainPercentage = 0;
 	RageCurrent = 0;
 	RageMax = 0;
@@ -71,7 +71,7 @@ bool UCAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delt
 
 bool UCAttributeComponent::ApplyRageChange(AActor* InstigatorActor, float Delta)
 {
-	if (!IsRageEnabled) return false;
+	if (!bIsRageEnabled) return false;
 	if (!IsAlive()) return false;
 	if (RageCurrent == 0 && Delta < 0) return false;
 	if (RageCurrent == RageMax && Delta > 0) return false;
@@ -109,7 +109,7 @@ void UCAttributeComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>&
 	DOREPLIFETIME(UCAttributeComponent, HealthMax);
 
 	DOREPLIFETIME(UCAttributeComponent, RageCurrent);
-	DOREPLIFETIME_CONDITION(UCAttributeComponent, IsRageEnabled, COND_InitialOnly);
+	DOREPLIFETIME_CONDITION(UCAttributeComponent, bIsRageEnabled, COND_InitialOnly);
 	DOREPLIFETIME_CONDITION(UCAttributeComponent, RageMax, COND_InitialOnly);
 	DOREPLIFETIME_CONDITION(UCAttributeComponent, RageGainPercentage, COND_InitialOnly);
 }

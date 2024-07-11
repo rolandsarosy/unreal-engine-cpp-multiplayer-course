@@ -12,7 +12,7 @@ ACItemChest::ACItemChest()
 	LidMesh = CreateDefaultSubobject<UStaticMeshComponent>("LidMesh");
 	LidMesh->SetupAttachment(BaseMesh);
 
-	IsLidOpened = false;
+	bIsLidOpened = false;
 }
 
 void ACItemChest::OnRep_IsLidOpened_Implementation()
@@ -22,7 +22,7 @@ void ACItemChest::OnRep_IsLidOpened_Implementation()
 
 void ACItemChest::Interact_Implementation(APawn* InstigatorPawn)
 {
-	IsLidOpened = !IsLidOpened;
+	bIsLidOpened = !bIsLidOpened;
 	OnRep_IsLidOpened();
 }
 
@@ -30,5 +30,5 @@ void ACItemChest::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifet
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME(ACItemChest, IsLidOpened)
+	DOREPLIFETIME(ACItemChest, bIsLidOpened)
 }
