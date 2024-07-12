@@ -47,28 +47,6 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnActionStarted, UCBaseAction*, Ac
  */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnActionStopped, UCBaseAction*, ActionStopped, AActor*, Instigator);
 
-/** 
- * @brief Parameterized Multicast Delegate that responds a @FGameplayTag being added to the @UCActionComponent.
- *
- * @note That only keycard-style tags should be used.
- *
- * @param FGameplayTag: The @FGameplayTag being added.
- *
- * Subscribed listeners can use this, in combination with the other delegates, to react to changes to the owner's abilities and effects.
- */
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGameplayTagAdded, FGameplayTag, TagAdded);
-
-/** 
- * @brief Parameterized Multicast Delegate that responds a @FGameplayTag being removed from the @UCActionComponent.
- *
- * @note That only keycard-style tags should be used.
- *
- * @param FGameplayTag: The @FGameplayTag being removed.
- *
- * Subscribed listeners can use this, in combination with the other delegates, to react to changes to the owner's abilities and effects.
- */
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGameplayTagRemoved, FGameplayTag, TagRemoved);
-
 /**
  * @class UCActionComponent
  * @brief The class for managing GAS-like actions of an actor.
@@ -101,16 +79,7 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category="Actions")
 	FOnActionStopped OnActionStopped;
-
-	UPROPERTY(BlueprintAssignable, Category="Actions")
-	FOnGameplayTagAdded OnGameplayTagAdded;
-
-	UPROPERTY(BlueprintAssignable, Category="Actions")
-	FOnGameplayTagRemoved OnGameplayTagRemoved;
 	
-	UFUNCTION(BlueprintCallable, Category="Actions", meta=(DisplayName = "Get ActionComponent From Actor", Tooltip = "Returns ActionComponent if the Actor has any. Otherwise a nullptr."))
-	static UCActionComponent* GetComponentFrom(AActor* FromActor);
-
 	UFUNCTION(BlueprintCallable, Category="Actions")
 	void AddAction(TSubclassOf<UCBaseAction> ActionClass, AActor* Instigator);
 
@@ -123,11 +92,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Actions")
 	bool StopActionByTag(AActor* Instigator, FGameplayTag Tag);
 
-	UFUNCTION(BlueprintCallable, Category="Tags", meta=(Tooltip = "Should be used for adding/removing keycard-style GameplayTags."))
-	void AddGameplayTag(FGameplayTag Tag);
-
-	UFUNCTION(BlueprintCallable, Category="Tags", meta=(Tooltip = "Should be used for adding/removing keycard-style GameplayTags."))
-	bool RemoveGameplayTag(FGameplayTag Tag);
+	UFUNCTION(BlueprintCallable, Category="Actions", meta=(DisplayName = "Get ActionComponent From Actor", Tooltip = "Returns the ActionComponent if the Actor has any. Otherwise a nullptr."))
+	static UCActionComponent* GetComponentFrom(AActor* FromActor);
 
 private:
 	UPROPERTY(EditAnywhere, Category="Actions")

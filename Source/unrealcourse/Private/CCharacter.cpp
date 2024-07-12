@@ -9,6 +9,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "Components/CActionComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/CKeyCardComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 ACCharacter::ACCharacter()
@@ -21,8 +22,9 @@ ACCharacter::ACCharacter()
 	CameraComponent->SetupAttachment(SpringArmComponent);
 
 	InteractionComponent = CreateDefaultSubobject<UCInteractionComponent>("InteractionComponent");
-	AttributeComponent = CreateDefaultSubobject<UCAttributeComponent>("AttributeComponent");
 	ActionComponent = CreateDefaultSubobject<UCActionComponent>("ActionComponent");
+	KeycardComponent = CreateDefaultSubobject<UCKeyCardComponent>("KeycardComponent");
+	AttributeComponent = CreateDefaultSubobject<UCAttributeComponent>("AttributeComponent");
 
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;

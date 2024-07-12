@@ -169,34 +169,6 @@ void UCActionComponent::ServerStopAction_Implementation(AActor* Instigator, cons
 }
 
 /**
- * Adds a gameplay tag to the ActiveGameplayTags container.
- *
- * @param Tag The gameplay tag to add.
- *
- * @note Should be used for adding/removing keycard-style GameplayTags.
- */
-void UCActionComponent::AddGameplayTag(const FGameplayTag Tag)
-{
-	ActiveGameplayTags.AddTag(Tag);
-	OnGameplayTagAdded.Broadcast(Tag);
-}
-
-/**
- * Removes a gameplay tag from the ActiveGameplayTags container.
- *
- * @param Tag The gameplay tag to remove.
- *
- * @note Should be used for adding/removing keycard-style GameplayTags.
- */
-bool UCActionComponent::RemoveGameplayTag(const FGameplayTag Tag)
-{
-	const bool bIsSuccess = ActiveGameplayTags.RemoveTag(Tag);
-	if (bIsSuccess) OnGameplayTagRemoved.Broadcast(Tag);
-
-	return bIsSuccess;
-}
-
-/**
  * Returns the UCActionComponent attached to an AActor. If the AActor does not have a UCActionComponent, it returns nullptr.
  *
  * @param FromActor The actor to get the UCActionComponent from.
