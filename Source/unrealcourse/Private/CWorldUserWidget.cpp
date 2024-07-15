@@ -24,14 +24,24 @@ void UCWorldUserWidget::NativeTick(const FGeometry& MyGeometry, const float InDe
 
 FVector UCWorldUserWidget::CalculateOffsetScreenPosition() const
 {
-	const float VerticalOffsetMultiplier = 1.0f + (static_cast<float>(VerticalOffsetPercentage) / 100.0f);
-
 	FVector AttachedActorOrigin;
 	FVector AttachedActorBoxExtent;
 	AttachedActor->GetActorBounds(true, AttachedActorOrigin, AttachedActorBoxExtent);
 
 	FVector ActorLocation = AttachedActor->GetActorLocation();
-	ActorLocation.Z += AttachedActorBoxExtent.Z * VerticalOffsetMultiplier;
+
+	switch (WorldUserWidgetOffsetType)
+	{
+	case Percentage:
+		ActorLocation.Z += AttachedActorBoxExtent.Z * (1.0f + (static_cast<float>(VerticalOffsetPercentage) / 100.0f));
+		break;
+	case Value:
+		ActorLocation.Z += AttachedActorBoxExtent.Z + VertialOffsetValue;
+		break;
+	default:
+		ActorLocation.Z += AttachedActorBoxExtent.Z;
+		break;
+	}
 
 	return ActorLocation;
 }
