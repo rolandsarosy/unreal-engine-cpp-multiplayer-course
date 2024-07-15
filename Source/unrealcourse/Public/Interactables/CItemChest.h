@@ -22,9 +22,21 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="ItemChest")
 	TObjectPtr<UStaticMeshComponent> LidMesh;
 
-	UPROPERTY(ReplicatedUsing="OnRep_IsLidOpened", BlueprintReadOnly)
+	UPROPERTY(ReplicatedUsing="OnRep_IsLidOpened", BlueprintReadOnly, Category="ItemChest")
 	bool bIsLidOpened;
 
-	UFUNCTION(BlueprintNativeEvent)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="ItemChest")
+	bool bIsLocked;
+
+	UFUNCTION(BlueprintNativeEvent, Category="ItemChest")
 	void OnRep_IsLidOpened();
+
+	UFUNCTION(BlueprintNativeEvent, Category="ItemChest")
+	bool AttemptUnlock(AActor* InstigatorActor);
+
+	UFUNCTION(NetMulticast, NotBlueprintable, Unreliable, Category="ItemChest")
+	void MulticastOnUnSuccessfulOpeningAttempt();
+
+	UFUNCTION(BlueprintNativeEvent, Category="ItemChest")
+	void OnUnsuccessfullOpeningAttempt();
 };
