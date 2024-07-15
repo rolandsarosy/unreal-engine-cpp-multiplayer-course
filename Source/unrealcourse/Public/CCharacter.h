@@ -85,9 +85,10 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
 	TObjectPtr<UCKeyCardComponent> KeycardComponent;
-	
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
 	TObjectPtr<UCAttributeComponent> AttributeComponent;
+
 private:
 	FTimerHandle TimerHandle_Attack;
 
@@ -96,9 +97,7 @@ private:
 
 	UFUNCTION()
 	void OnDeath(AActor* KillerActor, UCAttributeComponent* OwnerComponent);
-
-	virtual FVector GetPawnViewLocation() const override;
-
+	
 	void Move(const FInputActionInstance& InputActionInstance);
 
 	void Look(const FInputActionValue& InputActionValue);
@@ -116,6 +115,8 @@ private:
 	void Parry();
 
 	virtual void PostInitializeComponents() override;
+
+	virtual FVector GetPawnViewLocation() const override;
 
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 };

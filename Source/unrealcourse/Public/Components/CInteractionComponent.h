@@ -40,14 +40,14 @@ private:
 
 	FTimerHandle FrequencyTimerHandle;
 
-	virtual void BeginPlay() override;
-
-	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-
 	UFUNCTION(Server, Reliable)
 	void ServerInteract(AActor* InFocus);
 
 	void FindBestInteractable();
 
 	void SetWorldWidget();
+
+	virtual void BeginPlay() override;
+
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 };

@@ -54,10 +54,7 @@ class UNREALCOURSE_API UCAttributeComponent : public UActorComponent
 
 public:
 	UCAttributeComponent();
-
-	UFUNCTION(BlueprintCallable, Category="Attributes", meta=(DisplayName = "Get AttributeComponent From Actor", Tooltip = "Returns AttributeComponent if the Actor has any. Otherwise a nullptr."))
-	static UCAttributeComponent* GetComponentFrom(AActor* FromActor);
-
+	
 	UPROPERTY(BlueprintAssignable, Category="Attributes")
 	FOnHealthChanged OnHealthChanged;
 
@@ -76,7 +73,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Attributes", meta=(Tooltip = "Returns whether the owner is currently considered alive or not."))
 	bool IsAlive() const;
 
-	UFUNCTION(BlueprintCallable, Category="Attributes", meta=(Tooltip = "Kills the owner by dealing fatal damage to them. The owners must handle their death separately. "))
+	UFUNCTION(BlueprintCallable, Category="Attributes", meta=(Tooltip = "Kills the owner by dealing fatal damage to them. The owners must handle their death separately."))
 	bool KillOwner(AActor* InstigatorActor);
 
 	UFUNCTION(BlueprintCallable, Category="Attributes", meta=(DisplayName = "Get Current Health", Tooltip = "Returns the current health of the owner."))
@@ -90,6 +87,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="Attributes", meta=(Displayname = "Get Max Rage", Tooltip = "Returns the maximum Rage of the owner."))
 	float GetRageMax() const;
+
+	UFUNCTION(BlueprintCallable, Category="Attributes", meta=(DisplayName = "Get AttributeComponent From Actor", Tooltip = "Returns AttributeComponent if the Actor has any. Otherwise a nullptr."))
+	static UCAttributeComponent* GetComponentFrom(AActor* FromActor);
 
 private:
 	UPROPERTY(EditDefaultsOnly, Replicated, Category="Attributes", meta=(Tooltip = "Signals the current health of the owner. Also marks the starting health."))

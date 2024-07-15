@@ -42,12 +42,12 @@ private:
 	UPROPERTY(VisibleAnywhere, Category="Keycards")
 	FGameplayTagContainer PreviousKeycardGameplayTags; // Stores the list of actions before an OnRep triggers, as OnRep cannot carry the previous value.
 
+	UFUNCTION()
+	void OnRep_CurrentKeycardGameplayTags();
+	
 	virtual void BeginPlay() override;
 
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-
-	UFUNCTION()
-	void OnRep_CurrentKeycardGameplayTags();
 };

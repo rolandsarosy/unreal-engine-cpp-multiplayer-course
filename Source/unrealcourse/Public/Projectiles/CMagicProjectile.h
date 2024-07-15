@@ -19,8 +19,6 @@ class UNREALCOURSE_API ACMagicProjectile : public ACBaseProjectile
 public:
 	ACMagicProjectile();
 
-	virtual void PostInitializeComponents() override;
-
 private:
 	UPROPERTY(EditDefaultsOnly, Category="Audio")
 	TObjectPtr<UAudioComponent> LoopingAudioComponent;
@@ -55,4 +53,6 @@ private:
 	void OnComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 	void PlayEffectsAndDestroy();
+
+	virtual void PostInitializeComponents() override;
 };

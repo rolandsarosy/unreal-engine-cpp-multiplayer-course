@@ -30,16 +30,16 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category="AI")
 	TObjectPtr<UCurveFloat> MaxEnemyCountOverTimeCurve;
 
-	virtual void BeginPlay() override;
-	
-	void OnSpawnEnemyTimerElapsed();
-	
 	UFUNCTION()
 	void OnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus);
+	
+	void OnSpawnEnemyTimerElapsed();
 	
 	void SpawnEnemyAtLocation(const FVector& SpawnLocation) const;
 
 	uint16 GetNumberOfEnemiesAlive() const;
 
 	bool CanGameModeSpawnMoreEnemies(uint16 NumberOfEnemiesAlive) const;
+
+	virtual void BeginPlay() override;
 };

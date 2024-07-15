@@ -32,14 +32,14 @@ class UNREALCOURSE_API UCPickupSpawnerComponent : public UActorComponent
 	UPROPERTY(EditAnywhere, Category="Spawner Info")
 	TArray<FCPickupItemSpawnInfo> PickupItemsToSpawn;
 
-	virtual void BeginPlay() override;
-
-	void QueryItemSpawnPoints();
-
 	UFUNCTION()
 	void OnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus);
+
+	void QueryItemSpawnPoints();
 
 	void SpawnPickupItemsToQueryLocations(TArray<FVector>& SpawnLocations);
 
 	bool GetSpawnPointsAmountValidity(const TArray<FVector>& SpawnLocations);
+	
+	virtual void BeginPlay() override;
 };

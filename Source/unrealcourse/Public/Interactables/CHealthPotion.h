@@ -12,13 +12,12 @@ class UNREALCOURSE_API ACHealthPotion : public ACBasePickup
 public:
 	ACHealthPotion();
 
-	UPROPERTY(EditDefaultsOnly, Category="Pickup")
-	int CoinsCost;
-
-protected:
-	virtual bool OnEffectTrigger(APawn* InstigatorPawn) override;
-
 private:
 	UPROPERTY(EditDefaultsOnly, Category="Pickup")
+	int CoinsCost;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Pickup")
 	float HealthRestoreAmount;
+
+	virtual bool OnEffectTrigger(APawn* InstigatorPawn) override;
 };

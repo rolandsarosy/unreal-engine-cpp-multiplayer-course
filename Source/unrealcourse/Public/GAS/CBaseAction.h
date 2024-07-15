@@ -37,6 +37,10 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Action")
 	FGameplayTag Tag;
 
+	/** Start immediately when added to an action component. **/
+	UPROPERTY(EditDefaultsOnly, Category="Action")
+	bool bAutoStart;
+	
 	UFUNCTION(BlueprintNativeEvent, Category="Action")
 	void StartAction(AActor* Instigator);
 
@@ -48,11 +52,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="Action")
 	bool IsRunning() const;
-
-	/** Start immediately when added to an action component. **/
-	UPROPERTY(EditDefaultsOnly, Category="Action")
-	bool bAutoStart;
-
+	
 	virtual UWorld* GetWorld() const override;
 
 protected:

@@ -13,8 +13,6 @@ class UNREALCOURSE_API ACTeleportProjectile : public ACBaseProjectile
 
 public:
 	ACTeleportProjectile();
-	
-	virtual void BeginPlay() override;
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
@@ -25,18 +23,20 @@ private:
 	// This is a bad approach in my opinion, but this is what the assignment specified. I'd have rather used a delegate listening to the end of one of the particle system's emitters.
 	FTimerHandle TimerHandle_TeleportEffect;
 	FTimerHandle TimerHandle_TeleportAction;
-	
-	virtual void PostInitializeComponents() override;
-
-	void OnStartTeleportEffect();
-
-	void OnTeleport();
-
-	void OnProjectileExplosion(const AActor* HitActor);
 
 	UFUNCTION()
 	void OnComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 	UFUNCTION()
 	void OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	
+	void OnStartTeleportEffect();
+
+	void OnTeleport();
+
+	void OnProjectileExplosion(const AActor* HitActor);
+	
+	virtual void PostInitializeComponents() override;
+
+	virtual void BeginPlay() override;
 };
