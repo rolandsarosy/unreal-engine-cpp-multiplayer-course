@@ -42,7 +42,7 @@ void UCPickupSpawnerComponent::SpawnPickupItemsToQueryLocations(TArray<FVector>&
 
 	FActorSpawnParameters SpawnParameters;
 	SpawnParameters.Owner = GetOwner();
-	
+
 	int CurrentLocationIndex = 0;
 	for (const auto& [Item, SpawnCount] : PickupItemsToSpawn)
 	{

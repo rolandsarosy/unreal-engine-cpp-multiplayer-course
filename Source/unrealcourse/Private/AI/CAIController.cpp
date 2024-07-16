@@ -3,6 +3,6 @@
 void ACAIController::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	RunBehaviorTree(BehaviorTree);
 }

@@ -3,7 +3,7 @@
 void ACPlayerController::BeginPlayingState()
 {
 	Super::BeginPlayingState();
-	
+
 	BlueprintBeginPlayingState();
 	OnBeginPlayStateStarted.Broadcast(this);
 }

@@ -14,7 +14,7 @@ ACBlackHoleProjectile::ACBlackHoleProjectile()
 
 	ProjectileMovementComponent->InitialSpeed = 1000;
 	ProjectileMovementComponent->ProjectileGravityScale = 0.0f;
-	
+
 	// This is fucking weird.
 	RadialForceComponent->RemoveObjectTypeToAffect(UCollisionProfile::Get()->ConvertToObjectType(ECC_Pawn));
 }

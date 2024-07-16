@@ -13,7 +13,7 @@ UCActionEffect_Thorns::UCActionEffect_Thorns()
 void UCActionEffect_Thorns::StartAction_Implementation(AActor* Instigator)
 {
 	Super::StartAction_Implementation(Instigator);
-	
+
 	if (UCAttributeComponent* AttributeComponent = UCAttributeComponent::GetComponentFrom(Instigator))
 	{
 		AttributeComponent->OnHealthChanged.AddDynamic(this, &UCActionEffect_Thorns::OnOwnerHealthChanged);
@@ -39,6 +39,6 @@ void UCActionEffect_Thorns::OnOwnerHealthChanged(AActor* InstigatorActor, UCAttr
 	const int32 ThornsDamage = abs(round(Delta * (static_cast<float>(ThornsPercentage) / 100.0F)));
 
 	if (ThornsDamage == 0) return;
-	
+
 	UCGameplayFunctionLibrary::ApplyDamage(GetOwningComponent()->GetOwner(), InstigatorActor, ThornsDamage);
 }

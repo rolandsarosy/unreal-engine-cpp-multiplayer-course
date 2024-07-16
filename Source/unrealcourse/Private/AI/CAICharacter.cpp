@@ -43,7 +43,7 @@ void ACAICharacter::OnHealthChanged(AActor* InstigatorActor, UCAttributeComponen
 	if (Delta < 0.0f)
 	{
 		GetMesh()->SetScalarParameterValueOnMaterials("TimeToHit", GetWorld()->TimeSeconds);
-		
+
 		if (HasAuthority() && InstigatorActor != this)
 		{
 			SetTargetActor(Cast<APawn>(InstigatorActor), true);

@@ -28,7 +28,7 @@ APawn* UCBTService_CheckAttackRange::GetAIPawn(const UBehaviorTreeComponent& Own
 {
 	const AAIController* AIController = OwnerComp.GetAIOwner();
 	if (!ensure(AIController)) return nullptr;
-	
+
 	// Ensuring here is counter-productive as the AIController isn't guaranteed to have a Pawn because the BehaviorTree gets to work sooner than the controller possesses the pawn.
 	return AIController->GetPawn();
 }

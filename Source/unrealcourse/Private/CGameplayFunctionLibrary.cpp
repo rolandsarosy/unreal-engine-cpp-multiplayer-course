@@ -22,7 +22,7 @@ bool UCGameplayFunctionLibrary::ApplyDirectionalImpulseDamage(AActor* DamageInst
 			// Direction equals to target minus the origin.
 			FVector Direction = HitResult.TraceEnd - HitResult.TraceStart;
 			Direction.Normalize();
-			
+
 			HitComponent->AddImpulseAtLocation(Direction * 150000.0f, HitResult.Location, HitResult.BoneName);
 		}
 

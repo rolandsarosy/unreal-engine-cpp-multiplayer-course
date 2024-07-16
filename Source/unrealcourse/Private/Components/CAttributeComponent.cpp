@@ -97,7 +97,7 @@ bool UCAttributeComponent::ApplyRageChange(AActor* InstigatorActor, float Delta)
 			MulticastOnRageChanged(InstigatorActor, RageCurrent, Delta);
 		}
 	}
-	
+
 	return true;
 }
 
