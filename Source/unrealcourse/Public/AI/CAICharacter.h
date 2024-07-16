@@ -37,8 +37,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="UI")
 	TSubclassOf<UUserWidget> SpottedPopupWidgetClass;
 
-	virtual void PostInitializeComponents() override;
-
 private:
 	TObjectPtr<UCWorldHealthBar> ActiveHealthBar;
 
@@ -58,7 +56,9 @@ private:
 
 	UFUNCTION(Unreliable, NetMulticast)
 	void MulticastAddHealthBar(const float InitialHealth, UCAttributeComponent* OwnerAttributeComponent);
-	
+
 	UFUNCTION(Unreliable, NetMulticast)
 	void MutlicastAddSpottedWidgetConditionally(const AActor* InstigatorActor);
+
+	virtual void PostInitializeComponents() override;
 };

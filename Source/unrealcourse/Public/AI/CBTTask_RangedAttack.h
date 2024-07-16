@@ -13,7 +13,7 @@ class UNREALCOURSE_API UCBTTask_RangedAttack : public UBTTaskNode
 
 public:
 	UCBTTask_RangedAttack();
-	
+
 protected:
 	UPROPERTY(EditAnywhere, Category="Blackboard Keys", meta=(Tooltip = "This Blackboard key represents the target to make the ranged attack towards."))
 	FBlackboardKeySelector TargetActorKey;

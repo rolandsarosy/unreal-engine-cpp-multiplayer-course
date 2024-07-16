@@ -22,10 +22,10 @@ protected:
 	UPROPERTY(EditAnywhere, Category="AI", meta=(Tooltip = "The possible attack range of this entity to check the distance against the target with."))
 	float AttackRange;
 
-	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
-
 private:
 	static APawn* GetAIPawn(const UBehaviorTreeComponent& OwnerComp);
 
 	AActor* GetTargetActor(const UBehaviorTreeComponent& OwnerComp) const;
+
+	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 };

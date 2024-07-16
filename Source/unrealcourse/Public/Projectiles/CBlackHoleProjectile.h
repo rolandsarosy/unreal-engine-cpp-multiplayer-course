@@ -13,7 +13,7 @@ class UNREALCOURSE_API ACBlackHoleProjectile : public ACBaseProjectile
 
 public:
 	ACBlackHoleProjectile();
-	
+
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TObjectPtr<URadialForceComponent> RadialForceComponent;

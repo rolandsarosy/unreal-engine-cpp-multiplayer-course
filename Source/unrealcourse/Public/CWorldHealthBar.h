@@ -45,6 +45,7 @@ protected:
 	 */
 	UFUNCTION(BlueprintNativeEvent)
 	void OnAnimateOwnerDeath();
-	
+
+private:
 	virtual void NativeConstruct() override;
 };

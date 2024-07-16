@@ -9,11 +9,12 @@ UCLASS(Abstract)
 class UNREALCOURSE_API ACBasePickup : public AActor, public ICGameplayInterface
 {
 	GENERATED_BODY()
-	
+
 	virtual void Interact_Implementation(APawn* InstigatorPawn) override;
+
 public:
 	ACBasePickup();
-	
+
 protected:
 	UPROPERTY(EditDefaultsOnly, Category="Pickup")
 	TObjectPtr<UStaticMeshComponent> StaticMeshComponent;
@@ -42,6 +43,6 @@ private:
 	void OnAttemptPickup(APawn* InstigatorPawn);
 
 	void OnStartCooldown();
-	
+
 	void OnResetCooldown();
 };

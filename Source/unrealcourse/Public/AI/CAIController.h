@@ -15,5 +15,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="AI")
 	TObjectPtr<UBehaviorTree> BehaviorTree;
 
+private:
 	virtual void BeginPlay() override;
 };

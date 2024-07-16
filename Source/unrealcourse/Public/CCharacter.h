@@ -97,7 +97,7 @@ private:
 
 	UFUNCTION()
 	void OnDeath(AActor* KillerActor, UCAttributeComponent* OwnerComponent);
-	
+
 	void Move(const FInputActionInstance& InputActionInstance);
 
 	void Look(const FInputActionValue& InputActionValue);

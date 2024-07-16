@@ -13,11 +13,11 @@ struct FActionReplicationData
 
 	UPROPERTY()
 	bool bIsRunning;
-	
+
 	UPROPERTY()
 	AActor* Instigator;
 };
- 
+
 /**
  * @class UCBaseAction
  * @brief The base class for all GAS-like actions in the game. Direct children should be used as base classes for actions and effects.
@@ -40,7 +40,7 @@ public:
 	/** Start immediately when added to an action component. **/
 	UPROPERTY(EditDefaultsOnly, Category="Action")
 	bool bAutoStart;
-	
+
 	UFUNCTION(BlueprintNativeEvent, Category="Action")
 	void StartAction(AActor* Instigator);
 
@@ -52,7 +52,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="Action")
 	bool IsRunning() const;
-	
+
 	virtual UWorld* GetWorld() const override;
 
 protected:

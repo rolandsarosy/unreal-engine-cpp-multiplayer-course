@@ -19,7 +19,7 @@ class UNREALCOURSE_API UCActionEffect : public UCBaseAction
 
 public:
 	UCActionEffect();
-	
+
 	virtual void StartAction_Implementation(AActor* Instigator) override;
 
 	virtual void StopAction_Implementation(AActor* Instigator) override;

@@ -15,7 +15,7 @@ public:
 private:
 	UPROPERTY(EditDefaultsOnly, Category="Pickup")
 	int CoinsCost;
-	
+
 	UPROPERTY(EditDefaultsOnly, Category="Pickup")
 	float HealthRestoreAmount;
 

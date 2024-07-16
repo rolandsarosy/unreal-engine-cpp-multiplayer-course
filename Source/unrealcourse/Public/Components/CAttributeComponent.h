@@ -54,7 +54,7 @@ class UNREALCOURSE_API UCAttributeComponent : public UActorComponent
 
 public:
 	UCAttributeComponent();
-	
+
 	UPROPERTY(BlueprintAssignable, Category="Attributes")
 	FOnHealthChanged OnHealthChanged;
 
@@ -101,10 +101,12 @@ private:
 	UPROPERTY(EditDefaultsOnly, Replicated, Category="Attributes", meta=(Tooltip = "Signals whether the owner collects and holds Rage or not."))
 	bool bIsRageEnabled;
 
-	UPROPERTY(EditDefaultsOnly, Replicated, Category="Attributes", meta=(EditCondition = "IsRageEnabled == true", Tooltip = "Signals which percentage of the incoming damage will be converted to Rage."))
+	UPROPERTY(EditDefaultsOnly, Replicated, Category="Attributes",
+		meta=(EditCondition = "IsRageEnabled == true", Tooltip = "Signals which percentage of the incoming damage will be converted to Rage."))
 	int32 RageGainPercentage;
 
-	UPROPERTY(EditDefaultsOnly, Replicated, Category="Attributes", meta=(EditCondition = "IsRageEnabled == true", Tooltip = "Signals the current amount of Rage held by the owner. Also marks the starting Rage amount."))
+	UPROPERTY(EditDefaultsOnly, Replicated, Category="Attributes",
+		meta=(EditCondition = "IsRageEnabled == true", Tooltip = "Signals the current amount of Rage held by the owner. Also marks the starting Rage amount."))
 	float RageCurrent;
 
 	UPROPERTY(EditDefaultsOnly, Replicated, Category="Attributes", meta=(EditCondition = "IsRageEnabled == true", Tooltip = "Signals the maximum amount of Rage the owner can ever hold."))

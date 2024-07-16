@@ -15,7 +15,7 @@ UCLASS(Blueprintable, Abstract)
 class UNREALCOURSE_API UCActionAbility : public UCBaseAction
 {
 	GENERATED_BODY()
-	
+
 public:
 	UCActionAbility();
 };

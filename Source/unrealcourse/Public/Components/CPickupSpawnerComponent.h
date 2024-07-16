@@ -40,6 +40,6 @@ class UNREALCOURSE_API UCPickupSpawnerComponent : public UActorComponent
 	void SpawnPickupItemsToQueryLocations(TArray<FVector>& SpawnLocations);
 
 	bool GetSpawnPointsAmountValidity(const TArray<FVector>& SpawnLocations);
-	
+
 	virtual void BeginPlay() override;
 };

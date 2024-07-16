@@ -29,13 +29,13 @@ private:
 
 	UFUNCTION()
 	void OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-	
+
 	void OnStartTeleportEffect();
 
 	void OnTeleport();
 
 	void OnProjectileExplosion(const AActor* HitActor);
-	
+
 	virtual void PostInitializeComponents() override;
 
 	virtual void BeginPlay() override;

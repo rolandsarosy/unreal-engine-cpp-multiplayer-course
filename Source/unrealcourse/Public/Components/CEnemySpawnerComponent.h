@@ -32,9 +32,9 @@ private:
 
 	UFUNCTION()
 	void OnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus);
-	
+
 	void OnSpawnEnemyTimerElapsed();
-	
+
 	void SpawnEnemyAtLocation(const FVector& SpawnLocation) const;
 
 	uint16 GetNumberOfEnemiesAlive() const;

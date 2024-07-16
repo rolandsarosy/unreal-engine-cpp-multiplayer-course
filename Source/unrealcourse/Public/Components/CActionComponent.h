@@ -79,7 +79,7 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category="Actions")
 	FOnActionStopped OnActionStopped;
-	
+
 	UFUNCTION(BlueprintCallable, Category="Actions")
 	void AddAction(TSubclassOf<UCBaseAction> ActionClass, AActor* Instigator);
 
@@ -101,13 +101,13 @@ private:
 
 	UPROPERTY(VisibleInstanceOnly) // Stores the list of actions before an OnRep triggers, as OnRep cannot carry the previous value.
 	TArray<TObjectPtr<UCBaseAction>> PreviousActions;
-	
+
 	UFUNCTION(Server, Reliable)
 	void ServerStartAction(AActor* Instigator, FGameplayTag Tag);
 
 	UFUNCTION(Server, Reliable)
 	void ServerStopAction(AActor* Instigator, FGameplayTag Tag);
-	
+
 	UFUNCTION()
 	void OnRep_CurrentActions();
 
