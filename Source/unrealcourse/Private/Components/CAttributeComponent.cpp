@@ -1,6 +1,6 @@
 #include "Components/CAttributeComponent.h"
 
-#include "CGameModeBase.h"
+#include "Framework/CGameModeBase.h"
 #include "Net/UnrealNetwork.h"
 
 static TAutoConsoleVariable CVarDamageMultiplier(TEXT("course.DamageMultiplier"), 1.0f, TEXT("Global damage multiplier for the AttributeComponent."), ECVF_Cheat);

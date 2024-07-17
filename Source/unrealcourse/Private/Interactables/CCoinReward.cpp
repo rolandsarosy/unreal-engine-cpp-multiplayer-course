@@ -1,6 +1,6 @@
 #include "Interactables/CCoinReward.h"
 
-#include "CPlayerState.h"
+#include "Framework/CPlayerState.h"
 
 ACCoinReward::ACCoinReward()
 {

@@ -1,7 +1,7 @@
-#include "CGameModeBase.h"
+#include "Framework/CGameModeBase.h"
 
-#include "CCharacter.h"
-#include "CPlayerState.h"
+#include "Framework/CCharacter.h"
+#include "Framework/CPlayerState.h"
 #include "AI/CAICharacter.h"
 #include "Components/CEnemySpawnerComponent.h"
 #include "Components/CPickupSpawnerComponent.h"

@@ -1,7 +1,7 @@
 #include "Interactables/CHealthPotion.h"
 
 #include "CGameplayFunctionLibrary.h"
-#include "CPlayerState.h"
+#include "Framework/CPlayerState.h"
 
 ACHealthPotion::ACHealthPotion()
 {

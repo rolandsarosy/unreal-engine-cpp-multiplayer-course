@@ -2,7 +2,7 @@
 
 #include "AIController.h"
 #include "BrainComponent.h"
-#include "CCharacter.h"
+#include "Framework/CCharacter.h"
 #include "CWorldUserWidget.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Blueprint/UserWidget.h"

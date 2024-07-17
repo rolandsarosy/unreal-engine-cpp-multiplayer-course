@@ -1,4 +1,4 @@
-#include "CCharacter.h"
+#include "Framework/CCharacter.h"
 
 #include "Components/CAttributeComponent.h"
 #include "Components/CInteractionComponent.h"
