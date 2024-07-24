@@ -16,6 +16,13 @@ ACItemChest::ACItemChest()
 	bIsLidOpened = false;
 }
 
+void ACItemChest::OnActorLoaded_Implementation()
+{
+	ICGameplayInterface::OnActorLoaded_Implementation();
+	
+	OnRep_IsLidOpened();
+}
+
 bool ACItemChest::AttemptUnlock_Implementation(AActor* InstigatorActor)
 {
 	// This implementation will be done by children of this class. This function mustn't be marked with the PURE_VIRTUAL macro as it uses Unreal's Reflection system and has the BlueprintNative flag.

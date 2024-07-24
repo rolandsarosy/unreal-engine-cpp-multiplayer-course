@@ -1,5 +1,7 @@
 #include "Framework/CPlayerState.h"
 
+#include "Framework/CSaveGame.h"
+#include "Framework/CGameModeBase.h"
 #include "Net/UnrealNetwork.h"
 
 ACPlayerState::ACPlayerState()
@@ -24,6 +26,16 @@ bool ACPlayerState::AddCoins(AActor* InstigatorActor, const int32 AmountToAdd)
 	return false;
 }
 
+
+void ACPlayerState::SetCoins(AActor* InstigatorActor, const int32 CoinsAmount)
+{
+	if (!GetOwner()->HasAuthority()) return; // This function can only be run on the server.
+
+	const float Delta = CoinsAmount - GetCoinsAmount();
+	CurrentCoinsAmount = CoinsAmount;
+	MulticastCoinsAmountChange(InstigatorActor, CurrentCoinsAmount, Delta); // TODO: Maybe this'll be problematic as initial loading will trigger broadcast receivers as well?
+}
+
 bool ACPlayerState::RemoveCoins(AActor* InstigatorActor, const int32 AmountToRemove)
 {
 	if (AmountToRemove <= CurrentCoinsAmount)
@@ -37,6 +49,22 @@ bool ACPlayerState::RemoveCoins(AActor* InstigatorActor, const int32 AmountToRem
 	}
 
 	return false;
+}
+
+void ACPlayerState::SavePlayerState_Implementation(UCSaveGame* SaveGameObject)
+{
+	if (ensure(SaveGameObject))
+	{
+		SaveGameObject->Coins = GetCoinsAmount();
+	}
+}
+
+void ACPlayerState::LoadPlayerState_Implementation(UCSaveGame* SaveGameObject)
+{
+	if (ensure(SaveGameObject))
+	{
+		SetCoins(GetWorld()->GetAuthGameMode<ACGameModeBase>(), SaveGameObject->Coins);
+	}
 }
 
 ACPlayerState* ACPlayerState::GetFromActor(AActor* FromActor)

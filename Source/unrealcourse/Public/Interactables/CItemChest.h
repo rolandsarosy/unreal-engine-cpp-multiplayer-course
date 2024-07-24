@@ -10,8 +10,6 @@ class UNREALCOURSE_API ACItemChest : public AActor, public ICGameplayInterface
 {
 	GENERATED_BODY()
 
-	virtual void Interact_Implementation(APawn* InstigatorPawn) override;
-
 public:
 	ACItemChest();
 
@@ -22,10 +20,10 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="ItemChest")
 	TObjectPtr<UStaticMeshComponent> LidMesh;
 
-	UPROPERTY(ReplicatedUsing="OnRep_IsLidOpened", BlueprintReadOnly, Category="ItemChest")
+	UPROPERTY(ReplicatedUsing="OnRep_IsLidOpened", BlueprintReadOnly, Category="ItemChest", SaveGame)
 	bool bIsLidOpened;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="ItemChest")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="ItemChest", SaveGame)
 	bool bIsLocked;
 
 	UFUNCTION(BlueprintNativeEvent, Category="ItemChest")
@@ -39,4 +37,10 @@ protected:
 
 	UFUNCTION(BlueprintNativeEvent, Category="ItemChest")
 	void OnUnsuccessfullOpeningAttempt();
+
+private:
+
+	virtual void OnActorLoaded_Implementation() override;
+
+	virtual void Interact_Implementation(APawn* InstigatorPawn) override;
 };

@@ -4,6 +4,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "CGameModeBase.generated.h"
 
+class UCSaveGame;
 class UCEnemySpawnerComponent;
 class UCPickupSpawnerComponent;
 
@@ -17,6 +18,12 @@ public:
 
 	virtual void OnActorKilled(AActor* Victim, AActor* Killer);
 
+protected:
+	UFUNCTION(BlueprintCallable, Category="SaveGame")
+	void WriteSaveGameToDisk() const;
+
+	void LoadSaveGameFromDisk();
+
 private:
 	UPROPERTY(EditDefaultsOnly, Category="Components")
 	TObjectPtr<UCPickupSpawnerComponent> PickupSpawnerComponent;
@@ -27,6 +34,15 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category="GameMode")
 	float PlayerRespawnDelay;
 
+	UPROPERTY()
+	UCSaveGame* CurrentSaveGame;
+
+	FString SaveGameSlotName;
+	
 	UFUNCTION()
 	void RespawnPlayer(AController* PlayerController);
+
+	virtual void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
+
+	virtual void HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer) override;
 };

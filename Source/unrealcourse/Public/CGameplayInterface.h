@@ -15,6 +15,10 @@ class UNREALCOURSE_API ICGameplayInterface
 	GENERATED_BODY()
 
 public:
+	/* Called after the Actor state was restored from a SaveGame file. */
+	UFUNCTION(BlueprintNativeEvent)
+	void OnActorLoaded();
+	
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void Interact(APawn* InstigatorPawn);
 };
