@@ -39,11 +39,8 @@ public:
 	static UCKeyCardComponent* GetComponentFrom(AActor* FromActor);
 
 private:
-	UPROPERTY(VisibleAnywhere, Category="Keycards")
-	FGameplayTagContainer PreviousKeycardGameplayTags; // Stores the list of actions before an OnRep triggers, as OnRep cannot carry the previous value.
-
 	UFUNCTION()
-	void OnRep_CurrentKeycardGameplayTags();
+	void OnRep_CurrentKeycardGameplayTags(FGameplayTagContainer PreviousKeycardGameplayTags);
 
 	virtual void BeginPlay() override;
 

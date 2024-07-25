@@ -99,9 +99,6 @@ private:
 	UPROPERTY(EditAnywhere, Category="Actions")
 	TArray<TSubclassOf<UCBaseAction>> DefaultActions;
 
-	UPROPERTY(VisibleInstanceOnly) // Stores the list of actions before an OnRep triggers, as OnRep cannot carry the previous value.
-	TArray<TObjectPtr<UCBaseAction>> PreviousActions;
-
 	UFUNCTION(Server, Reliable)
 	void ServerStartAction(AActor* Instigator, FGameplayTag Tag);
 
@@ -109,7 +106,7 @@ private:
 	void ServerStopAction(AActor* Instigator, FGameplayTag Tag);
 
 	UFUNCTION()
-	void OnRep_CurrentActions();
+	void OnRep_CurrentActions(TArray<UCBaseAction*> PreviousActions);
 
 	virtual void BeginPlay() override;
 

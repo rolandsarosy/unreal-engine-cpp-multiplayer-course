@@ -29,7 +29,7 @@ void UCKeyCardComponent::BeginPlay()
  *
  * @note Notifies observers locally.
  */
-void UCKeyCardComponent::OnRep_CurrentKeycardGameplayTags()
+void UCKeyCardComponent::OnRep_CurrentKeycardGameplayTags(FGameplayTagContainer PreviousKeycardGameplayTags)
 {
 	if (PreviousKeycardGameplayTags.Num() == CurrentKeycardGameplayTags.Num()) return;
 	if (!Cast<APawn>(GetOwner())->IsLocallyControlled()) return;
@@ -54,13 +54,18 @@ void UCKeyCardComponent::OnRep_CurrentKeycardGameplayTags()
 
 void UCKeyCardComponent::AddKeycardGameplayTag_Implementation(const FGameplayTag Tag)
 {
+	const FGameplayTagContainer TransientGameplayTagContainer = CurrentKeycardGameplayTags; // Create a separate tag for calling OnRep on server as OnRep does not get called automatically there.
 	CurrentKeycardGameplayTags.AddTag(Tag);
-	OnRep_CurrentKeycardGameplayTags();
+	OnRep_CurrentKeycardGameplayTags(TransientGameplayTagContainer);
 }
 
 void UCKeyCardComponent::RemoveKeycardGameplayTag_Implementation(const FGameplayTag Tag)
 {
-	if (CurrentKeycardGameplayTags.RemoveTag(Tag)) OnRep_CurrentKeycardGameplayTags();
+	const FGameplayTagContainer TransientGameplayTagContainer = CurrentKeycardGameplayTags; // Create a separate tag for calling OnRep on server as OnRep does not get called automatically there.
+	if (CurrentKeycardGameplayTags.RemoveTag(Tag))
+	{
+		OnRep_CurrentKeycardGameplayTags(TransientGameplayTagContainer);
+	}
 }
 
 void UCKeyCardComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)

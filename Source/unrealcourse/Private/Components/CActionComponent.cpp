@@ -21,7 +21,7 @@ UCActionComponent::UCActionComponent()
  *
  * @note Notifies observers locally.
  */
-void UCActionComponent::OnRep_CurrentActions()
+void UCActionComponent::OnRep_CurrentActions(TArray<UCBaseAction*> PreviousActions)
 {
 	if (PreviousActions.Num() == CurrentActions.Num()) return;
 
@@ -40,8 +40,6 @@ void UCActionComponent::OnRep_CurrentActions()
 			if (!CurrentActions.Contains(Action)) { OnActionRemoved.Broadcast(Action); }
 		}
 	}
-
-	PreviousActions = CurrentActions;
 }
 
 void UCActionComponent::BeginPlay()
@@ -90,8 +88,9 @@ void UCActionComponent::AddAction(const TSubclassOf<UCBaseAction> ActionClass, A
 
 	if (UCBaseAction* NewAction = NewObject<UCBaseAction>(this, ActionClass); ensure(NewAction))
 	{
+		const TArray<UCBaseAction*> PreviousStateActionList = CurrentActions; // Create a separate list for calling OnRep on server as OnRep does not get called automatically there.
 		CurrentActions.Add(NewAction);
-		OnRep_CurrentActions();
+		OnRep_CurrentActions(PreviousStateActionList);
 
 		if (NewAction->bAutoStart && ensure(NewAction->CanStart(Instigator)))
 		{
