@@ -44,9 +44,9 @@ void ACGameModeBase::InitGame(const FString& MapName, const FString& Options, FS
  */
 void ACGameModeBase::HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer)
 {
-	Super::HandleStartingNewPlayer_Implementation(NewPlayer);
-
 	if (ACPlayerState* PlayerState = NewPlayer->GetPlayerState<ACPlayerState>()) { PlayerState->LoadPlayerState(CurrentSaveGame); }
+
+	Super::HandleStartingNewPlayer_Implementation(NewPlayer);
 }
 
 /**
