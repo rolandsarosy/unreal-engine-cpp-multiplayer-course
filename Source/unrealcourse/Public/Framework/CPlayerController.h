@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "InputAction.h"
 #include "GameFramework/PlayerController.h"
 #include "CPlayerController.generated.h"
 
@@ -11,9 +12,22 @@ class UNREALCOURSE_API ACPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 
+public:
+	UFUNCTION(BlueprintCallable)
+	void TogglePauseMenu();
+
 protected:
 	UPROPERTY(BlueprintAssignable, Category="PlayerController")
 	FOnBeginPlayingStateStarted OnBeginPlayStateStarted;
+
+	UPROPERTY(EditDefaultsOnly, Category="UI")
+	TSubclassOf<UUserWidget> PauseMenuClass;
+
+	UPROPERTY()
+	UUserWidget* PauseMenuInstance;
+
+	UPROPERTY(EditDefaultsOnly, Category="Input")
+	TObjectPtr<UInputAction> Input_Pause_Menu;
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void BlueprintBeginPlayingState();
@@ -24,4 +38,6 @@ private:
 	* (especially in multiplayer clients where not all data such as PlayerState may have been received yet)
 	 */
 	virtual void BeginPlayingState() override;
+
+	virtual void SetupInputComponent() override;
 };
