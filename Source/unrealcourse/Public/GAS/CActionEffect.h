@@ -60,6 +60,9 @@ protected:
 	UFUNCTION(BlueprintNativeEvent, Category="Effect")
 	void ExecutePeriodicEffect(AActor* Instigator);
 
+	UFUNCTION(BlueprintCallable, Category="Effect")
+	float GetTimeRemaining() const;
+
 private:
 	FTimerHandle PeriodHandle;
 

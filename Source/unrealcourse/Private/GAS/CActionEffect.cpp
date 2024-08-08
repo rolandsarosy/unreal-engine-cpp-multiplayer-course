@@ -1,5 +1,6 @@
 #include "GAS/CActionEffect.h"
 #include "Components/CActionComponent.h"
+#include "GameFramework/GameState.h"
 
 UCActionEffect::UCActionEffect()
 {
@@ -33,6 +34,14 @@ void UCActionEffect::StopAction_Implementation(AActor* Instigator)
 	GetWorld()->GetTimerManager().ClearTimer(PeriodHandle);
 
 	if (UCActionComponent* ActionComponent = GetOwningComponent()) ActionComponent->RemoveAction(this, Instigator);
+}
+
+float UCActionEffect::GetTimeRemaining() const
+{
+	const AGameStateBase* GameState = GetWorld()->GetGameState<AGameStateBase>();
+	if (!ensure(GameState)) return Duration;
+	
+	return TimeStarted + Duration - GameState->GetServerWorldTimeSeconds();
 }
 
 void UCActionEffect::ExecutePeriodicEffect_Implementation(AActor* Instigator)

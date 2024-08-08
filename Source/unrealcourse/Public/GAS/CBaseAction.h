@@ -6,15 +6,15 @@
 
 class UCActionComponent;
 
-USTRUCT()
+USTRUCT(BlueprintType)
 struct FActionReplicationData
 {
 	GENERATED_BODY()
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	bool bIsRunning;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	AActor* Instigator;
 };
 
@@ -37,10 +37,19 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Action")
 	FGameplayTag Tag;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Action")
+	TObjectPtr<UTexture2D> ActionIcon;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Action")
+	FText ActionName;
+
 	/** Start immediately when added to an action component. **/
 	UPROPERTY(EditDefaultsOnly, Category="Action")
 	bool bAutoStart;
 
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing="OnRep_ReplicationData")
+	FActionReplicationData ReplicationData;
+	
 	UFUNCTION(BlueprintNativeEvent, Category="Action")
 	void StartAction(AActor* Instigator);
 
@@ -52,7 +61,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="Action")
 	bool IsRunning() const;
-
+	
 	virtual UWorld* GetWorld() const override;
 
 protected:
@@ -64,13 +73,13 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="Tags")
 	FGameplayTagContainer BlockedTags;
 
+	UPROPERTY(Replicated, BlueprintReadOnly, Category="Action")
+	float TimeStarted;
+	
 	UFUNCTION(BlueprintCallable, Category="Action")
 	UCActionComponent* GetOwningComponent() const;
 
 private:
-	UPROPERTY(ReplicatedUsing="OnRep_ReplicationData")
-	FActionReplicationData ReplicationData;
-
 	UFUNCTION()
 	void OnRep_ReplicationData();
 

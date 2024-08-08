@@ -35,6 +35,7 @@ void UCActionAbility_ProjectileAttack::SpawnProjectile(ACharacter* InstigatorCha
 		const FTransform SpawnTransform = FTransform(TraceForProjectileSpawnRotator(InstigatorCharacter), InstigatorCharacter->GetMesh()->GetSocketLocation(AttackSocketName));
 		FActorSpawnParameters SpawnParameters = FActorSpawnParameters();
 		SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		SpawnParameters.Owner = InstigatorCharacter;
 		SpawnParameters.Instigator = InstigatorCharacter;
 
 		GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTransform, SpawnParameters);

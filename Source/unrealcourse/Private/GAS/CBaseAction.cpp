@@ -11,6 +11,8 @@ void UCBaseAction::StartAction_Implementation(AActor* Instigator)
 	GetOwningComponent()->OnActionStarted.Broadcast(this, Instigator);
 	ReplicationData.Instigator = Instigator;
 	ReplicationData.bIsRunning = true;
+
+	if (GetOwningComponent()->GetOwner()->HasAuthority()) TimeStarted = GetWorld()->TimeSeconds; // TimeStarted should only come from a trusted source.
 }
 
 void UCBaseAction::StopAction_Implementation(AActor* Instigator)
@@ -59,4 +61,5 @@ void UCBaseAction::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(UCBaseAction, ReplicationData);
+	DOREPLIFETIME(UCBaseAction, TimeStarted);
 }
