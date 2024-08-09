@@ -44,6 +44,7 @@ void ACGameModeBase::InitGame(const FString& MapName, const FString& Options, FS
  */
 void ACGameModeBase::HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer)
 {
+	// TODO - Currently this causes an issue where the initial PlayerState Coin values are disregarded on the initial SaveState being created. This'll be resolved with Composite DataTables later on.
 	if (ACPlayerState* PlayerState = NewPlayer->GetPlayerState<ACPlayerState>()) { PlayerState->LoadPlayerState(CurrentSaveGame); }
 
 	Super::HandleStartingNewPlayer_Implementation(NewPlayer);
@@ -136,7 +137,7 @@ void ACGameModeBase::WriteSaveGameToDisk() const
 /**
  * @brief Loads the SaveGame data from the disk.
  *
- * Checks if a save game of a given name exists and loads serialized actors' world data and serialzied byte data into the actors themselves, and calls the actors' OnActorLoaded interface function.
+ * Checks if a save game of a given name exists and loads serialized actors' world data and serialized byte data into the actors themselves, and calls the actors' OnActorLoaded interface function.
  * Creates the new save if it did not exist yet.
  */
 void ACGameModeBase::LoadSaveGameFromDisk()
