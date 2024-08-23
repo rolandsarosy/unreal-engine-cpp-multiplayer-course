@@ -2,6 +2,7 @@
 
 #include "EngineUtils.h"
 #include "AI/CAICharacter.h"
+#include "Algo/RandomShuffle.h"
 #include "Components/CAttributeComponent.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
 
@@ -53,11 +54,14 @@ void UCEnemySpawnerComponent::OnQueryCompleted(UEnvQueryInstanceBlueprintWrapper
 
 void UCEnemySpawnerComponent::SpawnEnemyAtLocation(const FVector& SpawnLocation) const
 {
-	const AActor* SpawnedActor = GetWorld()->SpawnActor<AActor>(SpawnEnemyClass, SpawnLocation, FRotator::ZeroRotator);
+	const TSubclassOf<ACAICharacter> EnemyTypeToSpawn = GetEnemyTypeToSpawn();
+	if (!ensureMsgf(EnemyTypeToSpawn, TEXT("Was unable to determine enemy type to spawn from enemy data table."))) return;
+
+	const AActor* SpawnedActor = GetWorld()->SpawnActor<AActor>(EnemyTypeToSpawn, SpawnLocation, FRotator::ZeroRotator);
 
 #if WITH_EDITOR
 	UE_LOG(LogTemp, Log, TEXT("%s attempted to spawn enemy class of %s at %s. Return value was: %p"),
-	       *GetNameSafe(this), *GetNameSafe(SpawnEnemyClass), *SpawnLocation.ToString(), *GetNameSafe(SpawnedActor));
+	       *GetNameSafe(this), *GetNameSafe(EnemyTypeToSpawn), *SpawnLocation.ToString(), *GetNameSafe(SpawnedActor));
 
 	if (SpawnedActor)
 	{
@@ -83,9 +87,47 @@ uint16 UCEnemySpawnerComponent::GetNumberOfEnemiesAlive() const
 	return NumberOfEnemiesAlive;
 }
 
-bool UCEnemySpawnerComponent::CanGameModeSpawnMoreEnemies(uint16 NumberOfEnemiesAlive) const
+/**
+ * @brief Retrieves the type of enemy to spawn based on the enemy data table, respecting the spawn weights.
+ *
+ * @return The subclass of ACAICharacter representing the enemy type to spawn, or nullptr if no suitable enemy type was found.
+ */
+TSubclassOf<ACAICharacter> UCEnemySpawnerComponent::GetEnemyTypeToSpawn() const
 {
-	// Automatically reject enemy spawns if the difficulty curve hasn't been set yet.
+	// Automatically reject enemy spawns if the enemy data table hasn't been set.
+	if (!ensureMsgf(EnemyTable, TEXT("Enemy data table must be set to be able to spawn enemies."))) return nullptr;
+
+	TArray<FEnemyInfoRow*> EnemyRows;
+	EnemyTable->GetAllRows("EnemyTableRowRequest", EnemyRows);
+
+	float TotalWeight = 0;
+	for (const auto& EnemyRow : EnemyRows)
+	{
+		TotalWeight += EnemyRow->SpawnWeight;
+	}
+	
+	Algo::RandomShuffle(EnemyRows);
+	
+	float RandomWeight = FMath::FRand() * TotalWeight;
+	for (const auto& EnemyRow : EnemyRows)
+	{
+		RandomWeight -= EnemyRow->SpawnWeight;
+		if (RandomWeight <= 0) { return EnemyRow->SpawnEnemyClass; }
+	}
+
+	return nullptr;
+}
+
+/**
+ * @brief Checks if the game mode is able to spawn more enemies.
+ *
+ * @param NumberOfEnemiesAlive The number of enemies currently alive.
+ *
+ * @return True if the game mode can spawn more enemies, false otherwise.
+ */
+bool UCEnemySpawnerComponent::CanGameModeSpawnMoreEnemies(const uint16 NumberOfEnemiesAlive) const
+{
+	// Automatically reject enemy spawns if the difficulty curve hasn't been set.
 	if (!ensureMsgf(MaxEnemyCountOverTimeCurve, TEXT("Difficulty curve asset must be set for GameMode."))) return false;
 
 	const uint16 MaxNumberOfEnemiesAlive = MaxEnemyCountOverTimeCurve->GetFloatValue(GetWorld()->TimeSeconds);

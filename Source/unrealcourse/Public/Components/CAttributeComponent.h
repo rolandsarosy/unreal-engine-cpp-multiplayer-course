@@ -102,14 +102,14 @@ private:
 	bool bIsRageEnabled;
 
 	UPROPERTY(EditDefaultsOnly, Replicated, Category="Attributes",
-		meta=(EditCondition = "IsRageEnabled == true", Tooltip = "Signals which percentage of the incoming damage will be converted to Rage."))
+		meta=(EditCondition = "bIsRageEnabled == true", Tooltip = "Signals which percentage of the incoming damage will be converted to Rage."))
 	int32 RageGainPercentage;
 
 	UPROPERTY(EditDefaultsOnly, Replicated, Category="Attributes",
-		meta=(EditCondition = "IsRageEnabled == true", Tooltip = "Signals the current amount of Rage held by the owner. Also marks the starting Rage amount."))
+		meta=(EditCondition = "bIsRageEnabled == true", Tooltip = "Signals the current amount of Rage held by the owner. Also marks the starting Rage amount."))
 	float RageCurrent;
 
-	UPROPERTY(EditDefaultsOnly, Replicated, Category="Attributes", meta=(EditCondition = "IsRageEnabled == true", Tooltip = "Signals the maximum amount of Rage the owner can ever hold."))
+	UPROPERTY(EditDefaultsOnly, Replicated, Category="Attributes", meta=(EditCondition = "bIsRageEnabled == true", Tooltip = "Signals the maximum amount of Rage the owner can ever hold."))
 	float RageMax;
 
 	UFUNCTION(NetMulticast, Reliable) // @FIXME: Mark as unreliable once the state has been moved out of the ACCharacter

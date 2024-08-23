@@ -9,6 +9,27 @@
 class UEnvQuery;
 class ACAICharacter;
 
+/* DataTable Row for describing enemy spawning weights and types. */
+USTRUCT(BlueprintType)
+struct FEnemyInfoRow : public FTableRowBase
+{
+	GENERATED_BODY()
+
+	/* Default values */
+	FEnemyInfoRow()
+	{
+		SpawnWeight = 1.0f;
+	}
+
+	/* Class of the enemy to spawn */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TSubclassOf<ACAICharacter> SpawnEnemyClass;
+
+	/* Relative chance to spawn this unit. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float SpawnWeight;
+};
+
 UCLASS(ClassGroup=(Custom))
 class UNREALCOURSE_API UCEnemySpawnerComponent : public UActorComponent
 {
@@ -25,7 +46,7 @@ private:
 	TObjectPtr<UEnvQuery> SpawnEnemyEQ;
 
 	UPROPERTY(EditDefaultsOnly, Category="AI")
-	TSubclassOf<ACAICharacter> SpawnEnemyClass;
+	TObjectPtr<UDataTable> EnemyTable;
 
 	UPROPERTY(EditDefaultsOnly, Category="AI")
 	TObjectPtr<UCurveFloat> MaxEnemyCountOverTimeCurve;
@@ -38,6 +59,8 @@ private:
 	void SpawnEnemyAtLocation(const FVector& SpawnLocation) const;
 
 	uint16 GetNumberOfEnemiesAlive() const;
+
+	TSubclassOf<ACAICharacter> GetEnemyTypeToSpawn() const;
 
 	bool CanGameModeSpawnMoreEnemies(uint16 NumberOfEnemiesAlive) const;
 
