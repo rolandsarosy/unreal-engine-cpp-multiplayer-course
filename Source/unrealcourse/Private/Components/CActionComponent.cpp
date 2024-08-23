@@ -92,7 +92,7 @@ void UCActionComponent::AddAction(const TSubclassOf<UCBaseAction> ActionClass, A
 		CurrentActions.Add(NewAction);
 		OnRep_CurrentActions(PreviousStateActionList);
 
-		if (NewAction->bAutoStart && ensure(NewAction->CanStart(Instigator)))
+		if (NewAction->bAutoStart && NewAction->CanStart(Instigator))
 		{
 			NewAction->StartAction(Instigator);
 		}
