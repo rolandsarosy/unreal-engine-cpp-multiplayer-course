@@ -3,10 +3,10 @@
 #include "Framework/CGameModeBase.h"
 #include "Net/UnrealNetwork.h"
 
-static TAutoConsoleVariable CVarDamageMultiplier(TEXT("course.DamageMultiplier"), 1.0f, TEXT("Global damage multiplier for the AttributeComponent."), ECVF_Cheat);
-static TAutoConsoleVariable CVarHealingMultiplier(TEXT("course.HealingMultiplier"), 1.0f, TEXT("Global healing multiplier for the AttributeComponent."), ECVF_Cheat);
-static TAutoConsoleVariable CVarRageGainMultiplier(TEXT("course.RageGainMultiplier"), 1.0f, TEXT("Global Rage gain multiplier for the AttributeComponent."), ECVF_Cheat);
-static TAutoConsoleVariable CVarRageCostMultiplier(TEXT("course.RageCostMultiplier"), 1.0f, TEXT("Global Rage cost multiplier for the AttributeComponent."), ECVF_Cheat);
+static TAutoConsoleVariable CVarDamageMultiplier(TEXT("course.DamageMultiplier"), 1.0f, TEXT("Global damage multiplier."), ECVF_Cheat);
+static TAutoConsoleVariable CVarHealingMultiplier(TEXT("course.HealingMultiplier"), 1.0f, TEXT("Global healing multiplier for."), ECVF_Cheat);
+static TAutoConsoleVariable CVarRageGainMultiplier(TEXT("course.RageGainMultiplier"), 1.0f, TEXT("Global Rage gain multiplier."), ECVF_Cheat);
+static TAutoConsoleVariable CVarRageCostMultiplier(TEXT("course.RageCostMultiplier"), 1.0f, TEXT("Global Rage cost multiplier."), ECVF_Cheat);
 
 UCAttributeComponent::UCAttributeComponent()
 {

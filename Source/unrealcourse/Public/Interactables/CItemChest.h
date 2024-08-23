@@ -13,6 +13,8 @@ class UNREALCOURSE_API ACItemChest : public AActor, public ICGameplayInterface
 public:
 	ACItemChest();
 
+	virtual FText GetInteractText_Implementation(APawn* InstigatorPawn) override;
+
 protected:
 	UPROPERTY(VisibleAnywhere, Category="ItemChest")
 	TObjectPtr<UStaticMeshComponent> BaseMesh;

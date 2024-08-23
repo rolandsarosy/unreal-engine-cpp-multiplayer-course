@@ -12,6 +12,8 @@ class UNREALCOURSE_API ACCoinReward : public ACBasePickup
 public:
 	ACCoinReward();
 
+	virtual FText GetInteractText_Implementation(APawn* InstigatorPawn) override;
+
 protected:
 	virtual bool OnEffectTrigger(APawn* InstigatorPawn) override;
 

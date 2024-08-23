@@ -12,6 +12,9 @@ class UNREALCOURSE_API ACAbilityPickup : public ACBasePickup
 {
 	GENERATED_BODY()
 
+public:
+	virtual FText GetInteractText_Implementation(APawn* InstigatorPawn) override;
+
 protected:
 	virtual bool OnEffectTrigger(APawn* InstigatorPawn) override;
 

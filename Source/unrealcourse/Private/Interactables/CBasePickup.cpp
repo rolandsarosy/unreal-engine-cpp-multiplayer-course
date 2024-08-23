@@ -17,6 +17,11 @@ void ACBasePickup::Interact_Implementation(APawn* InstigatorPawn)
 	OnAttemptPickup(InstigatorPawn);
 }
 
+FText ACBasePickup::GetInteractText_Implementation(APawn* InstigatorPawn)
+{
+	return FText::GetEmpty();
+}
+
 void ACBasePickup::OnAttemptPickup(APawn* InstigatorPawn)
 {
 	if (!bIsOnCooldown && OnEffectTrigger(InstigatorPawn)) { OnStartCooldown(); }

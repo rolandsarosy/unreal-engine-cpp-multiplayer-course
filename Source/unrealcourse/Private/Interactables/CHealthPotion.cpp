@@ -1,7 +1,10 @@
 #include "Interactables/CHealthPotion.h"
 
 #include "CGameplayFunctionLibrary.h"
+#include "Components/CAttributeComponent.h"
 #include "Framework/CPlayerState.h"
+
+#define LOCTEXT_NAMESPACE "InteractableActors"
 
 ACHealthPotion::ACHealthPotion()
 {
@@ -25,3 +28,25 @@ bool ACHealthPotion::OnEffectTrigger(APawn* InstigatorPawn)
 
 	return false;
 }
+
+FText ACHealthPotion::GetInteractText_Implementation(APawn* InstigatorPawn)
+{
+	const UCAttributeComponent* AttributeComponent = UCAttributeComponent::GetComponentFrom(InstigatorPawn);
+	const ACPlayerState* PlayerState = ACPlayerState::GetFromActor(InstigatorPawn);
+
+	if (!AttributeComponent || !PlayerState) return LOCTEXT("HealthPotion_InternalErrorMessage", "Internal error.");
+
+	const float MissingHealth = AttributeComponent->GetHealthMax() - AttributeComponent->GetHealthCurrent();
+	const float PotentialHealthRestoreAmount = MissingHealth >= HealthRestoreAmount ? HealthRestoreAmount : MissingHealth;
+
+	FText InteractTextMaxHealth = LOCTEXT("HealthPotion_MaxHealth", "Already at max health.");
+	FText InteractTextCannotAfford = FText::Format(LOCTEXT("HealthPotion_CannotAfford", "Not enough Coins. Costs {0}."), CoinsCost);
+	FText InteractTextDefault = FText::Format(LOCTEXT("HealthPotion_DefaultText", "Restores {0} Health for {1} Coins."), PotentialHealthRestoreAmount, CoinsCost);
+
+	if (PlayerState->GetCoinsAmount() < CoinsCost) return InteractTextCannotAfford;
+	if (PotentialHealthRestoreAmount == 0) return InteractTextMaxHealth;
+
+	return InteractTextDefault;
+}
+
+#undef LOCTEXT_NAMESPACE

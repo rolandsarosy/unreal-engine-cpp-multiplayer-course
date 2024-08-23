@@ -12,6 +12,8 @@ class UNREALCOURSE_API ACHealthPotion : public ACBasePickup
 public:
 	ACHealthPotion();
 
+	virtual FText GetInteractText_Implementation(APawn* InstigatorPawn) override;
+
 private:
 	UPROPERTY(EditDefaultsOnly, Category="Pickup")
 	int CoinsCost;

@@ -2,6 +2,8 @@
 
 #include "Net/UnrealNetwork.h"
 
+#define LOCTEXT_NAMESPACE "InteractableActors"
+
 ACItemChest::ACItemChest()
 {
 	bReplicates = true;
@@ -19,7 +21,7 @@ ACItemChest::ACItemChest()
 void ACItemChest::OnActorLoaded_Implementation()
 {
 	ICGameplayInterface::OnActorLoaded_Implementation();
-	
+
 	OnRep_IsLidOpened();
 }
 
@@ -66,9 +68,22 @@ void ACItemChest::Interact_Implementation(APawn* InstigatorPawn)
 	}
 }
 
+FText ACItemChest::GetInteractText_Implementation(APawn* InstigatorPawn)
+{
+	FText InteractTextOpen = LOCTEXT("ItemChest_Open", "Opens the chest.");
+	FText InteractTextClose = LOCTEXT("ItemChest_Close", "Closes the chest.");
+	FText InteractTextLocked = LOCTEXT("ItemChest_Locked", "Locked. Requires a key to open.");
+
+	if (bIsLocked) return InteractTextLocked;
+
+	return bIsLidOpened ? InteractTextClose : InteractTextOpen;
+}
+
 void ACItemChest::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(ACItemChest, bIsLidOpened)
 }
+
+#undef NSLOCTEXT_NAMESPACE

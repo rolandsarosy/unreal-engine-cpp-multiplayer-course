@@ -12,6 +12,8 @@ class UNREALCOURSE_API ACBasePickup : public AActor, public ICGameplayInterface
 
 	virtual void Interact_Implementation(APawn* InstigatorPawn) override;
 
+	virtual FText GetInteractText_Implementation(APawn* InstigatorPawn) override;
+	
 public:
 	ACBasePickup();
 

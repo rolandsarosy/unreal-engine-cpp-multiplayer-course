@@ -2,6 +2,8 @@
 
 #include "Framework/CPlayerState.h"
 
+#define LOCTEXT_NAMESPACE "InteractableActors"
+
 ACCoinReward::ACCoinReward()
 {
 	CooldownDuration = 8;
@@ -15,3 +17,11 @@ bool ACCoinReward::OnEffectTrigger(APawn* InstigatorPawn)
 
 	return PlayerState->AddCoins(this, CoinsRewardAmount);
 }
+
+
+FText ACCoinReward::GetInteractText_Implementation(APawn* InstigatorPawn)
+{
+	return FText::Format(LOCTEXT("CoinReward_DefaultText", "Grants {0} Coins."), CoinsRewardAmount);
+}
+
+#undef LOCTEXT_NAMESPACE
