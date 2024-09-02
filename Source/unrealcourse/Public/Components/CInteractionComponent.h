@@ -43,10 +43,12 @@ private:
 	UFUNCTION(Server, Reliable)
 	void ServerInteract(AActor* InFocus);
 
+	void StartTraceTimerConditionally();
+	
 	void FindBestInteractable();
 
 	void SetWorldWidget();
-
+	
 	virtual void BeginPlay() override;
 
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;

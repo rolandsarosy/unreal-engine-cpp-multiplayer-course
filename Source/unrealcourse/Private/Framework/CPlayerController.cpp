@@ -39,6 +39,6 @@ void ACPlayerController::SetupInputComponent()
 
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent))
 	{
-		EnhancedInputComponent->BindAction(Input_Pause_Menu, ETriggerEvent::Triggered, this, &ACPlayerController::TogglePauseMenu);
+		EnhancedInputComponent->BindAction(Input_PauseMenu, ETriggerEvent::Triggered, this, &ACPlayerController::TogglePauseMenu);
 	}
 }

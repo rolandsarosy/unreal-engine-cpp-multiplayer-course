@@ -27,7 +27,7 @@ protected:
 	UUserWidget* PauseMenuInstance;
 
 	UPROPERTY(EditDefaultsOnly, Category="Input")
-	TObjectPtr<UInputAction> Input_Pause_Menu;
+	TObjectPtr<UInputAction> Input_PauseMenu;
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void BlueprintBeginPlayingState();
