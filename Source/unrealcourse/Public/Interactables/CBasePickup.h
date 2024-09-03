@@ -1,12 +1,12 @@
 #pragma once
 
+#include "Interfaces/CInteractableInterface.h"
 #include "CoreMinimal.h"
-#include "CGameplayInterface.h"
 #include "GameFramework/Actor.h"
 #include "CBasePickup.generated.h"
 
 UCLASS(Abstract)
-class UNREALCOURSE_API ACBasePickup : public AActor, public ICGameplayInterface
+class UNREALCOURSE_API ACBasePickup : public AActor, public ICInteractableInterface
 {
 	GENERATED_BODY()
 

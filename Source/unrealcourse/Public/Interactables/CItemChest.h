@@ -1,12 +1,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "CGameplayInterface.h"
 #include "GameFramework/Actor.h"
+#include "Interfaces/CInteractableInterface.h"
+#include "Interfaces/CSaveableInterface.h"
 #include "CItemChest.generated.h"
 
 UCLASS(Abstract)
-class UNREALCOURSE_API ACItemChest : public AActor, public ICGameplayInterface
+class UNREALCOURSE_API ACItemChest : public AActor, public ICInteractableInterface, public ICSaveableInterface
 {
 	GENERATED_BODY()
 

@@ -1,6 +1,5 @@
 #include "Framework/CGameModeBase.h"
 
-#include "CGameplayInterface.h"
 #include "Framework/CSaveGame.h"
 #include "EngineUtils.h"
 #include "Framework/CCharacter.h"
@@ -9,6 +8,8 @@
 #include "Components/CEnemySpawnerComponent.h"
 #include "Components/CPickupSpawnerComponent.h"
 #include "GameFramework/GameStateBase.h"
+#include "Interfaces/CInteractableInterface.h"
+#include "Interfaces/CSaveableInterface.h"
 #include "Kismet/GameplayStatics.h"
 #include "Serialization/ObjectAndNameAsStringProxyArchive.h"
 
@@ -74,7 +75,6 @@ void ACGameModeBase::OnActorKilled(AActor* Victim, AActor* Killer)
 	if (Victim->IsA(ACAICharacter::StaticClass()) && Killer->IsA(ACCharacter::StaticClass()))
 	{
 		Cast<ACPlayerState>(Cast<APawn>(Killer)->GetPlayerState())->AddCoins(Victim, Cast<ACAICharacter>(Victim)->CoinRewardUponDeath);
-		return;
 	}
 }
 
@@ -116,7 +116,7 @@ void ACGameModeBase::WriteSaveGameToDisk() const
 	for (FActorIterator It(GetWorld()); It; ++It)
 	{
 		AActor* Actor = *It;
-		if (!Actor->Implements<UCGameplayInterface>()) { continue; } // Don't bother with items not implementing this interface.
+		if (!Actor->Implements<UCSaveableInterface>()) { continue; } // Don't bother with items not implementing this interface.
 
 		FActorSaveData ActorData;
 		ActorData.ActorName = Actor->GetName(); // Single-level saving behavior for the time being only. TODO: Save level name along with Actor data. Eg.: Level_01_TreasureChest2
@@ -157,7 +157,7 @@ void ACGameModeBase::LoadSaveGameFromDisk()
 		for (FActorIterator It(GetWorld()); It; ++It)
 		{
 			AActor* Actor = *It;
-			if (!Actor->Implements<UCGameplayInterface>()) { continue; } // Don't bother with items not implementing this interface.
+			if (!Actor->Implements<UCSaveableInterface>()) { continue; } // Don't bother with items not implementing this interface.
 
 			for (auto [ActorName, Transform, ByteData] : CurrentSaveGame->SavedActors)
 			{
@@ -170,7 +170,7 @@ void ACGameModeBase::LoadSaveGameFromDisk()
 					Archive.ArIsSaveGame = true;
 					Actor->Serialize(Archive);
 
-					ICGameplayInterface::Execute_OnActorLoaded(Actor);
+					ICSaveableInterface::Execute_OnActorLoaded(Actor);
 
 					break;
 				}

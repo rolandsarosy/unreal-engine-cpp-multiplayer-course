@@ -1,6 +1,6 @@
 #include "Components/CInteractionComponent.h"
 
-#include "CGameplayInterface.h"
+#include "Interfaces/CInteractableInterface.h"
 #include "DrawDebugHelpers.h"
 #include "Blueprint/UserWidget.h"
 #include "CWorldUserWidget.h"
@@ -21,7 +21,7 @@ UCInteractionComponent::UCInteractionComponent()
 
 void UCInteractionComponent::PrimaryInteract() { ServerInteract(FocusedActor); }
 
-void UCInteractionComponent::ServerInteract_Implementation(AActor* InFocus) { if (InFocus) ICGameplayInterface::Execute_Interact(InFocus, Cast<APawn>(GetOwner())); }
+void UCInteractionComponent::ServerInteract_Implementation(AActor* InFocus) { if (InFocus) ICInteractableInterface::Execute_Interact(InFocus, Cast<APawn>(GetOwner())); }
 
 void UCInteractionComponent::BeginPlay()
 {
@@ -29,8 +29,8 @@ void UCInteractionComponent::BeginPlay()
 
 	// I'm really strongly againts using timers to resolve lifecyle function-related issues but this one is particularly nasty.
 	// @note https://forums.unrealengine.com/t/is-locally-controlled-returns-false-for-listen-server-host/406471/2
-	// TLDR.: For the first few ticks, the ListenServer does not know that it has sole ownership of the pawn (IsLocallyControlled) returns false.
-	// I've tried various fixes, spent several hours here to try and hook onto a lifecycle event anywhere that's not this nasty, but I just did not find a solution that
+	// TLDR.: For the first few ticks, the ListenServer does not know that it has sole ownership of the pawn. 'IsLocallyControlled' returns false.
+	// I've tried various fixes, spent several hours here to try and hook onto a lifecycle event anywhere that's not this nasty, but I just didn't find a solution that
 	// was an improvement and also worked for both ListenServers and Clients. This way, I'm only hacking the host and not the clients at the very least.
 	//
 	// If you are reading this and have a better idea, please reach out to me here or at roland.sarosy@gmail.com.
@@ -77,7 +77,7 @@ void UCInteractionComponent::FindBestInteractable()
 
 	for (FHitResult SingleHit : HitResults)
 	{
-		if (AActor* HitActor = SingleHit.GetActor(); HitActor && HitActor->Implements<UCGameplayInterface>())
+		if (AActor* HitActor = SingleHit.GetActor(); HitActor && HitActor->Implements<UCInteractableInterface>())
 		{
 			FocusedActor = HitActor;
 			if (CVarDebugDrawInteraction.GetValueOnGameThread()) DrawDebugSphere(GetWorld(), SingleHit.Location, TraceRadius, 32, bIsBlockingHit ? FColor::Green : FColor::Red, false, 0.0F);

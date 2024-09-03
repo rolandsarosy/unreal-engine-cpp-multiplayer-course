@@ -1,5 +1,4 @@
 #include "Interactables/CItemChest.h"
-
 #include "Net/UnrealNetwork.h"
 
 #define LOCTEXT_NAMESPACE "InteractableActors"
@@ -20,8 +19,7 @@ ACItemChest::ACItemChest()
 
 void ACItemChest::OnActorLoaded_Implementation()
 {
-	ICGameplayInterface::OnActorLoaded_Implementation();
-
+	ICSaveableInterface::OnActorLoaded_Implementation();
 	OnRep_IsLidOpened();
 }
 
