@@ -3,19 +3,19 @@
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
 #include "Components/ActorComponent.h"
-#include "CKeyCardComponent.generated.h"
+#include "CKeycardComponent.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGameplayTagAdded, FGameplayTag, TagAdded);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGameplayTagRemoved, FGameplayTag, TagRemoved);
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
-class UNREALCOURSE_API UCKeyCardComponent : public UActorComponent
+class UNREALCOURSE_API UCKeycardComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
 public:
-	UCKeyCardComponent();
+	UCKeycardComponent();
 
 	UPROPERTY(ReplicatedUsing="OnRep_CurrentKeycardGameplayTags", VisibleAnywhere, BlueprintReadOnly, Category="Keycards")
 	FGameplayTagContainer CurrentKeycardGameplayTags;
@@ -36,7 +36,7 @@ public:
 	void RemoveKeycardGameplayTag(const FGameplayTag Tag);
 
 	UFUNCTION(BlueprintCallable, Category="Keycards", meta=(DisplayName = "Get KeycardCompoent From Actor", Tooltip = "Returns the KeycardCompoent if the Actor has any. Otherwise a nullptr."))
-	static UCKeyCardComponent* GetComponentFrom(AActor* FromActor);
+	static UCKeycardComponent* GetComponentFrom(AActor* FromActor);
 
 private:
 	UFUNCTION()

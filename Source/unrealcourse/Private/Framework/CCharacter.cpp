@@ -9,7 +9,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "Components/CActionComponent.h"
 #include "Components/CapsuleComponent.h"
-#include "Components/CKeyCardComponent.h"
+#include "Components/CKeycardComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 ACCharacter::ACCharacter()
@@ -23,7 +23,7 @@ ACCharacter::ACCharacter()
 
 	InteractionComponent = CreateDefaultSubobject<UCInteractionComponent>("InteractionComponent");
 	ActionComponent = CreateDefaultSubobject<UCActionComponent>("ActionComponent");
-	KeycardComponent = CreateDefaultSubobject<UCKeyCardComponent>("KeycardComponent");
+	KeycardComponent = CreateDefaultSubobject<UCKeycardComponent>("KeycardComponent");
 	AttributeComponent = CreateDefaultSubobject<UCAttributeComponent>("AttributeComponent");
 
 	bUseControllerRotationYaw = false;

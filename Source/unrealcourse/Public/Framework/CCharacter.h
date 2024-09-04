@@ -6,7 +6,7 @@
 #include "GameFramework/Character.h"
 #include "CCharacter.generated.h"
 
-class UCKeyCardComponent;
+class UCKeycardComponent;
 class UCActionComponent;
 struct FInputActionInstance;
 struct FInputActionValue;
@@ -84,7 +84,7 @@ protected:
 	TObjectPtr<UCActionComponent> ActionComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
-	TObjectPtr<UCKeyCardComponent> KeycardComponent;
+	TObjectPtr<UCKeycardComponent> KeycardComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
 	TObjectPtr<UCAttributeComponent> AttributeComponent;

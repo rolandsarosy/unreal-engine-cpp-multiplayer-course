@@ -1,9 +1,9 @@
-#include "Components/CKeyCardComponent.h"
+#include "Components/CKeycardComponent.h"
 
 #include "Net/UnrealNetwork.h"
 #include "unrealcourse/unrealcourse.h"
 
-UCKeyCardComponent::UCKeyCardComponent()
+UCKeycardComponent::UCKeycardComponent()
 {
 	SetIsReplicatedByDefault(true);
 
@@ -12,7 +12,7 @@ UCKeyCardComponent::UCKeyCardComponent()
 #endif
 }
 
-void UCKeyCardComponent::BeginPlay()
+void UCKeycardComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
@@ -29,7 +29,7 @@ void UCKeyCardComponent::BeginPlay()
  *
  * @note Notifies observers locally.
  */
-void UCKeyCardComponent::OnRep_CurrentKeycardGameplayTags(FGameplayTagContainer PreviousKeycardGameplayTags)
+void UCKeycardComponent::OnRep_CurrentKeycardGameplayTags(FGameplayTagContainer PreviousKeycardGameplayTags)
 {
 	if (PreviousKeycardGameplayTags.Num() == CurrentKeycardGameplayTags.Num()) return;
 	if (!Cast<APawn>(GetOwner())->IsLocallyControlled()) return;
@@ -52,14 +52,14 @@ void UCKeyCardComponent::OnRep_CurrentKeycardGameplayTags(FGameplayTagContainer 
 	PreviousKeycardGameplayTags = CurrentKeycardGameplayTags;
 }
 
-void UCKeyCardComponent::AddKeycardGameplayTag_Implementation(const FGameplayTag Tag)
+void UCKeycardComponent::AddKeycardGameplayTag_Implementation(const FGameplayTag Tag)
 {
 	const FGameplayTagContainer TransientGameplayTagContainer = CurrentKeycardGameplayTags; // Create a separate tag for calling OnRep on server as OnRep does not get called automatically there.
 	CurrentKeycardGameplayTags.AddTag(Tag);
 	OnRep_CurrentKeycardGameplayTags(TransientGameplayTagContainer);
 }
 
-void UCKeyCardComponent::RemoveKeycardGameplayTag_Implementation(const FGameplayTag Tag)
+void UCKeycardComponent::RemoveKeycardGameplayTag_Implementation(const FGameplayTag Tag)
 {
 	const FGameplayTagContainer TransientGameplayTagContainer = CurrentKeycardGameplayTags; // Create a separate tag for calling OnRep on server as OnRep does not get called automatically there.
 	if (CurrentKeycardGameplayTags.RemoveTag(Tag))
@@ -68,7 +68,7 @@ void UCKeyCardComponent::RemoveKeycardGameplayTag_Implementation(const FGameplay
 	}
 }
 
-void UCKeyCardComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void UCKeycardComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
@@ -90,11 +90,11 @@ void UCKeyCardComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 #endif
 }
 
-UCKeyCardComponent* UCKeyCardComponent::GetComponentFrom(AActor* FromActor) { return FromActor ? FromActor->FindComponentByClass<UCKeyCardComponent>() : nullptr; }
+UCKeycardComponent* UCKeycardComponent::GetComponentFrom(AActor* FromActor) { return FromActor ? FromActor->FindComponentByClass<UCKeycardComponent>() : nullptr; }
 
-void UCKeyCardComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+void UCKeycardComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME(UCKeyCardComponent, CurrentKeycardGameplayTags);
+	DOREPLIFETIME(UCKeycardComponent, CurrentKeycardGameplayTags);
 }
