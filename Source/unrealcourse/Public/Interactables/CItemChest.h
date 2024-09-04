@@ -26,7 +26,7 @@ protected:
 	UPROPERTY(ReplicatedUsing="OnRep_IsLidOpened", BlueprintReadOnly, Category="ItemChest", SaveGame)
 	bool bIsLidOpened;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="ItemChest", SaveGame)
+	UPROPERTY(Replicated, EditDefaultsOnly, BlueprintReadOnly, Category="ItemChest", SaveGame)
 	bool bIsLocked;
 
 	UFUNCTION(BlueprintNativeEvent, Category="ItemChest")
@@ -42,7 +42,6 @@ protected:
 	void OnUnsuccessfullOpeningAttempt();
 
 private:
-
 	virtual void OnActorLoaded_Implementation() override;
 
 	virtual void Interact_Implementation(APawn* InstigatorPawn) override;

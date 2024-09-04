@@ -82,6 +82,7 @@ void ACItemChest::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifet
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(ACItemChest, bIsLidOpened)
+	DOREPLIFETIME(ACItemChest, bIsLocked)
 }
 
 #undef LOCTEXT_NAMESPACE
