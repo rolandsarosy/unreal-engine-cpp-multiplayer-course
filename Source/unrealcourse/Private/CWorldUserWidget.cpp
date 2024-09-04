@@ -7,14 +7,12 @@ void UCWorldUserWidget::NativeTick(const FGeometry& MyGeometry, const float InDe
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
 
-	if (!IsValid(AttachedActor))
+	if (!IsValid(AttachedActor) || !AttachedActor->GetActorEnableCollision())
 	{
 		RemoveFromParent();
-
-		UE_LOG(LogTemp, Warning, TEXT("AttachedActor no longer valid, removing widget."))
 		return;
 	}
-
+	
 	FVector2D ScreenPositionResult;
 	if (UWidgetLayoutLibrary::ProjectWorldLocationToWidgetPosition(GetOwningPlayer(), CalculateOffsetScreenPosition(), ScreenPositionResult, false))
 	{

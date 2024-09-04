@@ -29,16 +29,8 @@ void ACBasePickup::OnAttemptPickup(APawn* InstigatorPawn)
 
 void ACBasePickup::OnRep_IsOnCooldown()
 {
-	if (bIsOnCooldown)
-	{
-		RootComponent->ToggleVisibility(true);
-		SetActorEnableCollision(false);
-	}
-	else
-	{
-		RootComponent->ToggleVisibility(true);
-		SetActorEnableCollision(true);
-	}
+	SetActorEnableCollision(!bIsOnCooldown);
+	RootComponent->SetVisibility(!bIsOnCooldown, true);
 }
 
 /**  Can only run on the server. */
