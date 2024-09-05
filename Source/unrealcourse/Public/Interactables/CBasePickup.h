@@ -47,4 +47,6 @@ private:
 	void OnStartCooldown();
 
 	void OnResetCooldown();
+
+	virtual void BeginPlay() override;
 };

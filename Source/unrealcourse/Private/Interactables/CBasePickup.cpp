@@ -1,5 +1,6 @@
 #include "Interactables/CBasePickup.h"
 
+#include "Framework/CGameModeBase.h"
 #include "Net/UnrealNetwork.h"
 
 ACBasePickup::ACBasePickup()
@@ -10,6 +11,17 @@ ACBasePickup::ACBasePickup()
 
 	CooldownDuration = 10.0f;
 	bIsOnCooldown = false;
+}
+
+void ACBasePickup::BeginPlay()
+{
+	Super::BeginPlay();
+
+	// This handles cases where pickup items were pre-placed in the world before runtime and thus had no Owners for replication.
+	if (GetOwner() == nullptr && HasAuthority())
+	{
+		SetOwner(Cast<AActor>(GetWorld()->GetAuthGameMode<ACGameModeBase>()));
+	}
 }
 
 void ACBasePickup::Interact_Implementation(APawn* InstigatorPawn)
