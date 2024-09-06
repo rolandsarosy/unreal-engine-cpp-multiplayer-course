@@ -89,9 +89,7 @@ void ACGameModeBase::RespawnPlayer(AController* PlayerController)
 bool ACGameModeBase::SetPause(APlayerController* PC, FCanUnpause CanUnpauseDelegate)
 {
 	const bool bCouldPause = Super::SetPause(PC, CanUnpauseDelegate);
-
-	ACGameStateBase* GameStateBase = Cast<ACGameStateBase>(GameState);
-	GameStateBase->ChangeGamePausedState(bCouldPause);
+	Cast<ACGameStateBase>(GameState)->ChangeGamePausedState(bCouldPause);
 
 	if (!bCouldPause) UE_LOG(LogTemp, Error, TEXT("GameMode was unable to pause the game."))
 	
@@ -102,9 +100,7 @@ bool ACGameModeBase::SetPause(APlayerController* PC, FCanUnpause CanUnpauseDeleg
 bool ACGameModeBase::ClearPause()
 {
 	const bool bCouldClearPause = Super::ClearPause();
-
-	ACGameStateBase* GameStateBase = Cast<ACGameStateBase>(GameState);
-	GameStateBase->ChangeGamePausedState(!bCouldClearPause);
+	Cast<ACGameStateBase>(GameState)->ChangeGamePausedState(!bCouldClearPause);
 
 	return bCouldClearPause;
 }

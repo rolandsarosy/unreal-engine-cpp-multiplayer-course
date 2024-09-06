@@ -3,19 +3,30 @@
 #include "EnhancedInputComponent.h"
 #include "Blueprint/UserWidget.h"
 #include "Framework/CGameStateBase.h"
-#include "unrealcourse/unrealcourse.h"
+
+void ACPlayerController::BeginPlay()
+{
+	Super::BeginPlay();
+	Cast<ACGameStateBase>(GetWorld()->GetGameState())->OnGamePauseStateChanged.AddDynamic(this, &ACPlayerController::OnGamePauseStateChanged);
+}
+
+void ACPlayerController::BeginPlayingState()
+{
+	Super::BeginPlayingState();
+
+	BlueprintBeginPlayingState();
+	OnBeginPlayStateStarted.Broadcast(this);
+}
 
 void ACPlayerController::ServerToggleGamePause_Implementation()
 {
-	const bool bIsCurrentlyPaused = IsPaused(); // Just putting this into a variable for the time being to make sure we don't run into race condition issues. @FIXME before pushing.
-	SetPause(!bIsCurrentlyPaused);
+	SetPause(!IsPaused());
 }
 
-void ACPlayerController::OnGamePauseStateChanged(bool bIsPaused)
+void ACPlayerController::OnGamePauseStateChanged(const bool bIsPaused)
 {
 	if (!IsLocalController()) return;
 
-	LogOnScreen(GetWorld(), FString::Printf(TEXT("OnGamePauseStateChanged delegate triggered on local PlayerController.")));
 	if (bIsPaused)
 	{
 		PauseMenuInstance = CreateWidget<UUserWidget>(this, PauseMenuClass);
@@ -30,23 +41,6 @@ void ACPlayerController::OnGamePauseStateChanged(bool bIsPaused)
 		bShowMouseCursor = false;
 		SetInputMode(FInputModeGameOnly());
 	}
-}
-
-void ACPlayerController::BeginPlay()
-{
-	Super::BeginPlay();
-	
-	LogOnScreen(GetWorld(), FString::Printf(TEXT("Starting to listen to delegate.")));
-	ACGameStateBase* GameState = Cast<ACGameStateBase>(GetWorld()->GetGameState());
-	GameState->OnGamePauseStateChanged.AddDynamic(this, &ACPlayerController::OnGamePauseStateChanged);
-}
-
-void ACPlayerController::BeginPlayingState()
-{
-	Super::BeginPlayingState();
-
-	BlueprintBeginPlayingState();
-	OnBeginPlayStateStarted.Broadcast(this);
 }
 
 void ACPlayerController::SetupInputComponent()
