@@ -13,8 +13,8 @@ class UNREALCOURSE_API ACPlayerController : public APlayerController
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintCallable)
-	void TogglePauseMenu();
+	UFUNCTION(Server, Reliable, BlueprintCallable)
+	void ServerToggleGamePause();
 
 protected:
 	UPROPERTY(BlueprintAssignable, Category="PlayerController")
@@ -33,11 +33,16 @@ protected:
 	void BlueprintBeginPlayingState();
 
 private:
+	UFUNCTION()
+	void OnGamePauseStateChanged(bool bIsPaused);
+	
+	virtual void BeginPlay() override;
+
 	/**
 	* Called when player controller is ready to begin playing, good moment to initialize things like UI which might be too early in BeginPlay
 	* (especially in multiplayer clients where not all data such as PlayerState may have been received yet)
 	 */
 	virtual void BeginPlayingState() override;
-
+	
 	virtual void SetupInputComponent() override;
 };
