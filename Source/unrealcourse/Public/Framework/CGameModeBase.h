@@ -16,7 +16,7 @@ class UNREALCOURSE_API ACGameModeBase : public AGameModeBase
 public:
 	ACGameModeBase();
 
-	virtual void OnActorKilled(AActor* Victim, AActor* Killer);
+	void OnActorKilled(AActor* Victim, AActor* Killer);
 
 protected:
 	UFUNCTION(BlueprintCallable, Category="SaveGame")
@@ -41,6 +41,10 @@ private:
 	
 	UFUNCTION()
 	void RespawnPlayer(AController* PlayerController);
+
+	virtual bool SetPause(APlayerController* PC, FCanUnpause CanUnpauseDelegate) override;
+
+	virtual bool ClearPause() override;
 
 	virtual void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
 

@@ -7,8 +7,8 @@
 #include "AI/CAICharacter.h"
 #include "Components/CEnemySpawnerComponent.h"
 #include "Components/CPickupSpawnerComponent.h"
+#include "Framework/CGameStateBase.h"
 #include "GameFramework/GameStateBase.h"
-#include "Interfaces/CInteractableInterface.h"
 #include "Interfaces/CSaveableInterface.h"
 #include "Kismet/GameplayStatics.h"
 #include "Serialization/ObjectAndNameAsStringProxyArchive.h"
@@ -84,6 +84,29 @@ void ACGameModeBase::RespawnPlayer(AController* PlayerController)
 
 	PlayerController->UnPossess();
 	RestartPlayer(PlayerController);
+}
+
+bool ACGameModeBase::SetPause(APlayerController* PC, FCanUnpause CanUnpauseDelegate)
+{
+	const bool bCouldPause = Super::SetPause(PC, CanUnpauseDelegate);
+
+	ACGameStateBase* GameStateBase = Cast<ACGameStateBase>(GameState);
+	GameStateBase->ChangeGamePausedState(bCouldPause);
+
+	if (!bCouldPause) UE_LOG(LogTemp, Error, TEXT("GameMode was unable to pause the game."))
+	
+	return bCouldPause;
+	
+}
+
+bool ACGameModeBase::ClearPause()
+{
+	const bool bCouldClearPause = Super::ClearPause();
+
+	ACGameStateBase* GameStateBase = Cast<ACGameStateBase>(GameState);
+	GameStateBase->ChangeGamePausedState(!bCouldClearPause);
+
+	return bCouldClearPause;
 }
 
 /**
