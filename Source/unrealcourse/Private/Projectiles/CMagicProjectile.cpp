@@ -1,6 +1,7 @@
 #include "Projectiles/CMagicProjectile.h"
 
 #include "CGameplayFunctionLibrary.h"
+#include "CNativeGameplayTags.h"
 #include "Components/AudioComponent.h"
 #include "Components/CActionComponent.h"
 #include "Components/SphereComponent.h"
@@ -37,7 +38,7 @@ void ACMagicProjectile::OnComponentOverlap(UPrimitiveComponent* OverlappedCompon
 	UCActionComponent* ActionComponent = UCActionComponent::GetComponentFrom(OtherActor);
 
 	// Parry the projectile if possible
-	if (ActionComponent && ActionComponent->ActiveGameplayTags.HasTag(ParryTag) && CurrentParryAmount < MaxParryAmount)
+	if (ActionComponent && ActionComponent->ActiveGameplayTags.HasTag(TAG_Action_Parrying) && CurrentParryAmount < MaxParryAmount)
 	{
 		CurrentParryAmount++;
 		ProjectileMovementComponent->Velocity = -ProjectileMovementComponent->Velocity;

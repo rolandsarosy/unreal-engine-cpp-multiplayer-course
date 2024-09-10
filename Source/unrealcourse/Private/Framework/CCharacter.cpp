@@ -1,5 +1,6 @@
 #include "Framework/CCharacter.h"
 
+#include "CNativeGameplayTags.h"
 #include "Components/CAttributeComponent.h"
 #include "Components/CInteractionComponent.h"
 #include "Camera/CameraComponent.h"
@@ -71,17 +72,17 @@ void ACCharacter::Look(const FInputActionValue& InputActionValue)
 	AddControllerPitchInput(Value.Y);
 }
 
-void ACCharacter::SprintStart() { ActionComponent->StartActionByTag(this, ActionTag_Sprint); }
+void ACCharacter::SprintStart() { ActionComponent->StartActionByTag(this, TAG_Action_Sprinting); }
 
-void ACCharacter::SprintStop() { ActionComponent->StopActionByTag(this, ActionTag_Sprint); }
+void ACCharacter::SprintStop() { ActionComponent->StopActionByTag(this, TAG_Action_Sprinting); }
 
-void ACCharacter::PrimaryAttack() { ActionComponent->StartActionByTag(this, ActionTag_PrimaryAttack); }
+void ACCharacter::PrimaryAttack() { ActionComponent->StartActionByTag(this, TAG_Action_Attacking_PrimaryAttacking); }
 
-void ACCharacter::SpecialAttack() { ActionComponent->StartActionByTag(this, ActionTag_SpecialAttack); }
+void ACCharacter::SpecialAttack() { ActionComponent->StartActionByTag(this, TAG_Action_Attacking_SpecialAttacking); }
 
-void ACCharacter::TeleportAttack() { ActionComponent->StartActionByTag(this, ActionTag_TeleportAttack); }
+void ACCharacter::TeleportAttack() { ActionComponent->StartActionByTag(this, TAG_Action_Attacking_TeleportAttacking); }
 
-void ACCharacter::Parry() { ActionComponent->StartActionByTag(this, ActionTag_Parry); }
+void ACCharacter::Parry() { ActionComponent->StartActionByTag(this, TAG_Action_Parrying); }
 
 FVector ACCharacter::GetPawnViewLocation() const { return CameraComponent->GetComponentLocation(); }
 

@@ -38,9 +38,6 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category="Damage", meta=(Tooltip = "Describes how many times (exclusive) the projectile can be bounced back-and-forth before parrying is ignored."))
 	uint8 MaxParryAmount;
 
-	UPROPERTY(EditDefaultsOnly, Category="Damage", meta=(Tooltip = "Should be set to the ability system's Parry tag. If this tag is present, the projectile will be reflected."))
-	FGameplayTag ParryTag;
-
 	UPROPERTY(EditDefaultsOnly, Category="Damage", meta=(Tooltip = "Applies the given effect on sucessfully damaging an Actor who is holding an ActionComponent."))
 	TSubclassOf<UCActionEffect> AppliedEffectClass;
 
