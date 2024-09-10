@@ -29,16 +29,16 @@ protected:
 	UPROPERTY(Replicated, EditDefaultsOnly, BlueprintReadOnly, Category="ItemChest", SaveGame)
 	bool bIsLocked;
 
-	UFUNCTION(BlueprintNativeEvent, Category="ItemChest")
+	UFUNCTION(BlueprintImplementableEvent, Category="ItemChest")
 	void OnRep_IsLidOpened();
 
-	UFUNCTION(BlueprintNativeEvent, Category="ItemChest")
+	UFUNCTION(BlueprintImplementableEvent, Category="ItemChest")
 	bool AttemptUnlock(AActor* InstigatorActor);
 
 	UFUNCTION(NetMulticast, NotBlueprintable, Unreliable, Category="ItemChest")
 	void MulticastOnUnSuccessfulOpeningAttempt();
 
-	UFUNCTION(BlueprintNativeEvent, Category="ItemChest")
+	UFUNCTION(BlueprintImplementableEvent, Category="ItemChest")
 	void OnUnsuccessfullOpeningAttempt();
 
 private:

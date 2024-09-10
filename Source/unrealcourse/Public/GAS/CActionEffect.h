@@ -50,14 +50,14 @@ protected:
 	/**
 	 * @brief Executes a periodic effect.
 	 *
-	 * Blueprint-native event that executes a periodic effect. It is called at regular intervals defined by the period, until the action effect is stopped.
+	 * BlueprintImplementable event that executes a periodic effect. It is called at regular intervals defined by the period, until the action effect is stopped.
 	 *
 	 * @param Instigator The actor that triggered the periodic effect.
 	 *
 	 * @see UCActionEffect::StartAction_Implementation()
 	 * @see UCActionEffect::StopAction_Implementation()
 	 */
-	UFUNCTION(BlueprintNativeEvent, Category="Effect")
+	UFUNCTION(BlueprintImplementableEvent, Category="Effect")
 	void ExecutePeriodicEffect(AActor* Instigator);
 
 	UFUNCTION(BlueprintCallable, Category="Effect")
