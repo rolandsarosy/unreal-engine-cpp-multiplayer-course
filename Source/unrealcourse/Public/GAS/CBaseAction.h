@@ -38,7 +38,7 @@ public:
 	FGameplayTag Tag;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Action")
-	TObjectPtr<UTexture2D> ActionIcon;
+	TSoftObjectPtr<UTexture2D> ActionIcon;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Action")
 	FText ActionName;
