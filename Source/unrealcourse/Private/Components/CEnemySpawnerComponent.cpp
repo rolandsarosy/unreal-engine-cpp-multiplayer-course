@@ -1,5 +1,6 @@
 #include "Components/CEnemySpawnerComponent.h"
 
+#include "CEnemyData.h"
 #include "EngineUtils.h"
 #include "AI/CAICharacter.h"
 #include "Algo/RandomShuffle.h"
@@ -112,7 +113,7 @@ TSubclassOf<ACAICharacter> UCEnemySpawnerComponent::GetEnemyTypeToSpawn() const
 	for (const auto& EnemyRow : EnemyRows)
 	{
 		RandomWeight -= EnemyRow->SpawnWeight;
-		if (RandomWeight <= 0) { return EnemyRow->SpawnEnemyClass; }
+		if (RandomWeight <= 0) { return EnemyRow->EnemyData->EnemyClass; }
 	}
 
 	return nullptr;

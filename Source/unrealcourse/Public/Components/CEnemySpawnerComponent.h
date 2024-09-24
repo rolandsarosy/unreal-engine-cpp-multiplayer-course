@@ -6,6 +6,7 @@
 #include "EnvironmentQuery/EnvQueryTypes.h"
 #include "CEnemySpawnerComponent.generated.h"
 
+class UCEnemyData;
 class UEnvQuery;
 class ACAICharacter;
 
@@ -21,10 +22,10 @@ struct FEnemyInfoRow : public FTableRowBase
 		SpawnWeight = 1.0f;
 	}
 
-	/* Class of the enemy to spawn */
+	/* DataAsset related to the unit. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TSubclassOf<ACAICharacter> SpawnEnemyClass;
-
+	TObjectPtr<UCEnemyData> EnemyData;
+	
 	/* Relative chance to spawn this unit. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float SpawnWeight;
