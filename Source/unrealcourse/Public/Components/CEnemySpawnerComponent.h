@@ -53,7 +53,7 @@ private:
 	TObjectPtr<UCurveFloat> MaxEnemyCountOverTimeCurve;
 
 	UFUNCTION()
-	void OnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus);
+	void OnSpawnLocationQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus);
 
 	void OnSpawnEnemyTimerElapsed();
 
