@@ -29,6 +29,9 @@ class UNREALCOURSE_API UCSaveGame : public USaveGame
 
 public:
 	UPROPERTY()
+	bool bIsInitialLoading = true;
+	
+	UPROPERTY()
 	int32 Coins;
 
 	UPROPERTY()

@@ -51,12 +51,12 @@ bool ACPlayerState::RemoveCoins(AActor* InstigatorActor, const int32 AmountToRem
 	return false;
 }
 
-void ACPlayerState::SavePlayerState_Implementation(UCSaveGame* SaveGameObject)
+void ACPlayerState::SavePlayerState(UCSaveGame* SaveGameObject) const
 {
 	if (ensure(SaveGameObject)) SaveGameObject->Coins = GetCoinsAmount();
 }
 
-void ACPlayerState::LoadPlayerState_Implementation(UCSaveGame* SaveGameObject)
+void ACPlayerState::LoadPlayerState(const UCSaveGame* SaveGameObject)
 {
 	if (ensure(SaveGameObject)) SetCoins(GetWorld()->GetAuthGameMode<ACGameModeBase>(), SaveGameObject->Coins);
 }

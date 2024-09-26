@@ -45,9 +45,19 @@ void ACGameModeBase::InitGame(const FString& MapName, const FString& Options, FS
  */
 void ACGameModeBase::HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer)
 {
-	// TODO - Currently this causes an issue where the initial PlayerState Coin values are disregarded on the initial SaveState being created. This'll be resolved with Composite DataTables later on.
-	if (ACPlayerState* PlayerState = NewPlayer->GetPlayerState<ACPlayerState>()) { PlayerState->LoadPlayerState(CurrentSaveGame); }
+	ACPlayerState* PlayerState = NewPlayer->GetPlayerState<ACPlayerState>();
+	if (!ensure(PlayerState)) return;
 
+	// Use the PlayerState's defaults for initial loading.
+	if (CurrentSaveGame->bIsInitialLoading)
+	{
+		CurrentSaveGame->bIsInitialLoading = false;
+	}
+	else
+	{
+		PlayerState->LoadPlayerState(CurrentSaveGame);
+	}
+	
 	Super::HandleStartingNewPlayer_Implementation(NewPlayer);
 }
 
@@ -92,7 +102,7 @@ bool ACGameModeBase::SetPause(APlayerController* PC, FCanUnpause CanUnpauseDeleg
 	Cast<ACGameStateBase>(GameState)->ChangeGamePausedState(bCouldPause);
 
 	if (!bCouldPause) UE_LOG(LogTemp, Error, TEXT("GameMode was unable to pause the game."))
-	
+
 	return bCouldPause;
 }
 
@@ -129,15 +139,15 @@ void ACGameModeBase::WriteSaveGameToDisk() const
 
 	// Clear list of previous items
 	CurrentSaveGame->SavedActors.Empty();
-
+	
 	// Iterate through all Actors in the World.
 	for (FActorIterator It(GetWorld()); It; ++It)
 	{
 		AActor* Actor = *It;
 		if (!Actor->Implements<UCSaveableInterface>()) { continue; } // Don't bother with items not implementing this interface.
-
+		
 		FActorSaveData ActorData;
-		ActorData.ActorName = Actor->GetName(); // Single-level saving behavior for the time being only. TODO: Save level name along with Actor data. Eg.: Level_01_TreasureChest2
+		ActorData.ActorName = Actor->GetLevel()->GetName() + Actor->GetName();
 		ActorData.Transform = Actor->GetActorTransform();
 
 		FMemoryWriter MemoryWriter(ActorData.ByteData);
@@ -170,7 +180,7 @@ void ACGameModeBase::LoadSaveGameFromDisk()
 		}
 
 		UE_LOG(LogTemp, Warning, TEXT("Successfully loaded SaveGame data."))
-
+		
 		// Iterate through all Actors in the World. Not applicable if a new SaveGame was just created.
 		for (FActorIterator It(GetWorld()); It; ++It)
 		{
@@ -179,7 +189,7 @@ void ACGameModeBase::LoadSaveGameFromDisk()
 
 			for (auto [ActorName, Transform, ByteData] : CurrentSaveGame->SavedActors)
 			{
-				if (ActorName == Actor->GetName())
+				if (ActorName == Actor->GetLevel()->GetName() + Actor->GetName())
 				{
 					Actor->SetActorTransform(Transform);
 

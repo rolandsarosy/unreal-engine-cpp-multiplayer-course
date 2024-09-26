@@ -27,18 +27,19 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="Coins", meta=(DisplayName = "Set Coins", Tooltip = "Directly sets the amount of coins held by the player to a given amount. Always succeeds."))
 	void SetCoins(AActor* InstigatorActor, int32 CoinsAmount);
-	
+
 	UFUNCTION(BlueprintCallable, Category="Coins", meta=(DisplayName = "Remove Coins", Tooltip = "Returns true if the amount is present and Coins have been removed. Returns false otherwise."))
 	bool RemoveCoins(AActor* InstigatorActor, int32 AmountToRemove);
 
-	UFUNCTION(BlueprintNativeEvent)
-	void SavePlayerState(UCSaveGame* SaveGameObject);
+	UFUNCTION()
+	void SavePlayerState(UCSaveGame* SaveGameObject) const;
 
-	UFUNCTION(BlueprintNativeEvent)
-	void LoadPlayerState(UCSaveGame* SaveGameObject);
-	
+	UFUNCTION()
+	void LoadPlayerState(const UCSaveGame* SaveGameObject);
+
 	UFUNCTION(BlueprintCallable, Category="Attributes", meta=(DisplayName = "Get PlayerState from Actor", Tooltip = "Returns PlayerState if the Actor has any. Otherwise a nullptr."))
 	static ACPlayerState* GetFromActor(AActor* FromActor);
+
 private:
 	UPROPERTY(Replicated)
 	int32 CurrentCoinsAmount;
