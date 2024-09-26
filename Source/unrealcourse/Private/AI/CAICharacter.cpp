@@ -24,7 +24,7 @@ ACAICharacter::ACAICharacter()
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->bUseControllerDesiredRotation = true;
 
-	CoinRewardUponDeath = 13;
+	CoinRewardUponDeath = 0;
 
 	bHasSeenPlayers = false;
 }
@@ -129,3 +129,7 @@ void ACAICharacter::MutlicastAddSpottedWidgetConditionally_Implementation(const 
 
 	bHasSeenPlayers = true;
 }
+
+void ACAICharacter::SetCoinRewardUponDeath(const int NewCoinRewardUponDeath) { CoinRewardUponDeath = NewCoinRewardUponDeath; }
+
+int ACAICharacter::GetCoinRewardUponDeath() const { return CoinRewardUponDeath; }

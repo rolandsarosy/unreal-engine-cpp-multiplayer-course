@@ -18,8 +18,11 @@ class UNREALCOURSE_API ACAICharacter : public ACharacter
 public:
 	ACAICharacter();
 
-	UPROPERTY(EditDefaultsOnly, Category="Coins")
-	int CoinRewardUponDeath;
+	UFUNCTION()
+	void SetCoinRewardUponDeath(int NewCoinRewardUponDeath);
+
+	UFUNCTION()
+	int GetCoinRewardUponDeath() const;
 
 protected:
 	UPROPERTY(VisibleAnywhere, Category="Components")
@@ -41,6 +44,8 @@ private:
 	TObjectPtr<UCWorldHealthBar> ActiveHealthBar;
 
 	bool bHasSeenPlayers;
+	
+	int CoinRewardUponDeath;
 
 	UFUNCTION()
 	void OnHealthChanged(AActor* InstigatorActor, UCAttributeComponent* UAttributeComponent, float NewHealth, float Delta);

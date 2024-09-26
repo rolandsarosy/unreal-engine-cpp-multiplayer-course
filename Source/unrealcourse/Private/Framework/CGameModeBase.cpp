@@ -74,7 +74,7 @@ void ACGameModeBase::OnActorKilled(AActor* Victim, AActor* Killer)
 	// Check if the Victim is an enemy and reward coins
 	if (Victim->IsA(ACAICharacter::StaticClass()) && Killer->IsA(ACCharacter::StaticClass()))
 	{
-		Cast<ACPlayerState>(Cast<APawn>(Killer)->GetPlayerState())->AddCoins(Victim, Cast<ACAICharacter>(Victim)->CoinRewardUponDeath);
+		Cast<ACPlayerState>(Cast<APawn>(Killer)->GetPlayerState())->AddCoins(Victim, Cast<ACAICharacter>(Victim)->GetCoinRewardUponDeath());
 	}
 }
 
@@ -94,7 +94,6 @@ bool ACGameModeBase::SetPause(APlayerController* PC, FCanUnpause CanUnpauseDeleg
 	if (!bCouldPause) UE_LOG(LogTemp, Error, TEXT("GameMode was unable to pause the game."))
 	
 	return bCouldPause;
-	
 }
 
 bool ACGameModeBase::ClearPause()

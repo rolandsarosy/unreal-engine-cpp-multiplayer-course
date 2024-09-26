@@ -52,10 +52,16 @@ void UCEnemySpawnerComponent::OnSpawnLocationQueryCompleted(UEnvQueryInstanceBlu
 
 void UCEnemySpawnerComponent::SpawnEnemyAtLocation(const FVector& SpawnLocation) const
 {
-	const TSubclassOf<ACAICharacter> EnemyTypeToSpawn = GetEnemyTypeToSpawn();
-	if (!ensureMsgf(EnemyTypeToSpawn, TEXT("Was unable to determine enemy type to spawn from enemy data table."))) return;
+	const TObjectPtr<UCEnemyData> EnemyData = GetSpawnableEnemyData();
+	if (!ensureMsgf(EnemyData, TEXT("Was unable to determine spawnable enemy data from the enemy data table."))) return;
 
-	GetWorld()->SpawnActor<AActor>(EnemyTypeToSpawn, SpawnLocation, FRotator::ZeroRotator);
+	FActorSpawnParameters AICharacterSpawnParameters;
+	AICharacterSpawnParameters.Owner = GetOwner();
+	
+	if (ACAICharacter* SpawnedAICharacter = Cast<ACAICharacter>(GetWorld()->SpawnActor<AActor>(EnemyData->EnemyClass, SpawnLocation, FRotator::ZeroRotator)))
+	{
+		SpawnedAICharacter->SetCoinRewardUponDeath(EnemyData->CoinRewardUponDeath);
+	}
 }
 
 // TODO - This is a computationally expensive call. It was written during class, but I'd like to write a more efficient solution later on.
@@ -77,7 +83,7 @@ uint16 UCEnemySpawnerComponent::GetNumberOfEnemiesAlive() const
  *
  * @return The subclass of ACAICharacter representing the enemy type to spawn, or nullptr if no suitable enemy type was found.
  */
-TSubclassOf<ACAICharacter> UCEnemySpawnerComponent::GetEnemyTypeToSpawn() const
+TObjectPtr<UCEnemyData> UCEnemySpawnerComponent::GetSpawnableEnemyData() const
 {
 	// Automatically reject enemy spawns if the enemy data table hasn't been set.
 	if (!ensureAlwaysMsgf(EnemyTable, TEXT("Enemy data table must be set to be able to spawn enemies."))) return nullptr;
@@ -97,7 +103,7 @@ TSubclassOf<ACAICharacter> UCEnemySpawnerComponent::GetEnemyTypeToSpawn() const
 	for (const auto& EnemyRow : EnemyRows)
 	{
 		RandomWeight -= EnemyRow->SpawnWeight;
-		if (RandomWeight <= 0) { return EnemyRow->EnemyData->EnemyClass; }
+		if (RandomWeight <= 0) { return EnemyRow->EnemyData; }
 	}
 
 	return nullptr;

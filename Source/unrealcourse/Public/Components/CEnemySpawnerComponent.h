@@ -61,7 +61,7 @@ private:
 
 	uint16 GetNumberOfEnemiesAlive() const;
 
-	TSubclassOf<ACAICharacter> GetEnemyTypeToSpawn() const;
+	TObjectPtr<UCEnemyData> GetSpawnableEnemyData() const;
 
 	bool CanGameModeSpawnMoreEnemies(uint16 NumberOfEnemiesAlive) const;
 
