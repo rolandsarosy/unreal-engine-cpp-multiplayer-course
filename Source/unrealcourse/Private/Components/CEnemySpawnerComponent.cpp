@@ -4,6 +4,7 @@
 #include "EngineUtils.h"
 #include "AI/CAICharacter.h"
 #include "Algo/RandomShuffle.h"
+#include "Components/CActionComponent.h"
 #include "Components/CAttributeComponent.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
 
@@ -61,6 +62,11 @@ void UCEnemySpawnerComponent::SpawnEnemyAtLocation(const FVector& SpawnLocation)
 	if (ACAICharacter* SpawnedAICharacter = Cast<ACAICharacter>(GetWorld()->SpawnActor<AActor>(EnemyData->EnemyClass, SpawnLocation, FRotator::ZeroRotator)))
 	{
 		SpawnedAICharacter->SetCoinRewardUponDeath(EnemyData->CoinRewardUponDeath);
+		if (UCActionComponent* ActionComponent = UCActionComponent::GetComponentFrom(SpawnedAICharacter))
+		{
+			// TODO: Actions are currently unused as they'd require major BT and GAS refactors to make them work with each other. This is more for demonstration than anything else.
+			for (const TSubclassOf<UCBaseAction> Action : EnemyData->EnemyActions) { ActionComponent->AddAction(Action, SpawnedAICharacter); }
+		}
 	}
 }
 
