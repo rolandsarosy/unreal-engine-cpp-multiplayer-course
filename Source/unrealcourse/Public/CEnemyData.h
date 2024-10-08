@@ -24,4 +24,7 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Spawn Info")
 	TObjectPtr<UTexture2D> Icon;
+
+private:
+	virtual FPrimaryAssetId GetPrimaryAssetId() const override;
 };

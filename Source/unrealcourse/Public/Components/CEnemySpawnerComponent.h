@@ -24,7 +24,7 @@ struct FEnemyInfoRow : public FTableRowBase
 
 	/* DataAsset related to the unit. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TObjectPtr<UCEnemyData> EnemyData;
+	FPrimaryAssetId EnemyAssetId;
 	
 	/* Relative chance to spawn this unit. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
@@ -57,11 +57,11 @@ private:
 
 	void OnSpawnEnemyTimerElapsed();
 
-	void SpawnEnemyAtLocation(const FVector& SpawnLocation) const;
-
 	uint16 GetNumberOfEnemiesAlive() const;
 
-	TObjectPtr<UCEnemyData> GetSpawnableEnemyData() const;
+	void GetAsyncRandomSpawnableEnemyData(const FVector& SpawnLocation) const;
+
+	void SpawnEnemyAtLocation(FPrimaryAssetId LoadedAssetId, const FVector SpawnLocation) const;
 
 	bool CanGameModeSpawnMoreEnemies(uint16 NumberOfEnemiesAlive) const;
 
