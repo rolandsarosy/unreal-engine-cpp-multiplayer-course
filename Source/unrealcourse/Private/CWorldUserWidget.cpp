@@ -12,11 +12,16 @@ void UCWorldUserWidget::NativeTick(const FGeometry& MyGeometry, const float InDe
 		RemoveFromParent();
 		return;
 	}
-	
+
 	FVector2D ScreenPositionResult;
 	if (UWidgetLayoutLibrary::ProjectWorldLocationToWidgetPosition(GetOwningPlayer(), CalculateOffsetScreenPosition(), ScreenPositionResult, false))
 	{
 		if (ParentSizeBox) ParentSizeBox->SetRenderTranslation(ScreenPositionResult);
+		ParentSizeBox->SetVisibility(ESlateVisibility::HitTestInvisible);
+	}
+	else
+	{
+		ParentSizeBox->SetVisibility(ESlateVisibility::Hidden);
 	}
 }
 
