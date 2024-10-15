@@ -1,7 +1,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameplayTagContainer.h"
 #include "Projectiles/CBaseProjectile.h"
 #include "CMagicProjectile.generated.h"
 

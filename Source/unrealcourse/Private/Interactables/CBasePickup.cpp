@@ -7,10 +7,12 @@ ACBasePickup::ACBasePickup()
 {
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("StaticMeshComponent");
 	RootComponent = StaticMeshComponent;
-	bReplicates = true;
 
 	CooldownDuration = 10.0f;
+	
+	bReplicates = true;
 	bIsOnCooldown = false;
+	bGenerateOverlapEventsDuringLevelStreaming = false;
 }
 
 void ACBasePickup::BeginPlay()

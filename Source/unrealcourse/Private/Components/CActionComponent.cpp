@@ -5,6 +5,10 @@
 #include "Net/UnrealNetwork.h"
 #include "unrealcourse/unrealcourse.h"
 
+DECLARE_CYCLE_STAT(TEXT("AddAction"), STAT_AddAction, STATGROUP_UNREALCOURSE)
+DECLARE_CYCLE_STAT(TEXT("StartActionByTag"), STAT_StartActionByTag, STATGROUP_UNREALCOURSE)
+DECLARE_CYCLE_STAT(TEXT("StopActionByTag"), STAT_StopActionByTag, STATGROUP_UNREALCOURSE)
+
 UCActionComponent::UCActionComponent()
 {
 	SetIsReplicatedByDefault(true);
@@ -79,13 +83,15 @@ void UCActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
  */
 void UCActionComponent::AddAction(const TSubclassOf<UCBaseAction> ActionClass, AActor* Instigator)
 {
+	SCOPE_CYCLE_COUNTER(STAT_AddAction)
+
 	if (!ensure(ActionClass)) return;
 	if (!ensure(GetOwner()->HasAuthority()))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("A non-authoritave client attempted to add an action. [Class: %s]"), *GetNameSafe(ActionClass));
 		return;
 	}
-
+	
 	if (UCBaseAction* NewAction = NewObject<UCBaseAction>(this, ActionClass); ensure(NewAction))
 	{
 		const TArray<UCBaseAction*> PreviousStateActionList = CurrentActions; // Create a separate list for calling OnRep on server as OnRep does not get called automatically there.
@@ -121,10 +127,13 @@ void UCActionComponent::RemoveAction(UCBaseAction* ActionToRemove, AActor* Insti
  */
 bool UCActionComponent::StartActionByTag(AActor* Instigator, const FGameplayTag Tag)
 {
+	SCOPE_CYCLE_COUNTER(STAT_StartActionByTag)
+
 	for (UCBaseAction* Action : CurrentActions)
 	{
 		if (Action && Action->Tag == Tag && Action->CanStart(Instigator))
 		{
+			TRACE_BOOKMARK(TEXT("StartAction::%s"), *Action->Tag.ToString());
 			if (!GetOwner()->HasAuthority()) ServerStartAction(Instigator, Tag);
 			Action->StartAction(Instigator);
 			return true;
@@ -149,6 +158,8 @@ void UCActionComponent::ServerStartAction_Implementation(AActor* Instigator, con
  */
 bool UCActionComponent::StopActionByTag(AActor* Instigator, const FGameplayTag Tag)
 {
+	SCOPE_CYCLE_COUNTER(STAT_StopActionByTag)
+	
 	for (UCBaseAction* Action : CurrentActions)
 	{
 		if (Action && Action->Tag == Tag && Action->IsRunning())
@@ -185,6 +196,16 @@ bool UCActionComponent::ReplicateSubobjects(UActorChannel* Channel, FOutBunch* B
 		if (Action) bChangeOccured |= Channel->ReplicateSubobject(Action, *Bunch, *RepFlags);
 	}
 	return bChangeOccured;
+}
+
+void UCActionComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	for (TArray<UCBaseAction*> ActionsCopy = CurrentActions; UCBaseAction* Action : ActionsCopy)
+	{
+		if (Action && Action->IsRunning()) { Action->StopAction(GetOwner()); }
+	}
+
+	Super::EndPlay(EndPlayReason);
 }
 
 void UCActionComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

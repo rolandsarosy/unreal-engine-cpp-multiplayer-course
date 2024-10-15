@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 
+DECLARE_STATS_GROUP(TEXT("UNREALCOURSE_Game"), STATGROUP_UNREALCOURSE, STATCAT_Advanced);
+
 /**
  * Logs a message on the screen using the Unreal Engine's AddOnScreenDebugMessage function.
  *

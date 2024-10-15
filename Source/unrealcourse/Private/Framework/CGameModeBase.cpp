@@ -179,7 +179,7 @@ void ACGameModeBase::LoadSaveGameFromDisk()
 			return;
 		}
 
-		UE_LOG(LogTemp, Warning, TEXT("Successfully loaded SaveGame data."))
+		UE_LOG(LogTemp, Log, TEXT("Successfully loaded SaveGame data."))
 		
 		// Iterate through all Actors in the World. Not applicable if a new SaveGame was just created.
 		for (FActorIterator It(GetWorld()); It; ++It)

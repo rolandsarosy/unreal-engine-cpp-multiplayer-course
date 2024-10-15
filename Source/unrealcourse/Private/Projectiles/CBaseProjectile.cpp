@@ -6,7 +6,7 @@
 
 ACBaseProjectile::ACBaseProjectile()
 {
-	AActor::SetLifeSpan(10);
+	InitialLifeSpan = 10;
 
 	SphereComponent = CreateDefaultSubobject<USphereComponent>("SphereComponent");
 	SphereComponent->SetCollisionProfileName("Projectile");
