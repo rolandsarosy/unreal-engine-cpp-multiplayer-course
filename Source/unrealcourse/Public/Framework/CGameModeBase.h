@@ -18,12 +18,6 @@ public:
 
 	void OnActorKilled(AActor* Victim, AActor* Killer);
 
-protected:
-	UFUNCTION(BlueprintCallable, Category="SaveGame")
-	void WriteSaveGameToDisk() const;
-
-	void LoadSaveGameFromDisk();
-
 private:
 	UPROPERTY(EditDefaultsOnly, Category="Components")
 	TObjectPtr<UCPickupSpawnerComponent> PickupSpawnerComponent;
@@ -33,11 +27,6 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category="GameMode")
 	float PlayerRespawnDelay;
-
-	UPROPERTY()
-	UCSaveGame* CurrentSaveGame;
-
-	FString SaveGameSlotName;
 	
 	UFUNCTION()
 	void RespawnPlayer(AController* PlayerController);
