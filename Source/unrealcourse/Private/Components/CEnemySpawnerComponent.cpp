@@ -108,7 +108,6 @@ void UCEnemySpawnerComponent::SpawnEnemyAtLocation(FPrimaryAssetId LoadedAssetId
 	}
 }
 
-// TODO - This is a computationally expensive call. It was written during class, but I'd like to write a more efficient solution later on.
 // ReSharper disable once CppTooWideScopeInitStatement ~ Results in worse readability
 uint16 UCEnemySpawnerComponent::GetNumberOfEnemiesAlive() const
 {

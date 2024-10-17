@@ -52,8 +52,10 @@ void UCSaveGameSubsystem::WriteSaveGame()
 	{
 		if (ACPlayerState* PlayerState = Cast<ACPlayerState>(GameState->PlayerArray[i]))
 		{
+			// Single-player behavior only for the time being. TODO: Make this multiplayer-compatible by Saving Credits to a persisent UUID like a Steam Account ID.
+			// https://github.com/rolandsarosy/unrealcourse/issues/8
 			PlayerState->SavePlayerState(CurrentSaveGame);
-			break; // Single-player behavior only for the time being. TODO: Make this multiplayer-compatible by Saving Credits to a persisent UUID like a Steam Account ID.
+			break; 
 		}
 	}
 

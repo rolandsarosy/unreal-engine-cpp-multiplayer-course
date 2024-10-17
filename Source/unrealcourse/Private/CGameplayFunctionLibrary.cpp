@@ -12,7 +12,6 @@ bool UCGameplayFunctionLibrary::ApplyDamage(AActor* DamageInstigator, AActor* Ta
 	return false;
 }
 
-// TODO: Needs a refactor and should be considered unreliable as it will often collide with the target's CapsuleComponent which does not simulate. 
 bool UCGameplayFunctionLibrary::ApplyDirectionalImpulseDamage(AActor* DamageInstigator, AActor* TargetActor, const float DamageAmount, const FHitResult& HitResult)
 {
 	if (ApplyDamage(DamageInstigator, TargetActor, DamageAmount))
