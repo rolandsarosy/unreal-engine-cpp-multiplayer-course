@@ -1,3 +1,10 @@
+# **Overview**
+This repository contains my coursework from Tom Looman's Professional Game Development in C++ and Unreal Engine course, which he originally taught at Stanford University.
+
+This project contains all of my assignment solutions, additional tasks, improvements and the coursework itself.
+
+After learning all other parts of the engine for 5-7 months besides C++, I originally started this project in April of 2024 and after dedicating most of my free time to it, finishing in October of the same year.
+
 # **Project features**
 A ready-to-use gameplay framework that makes it easy for designers and other developers to add features based on the building blocks of the framework I made.
 
@@ -12,14 +19,14 @@ The project is a culmination of about 7 months of work, encompassing most of my 
    - Support for Actions (one-time) and Effects (over-time).
    - Blueprint Action & Effect support for easy iteration for designers.
    - Some actions include:
-      - Damaging projectile ability
-      - Black hole projectile ability (gravity affects simulating objects)
-      - Dash ability (projectile teleportation)
-      - Reflection ability (reflects projectiles back attackers)
+      - Damaging projectile ability.
+      - Black hole projectile ability (gravity affects simulating objects).
+      - Dash ability (projectile teleportation).
+      - Reflection ability (reflects projectiles back attackers).
    - Some effects include:
-      - Fire damage over time effect
-      - Stunned effect
-      - Thorns effect (reflects a percentage of damage back to the attacker)
+      - Fire damage over time effect.
+      - Stunned effect.
+      - Thorns effect (reflects a percentage of damage back to the attacker).
 - **An AttributeSystem holding the Health and Rage of the player and relevant information.**
    - Rage is given to the player upon receiving damage.
    - Replication support with server-side authentication.
@@ -38,7 +45,7 @@ The project is a culmination of about 7 months of work, encompassing most of my 
 - **Various world interactions.**
 	- Treasure Chests can be opened, giving credits to the player.
 	- Pickups can be collected for credits, health, or even to enable new abilities.
-	- Levers can be toggled to give the player key-cards that can enable the opening of closed items (such as chests, doors, etc.)
+	- Levers can be toggled to give the player key-cards that can enable the opening of closed items (such as chests, doors, etc.).
 	- World interactors also respond with relevant localized state descriptions to queriers.
 - **A SaveGame system encapsulated in its own GameplaySubsystem.**
 	- The SaveGame system saves various world-state elements.
@@ -49,6 +56,6 @@ The project is a culmination of about 7 months of work, encompassing most of my 
 - **UMG implementations.**
 	- Main menu, pause menu, gameplay HUD, all with animations, states, and standardized behavior.
 - **Various GameplayTags, console commands and developer settings defined in C++.**
-	- All GameplayTags are defined in C++
+	- All GameplayTags are defined in C++.
 	- Console commands include elements such as: Health/Damage multipliers, flags to prevent/enable spawning of enemies and drawing of debug elements in world.
 	- Developer settings include a project-level setting to specificy save-game file names without needing to launch the game from a shipped build.
