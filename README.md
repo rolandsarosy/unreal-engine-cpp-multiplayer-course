@@ -67,6 +67,11 @@ The project is a culmination of about 7 months of work, encompassing most of my 
 	- Console commands include elements such as: Health/Damage multipliers, flags to prevent/enable spawning of enemies and drawing of debug elements in world.
 	- Developer settings include a project-level setting to specificy save-game file names without needing to launch the game from a shipped build.
 
+# **Issues, TODOs and contribution**
+Most of what I wanted to achieve in this project, I did. There remained some outstanding issues and 1-2 bugs however, which are all recorded under the issues tab.
+
+If you, for some reason, would like to contribute with knowledge, or code fixes, you're absolutely welcome to take a look at that page. :) 
+
 # **Course review**
 
 This course was rare in a way that it's clear that it is aimed at programmers and not beginners. For me, this was a great addition. These sort of works are rare and certainly welcome.
