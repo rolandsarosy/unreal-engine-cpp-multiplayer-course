@@ -5,7 +5,7 @@ This project contains **all of my assignment solutions, additional tasks, improv
 
 After learning all other parts of the engine for 5-7 months besides C++, I originally started this project in April of 2024 and after dedicating most of my free time to it, finishing in October of the same year.
 
-![alt text](https://github.com/rolandsarosy/unrealcourse/blob/documentation/unreal_course_git_commits_heatmap.png?raw=true)
+![alt text](https://github.com/rolandsarosy/unrealcourse/blob/main/unreal_course_git_commits_heatmap.png?raw=true)
 
 # **Goal**
 After getting a general hang of the engine itself (blueprints, materials, Niagara, modelling, environment art, etc...),**I wanted to dive deep into C++ programming inside Unreal itself.**
