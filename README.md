@@ -1,9 +1,16 @@
 # **Overview**
 This repository contains my coursework from Tom Looman's Professional Game Development in C++ and Unreal Engine course, which he originally taught at Stanford University.
 
-This project contains all of my assignment solutions, additional tasks, improvements and the coursework itself.
+This project contains **all of my assignment solutions, additional tasks, improvements and the coursework itself.**
 
 After learning all other parts of the engine for 5-7 months besides C++, I originally started this project in April of 2024 and after dedicating most of my free time to it, finishing in October of the same year.
+
+![alt text](https://github.com/rolandsarosy/unrealcourse/blob/documentation/unreal_course_git_commits_heatmap.png?raw=true)
+
+# **Goal**
+After getting a general hang of the engine itself (blueprints, materials, Niagara, modelling, environment art, etc...),**I wanted to dive deep into C++ programming inside Unreal itself.**
+
+Having been a software engineer for most of my professional career, I did not want to start with a tutorial or similar that was aimed at beginners. Luckily, Tom's course is 100% aimed at those who are already familiar with programming and teached only UE-specific concepts.
 
 # **Project features**
 A ready-to-use gameplay framework that makes it easy for designers and other developers to add features based on the building blocks of the framework I made.
@@ -59,3 +66,9 @@ The project is a culmination of about 7 months of work, encompassing most of my 
 	- All GameplayTags are defined in C++.
 	- Console commands include elements such as: Health/Damage multipliers, flags to prevent/enable spawning of enemies and drawing of debug elements in world.
 	- Developer settings include a project-level setting to specificy save-game file names without needing to launch the game from a shipped build.
+
+# **Course review**
+
+This course was rare in a way that it's clear that it is aimed at programmers and not beginners. For me, this was a great addition. These sort of works are rare and certainly welcome.
+
+Even though I think the materials were often rushed, requiring me to do significant refactoring to get to a level that matched my quality expectations, those that will put in the work, will definitely get a lot out of this.
