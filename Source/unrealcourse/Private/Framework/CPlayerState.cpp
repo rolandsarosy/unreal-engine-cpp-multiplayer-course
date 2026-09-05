@@ -2,6 +2,7 @@
 
 #include "Framework/CSaveGame.h"
 #include "Framework/CGameModeBase.h"
+#include "CSaveGameSettings.h"
 #include "Net/UnrealNetwork.h"
 
 ACPlayerState::ACPlayerState()
@@ -53,12 +54,32 @@ bool ACPlayerState::RemoveCoins(AActor* InstigatorActor, const int32 AmountToRem
 
 void ACPlayerState::SavePlayerState(UCSaveGame* SaveGameObject) const
 {
-	if (ensure(SaveGameObject)) SaveGameObject->Coins = GetCoinsAmount();
+	if (ensure(SaveGameObject))
+	{
+		// Key = PlayerId + "_" + SaveSlotName (session identifier)
+		UCSaveGameSettings* Settings = GetMutableDefault<UCSaveGameSettings>();
+		FString SaveSlotName = Settings ? Settings->SaveSlotName : TEXT("DefaultSlot");
+		FString Key = FString::Printf(TEXT("%d_%s"), GetPlayerId(), *SaveSlotName);
+		SaveGameObject->PlayerCoins.Add(Key, GetCoinsAmount());
+	}
 }
 
 void ACPlayerState::LoadPlayerState(const UCSaveGame* SaveGameObject)
 {
-	if (ensure(SaveGameObject)) SetCoins(GetWorld()->GetAuthGameMode<ACGameModeBase>(), SaveGameObject->Coins);
+	if (ensure(SaveGameObject))
+	{
+		UCSaveGameSettings* Settings = GetMutableDefault<UCSaveGameSettings>();
+		FString SaveSlotName = Settings ? Settings->SaveSlotName : TEXT("DefaultSlot");
+		FString Key = FString::Printf(TEXT("%d_%s"), GetPlayerId(), *SaveSlotName);
+		if (const int32* SavedCoins = SaveGameObject->PlayerCoins.Find(Key))
+		{
+			SetCoins(GetWorld()->GetAuthGameMode<ACGameModeBase>(), *SavedCoins);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("No saved coins for player key %s"), *Key);
+		}
+	}
 }
 
 ACPlayerState* ACPlayerState::GetFromActor(AActor* FromActor)

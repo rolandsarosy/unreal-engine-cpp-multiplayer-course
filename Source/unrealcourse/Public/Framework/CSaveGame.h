@@ -31,8 +31,9 @@ public:
 	UPROPERTY()
 	bool bIsInitialLoading = true;
 	
+	/** Per-player coins, keyed by "PlayerId_SaveSlotName" */
 	UPROPERTY()
-	int32 Coins;
+	TMap<FString, int32> PlayerCoins;
 
 	UPROPERTY()
 	TArray<FActorSaveData> SavedActors;
