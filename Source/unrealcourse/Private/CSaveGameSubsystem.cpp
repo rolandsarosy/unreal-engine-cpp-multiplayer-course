@@ -39,23 +39,18 @@ void UCSaveGameSubsystem::HandleStartingNewPlayer(const AController* NewPlayer) 
  * This method iterates through all Players and saves their state to the current save game object.
  * Also iterates through all actors and if they implement the UCGameplayInterface, the actor's state is serialized and added to the list of saved actors in the save game object.
  * The save game object is then saved to a specified slot using SaveGameToSlot() function from UGameplayStatics class.
- *
- * @warning This method assumes single-player behavior only for now. 
  */
 void UCSaveGameSubsystem::WriteSaveGame()
 {
 	CurrentSaveGame->SavedActors.Empty();
 	AGameStateBase* GameState = GetWorld()->GetGameState();
 
-	// Iterate through all PlayerState(s) as we don't have a proper ID to match yet. (Requires Steam or EOS)
+	// Iterate through all PlayerStates and save each one's data
 	for (int32 i = 0; i < GameState->PlayerArray.Num(); i++)
 	{
 		if (ACPlayerState* PlayerState = Cast<ACPlayerState>(GameState->PlayerArray[i]))
 		{
-			// Single-player behavior only for the time being. TODO: Make this multiplayer-compatible by Saving Credits to a persisent UUID like a Steam Account ID.
-			// https://github.com/rolandsarosy/unrealcourse/issues/8
 			PlayerState->SavePlayerState(CurrentSaveGame);
-			break; 
 		}
 	}
 
